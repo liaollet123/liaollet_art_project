@@ -1,0 +1,1248 @@
+<title>감정의 다락방 V2 시안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Pen+Script&family=Special+Elite&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* 레이아웃: 화면마다 왼쪽에 폰 시안(실제로 눌러볼 수 있음), 오른쪽에 무엇을 반영했는지. 좁으면 위아래로 쌓는다.
+   바깥(문서)은 테마를 따르고, 폰 안의 다락방은 원래의 한 가지 모습으로 고정한다. */
+:root {
+  --bg: #f4f3f0;
+  --surface: #ffffff;
+  --ink: #211a15;
+  --ink-2: #5d5249;
+  --line: #e0dbd4;
+  --bezel: #1b1512;
+  --v2: #8a3f2a;
+  --v2-bg: #f5e7e1;
+  --rv: #3d5a45;
+  --rv-bg: #e4ece6;
+  --display: "Nanum Myeongjo", serif;
+  --body: "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+
+  /* 폰 안 다락방 토큰 (테마와 무관) */
+  --paper: #f2e9da;
+  --paper-2: #e6d9c4;
+  --a-ink: #2b1d12;
+  --a-soft: #5f4c3c;
+  --wood: #3a281d;
+  --a-red: #93303a;
+  --lia: #8a3f2a;
+  --ol: #3d5a45;
+  --let: #b5401c;
+  --serif: "Nanum Myeongjo", serif;
+  --pen: "Nanum Pen Script", cursive;
+  --type: "Special Elite", "Courier New", monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15110e; --surface: #201a15; --ink: #eee7df; --ink-2: #b8ada2; --line: #372e27; --bezel: #000000;
+    --v2: #e59a84; --v2-bg: #3a231c; --rv: #9cc3a6; --rv-bg: #1f2d23;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15110e; --surface: #201a15; --ink: #eee7df; --ink-2: #b8ada2; --line: #372e27; --bezel: #000000;
+  --v2: #e59a84; --v2-bg: #3a231c; --rv: #9cc3a6; --rv-bg: #1f2d23;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-block: 56px 96px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2 { font-family: var(--display); font-weight: 800; line-height: 1.3; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 5vw, 3.1rem); }
+h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); }
+p { margin: 0; }
+.lead { margin-top: 14px; max-width: 44em; color: var(--ink-2); font-size: 1.0625rem; }
+.key { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 0.9375rem; color: var(--ink-2); }
+.tag { display: inline-block; padding: 1px 9px; border-radius: 4px; font-size: 0.8125rem; font-weight: 700; line-height: 1.75; }
+.tag.v2 { color: var(--v2); background: var(--v2-bg); }
+.tag.rv { color: var(--rv); background: var(--rv-bg); }
+.toc { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { color: var(--ink); text-decoration: none; background: var(--surface); padding: 6px 12px; border-radius: 6px; font-size: 0.9375rem; }
+.toc a:hover, .toc a:focus-visible { background: var(--line); }
+
+.item { margin-top: 80px; display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 48px; align-items: start; scroll-margin-top: 24px; }
+.notes h2 { padding-bottom: 12px; border-bottom: 2px solid var(--ink); }
+.notes .sub { margin-top: 10px; color: var(--ink-2); }
+.notes ul { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 12px; }
+.notes li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start; }
+.notes li .tag { margin-top: 2px; }
+.notes .try { margin-top: 18px; padding: 12px 16px; background: var(--surface); border-radius: 6px; font-size: 0.9375rem; color: var(--ink-2); }
+
+/* 폰 틀 */
+.phone { width: 360px; max-width: 100%; height: 760px; background: var(--bezel); border-radius: 34px; padding: 10px; position: sticky; top: max(16px, env(safe-area-inset-top, 0px)); }
+.scr { position: relative; height: 100%; border-radius: 26px; overflow-x: hidden; overflow-y: auto; background: var(--wood); color: var(--a-ink); font-family: var(--serif); scrollbar-width: none; }
+.scr::-webkit-scrollbar { display: none; }
+
+/* ---------- 다락방 공통 ---------- */
+.paper { position: relative; margin: 26px 14px 30px; padding: 34px 22px 26px; background: var(--paper); box-shadow: 0 14px 28px rgb(0 0 0 / 0.35); }
+.paper::before { content: ""; position: absolute; top: -12px; left: 26px; width: 92px; height: 26px; background: hsl(45 60% 75% / 0.8); transform: rotate(-2deg); }
+.pno { position: absolute; top: 14px; right: 16px; font-family: var(--type); font-size: 0.75rem; color: var(--a-soft); }
+.ttl { font-size: 1.75rem; font-weight: 800; line-height: 1.3; }
+.pensub { margin-top: 4px; font-family: var(--pen); font-size: 1.45rem; color: var(--a-soft); line-height: 1.3; }
+.body { margin-top: 12px; font-size: 0.95rem; line-height: 1.75; color: var(--a-ink); }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px; border: 0; background: var(--a-ink); color: var(--paper); font-family: var(--serif); font-size: 1rem; line-height: 1; cursor: pointer; text-decoration: none; }
+.btn:disabled { background: transparent; color: hsl(25 15% 55%); box-shadow: inset 0 0 0 1px hsl(25 15% 75%); cursor: default; }
+.btn.ghost { background: transparent; color: var(--a-ink); box-shadow: inset 0 0 0 1px var(--a-ink); }
+.btn:focus-visible, .scr button:focus-visible, .scr input:focus-visible, .scr textarea:focus-visible { outline: 2px solid var(--a-red); outline-offset: 2px; }
+.actions { margin-top: 26px; display: flex; justify-content: space-between; gap: 10px; }
+.textlink { background: none; border: 0; padding: 6px 0; font-family: var(--serif); font-size: 0.95rem; color: var(--a-ink); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+
+/* ---------- 1. 입장 ---------- */
+.ent { position: relative; min-height: 100%; padding: 64px 22px 40px; display: flex; flex-direction: column; align-items: center; text-align: center; color: #efe3cc; isolation: isolate; }
+.ent-bg { position: absolute; inset: 0; z-index: -1; background: url(a/room.jpg) center / cover; }
+.ent-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(16 11 8 / 0.72), rgb(16 11 8 / 0.62) 45%, rgb(16 11 8 / 0.9)); }
+.brand { font-size: 0.95rem; letter-spacing: 0.42em; padding-left: 0.42em; color: #f3dca6; font-weight: 600; }
+.ent h3 { margin: 8px 0 0; font-size: 2.1rem; font-weight: 800; color: #f6ecd9; }
+.kick { margin-top: 6px; font-family: var(--type); font-size: 0.68rem; letter-spacing: 0.3em; color: #e9d6b0; font-weight: 600; }
+.diary { position: relative; margin-top: 18px; width: 300px; max-width: 100%; }
+/* 손 사진 아래가 수평으로 잘리던 것을 배경 어둠에 녹인다 */
+.diary img.d { display: block; width: 100%; -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 98%); mask-image: linear-gradient(180deg, #000 72%, transparent 98%); }
+/* 다이어리 오른쪽 장에 다른 창작자들의 작품이 끼워져 있고, 고리를 축으로 한 장씩 왼쪽으로 넘어간다.
+   종이가 고리에 걸려 돌도록 고리 부분만 오려 낸 다이어리를 맨 위에 한 번 더 얹는다. */
+.leaf { position: absolute; left: 52.6%; top: 4.4%; width: 43.2%; height: 62.4%; perspective: 1200px; }
+.pg { position: absolute; inset: 0; transform-origin: left center; transform-style: preserve-3d; transition: transform 2.6s cubic-bezier(0.45, 0.05, 0.3, 1); }
+.pg .f, .pg .b { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.pg .f { background: #efe5d2; padding: 9% 9% 10% 13%; box-shadow: inset 7px 0 10px -7px rgb(0 0 0 / 0.45); }
+.pg .f img { display: block; width: 100%; height: 100%; object-fit: cover; box-shadow: 0 2px 5px rgb(0 0 0 / 0.25); }
+/* 넘어간 장의 뒷면에도 다른 창작자의 작품이 붙어 있다. 고리 쪽(오른쪽)에 여백과 그늘을 둔다 */
+.pg .b { background: #ece2cf; padding: 9% 13% 10% 9%; transform: rotateY(180deg); box-shadow: inset -7px 0 10px -7px rgb(0 0 0 / 0.4); }
+.pg .b img { display: block; width: 100%; height: 100%; object-fit: cover; box-shadow: 0 2px 5px rgb(0 0 0 / 0.25); }
+/* 넘어가는 동안 종이 면에 그늘이 졌다 걷힌다 */
+.pg .f::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(0 0 0 / 0.28), transparent 70%); opacity: 0; transition: opacity 1.3s ease; }
+.pg.flip { transform: rotateY(-180deg); }
+.pg.flip .f::after { opacity: 1; }
+.diary img.rings { position: absolute; inset: 0; width: 100%; clip-path: inset(10.4% 43.6% 41.6% 48.2%); pointer-events: none; }
+.ent .invite { margin-top: 26px; font-family: var(--pen); font-size: 1.6rem; color: #f0dfbd; }
+.ent .cta { margin-top: 14px; width: 100%; max-width: 270px; min-height: 52px; background: rgb(16 11 8 / 0.55); color: #fbf3e4; box-shadow: inset 0 0 0 1.5px #e9d6b0; font-weight: 600; font-size: 1.05rem; transition: background 0.6s var(--ease); }
+.ent .cta:hover, .ent .cta:focus-visible { background: rgb(227 204 159 / 0.14); }
+.ent .find { margin-top: 14px; color: #f3dca6; font-weight: 600; font-size: 0.95rem; text-decoration: underline; text-underline-offset: 5px; background: none; border: 0; font-family: var(--serif); cursor: pointer; }
+.cap-mini { margin-top: 12px; font-size: 0.78rem; color: #e9d6b0; font-weight: 600; }
+
+/* ---------- 2·3. 티켓 ---------- */
+.tk-wrap { position: relative; min-height: 100%; padding: 70px 18px 40px; display: flex; flex-direction: column; align-items: center; text-align: center; color: #efe3cc; isolation: isolate; }
+.ticket { container-type: inline-size; position: relative; width: 100%; aspect-ratio: 962 / 549; margin-top: 22px; transform: rotate(-1.1deg); filter: drop-shadow(0 16px 24px rgb(0 0 0 / 0.5)); }
+.ticket > img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tk-ink { position: absolute; left: 9.1%; top: 10.6%; right: 14.8%; bottom: 8.9%; display: flex; border: 0.42cqw solid rgb(46 28 18 / 0.88); color: #2e1c12; text-align: left; }
+.tk-body { flex: 1; min-width: 0; padding: 4cqw 3cqw 3cqw 4cqw; display: flex; flex-direction: column; }
+.tk-admit { font-family: var(--type); font-size: 2.9cqw; letter-spacing: 0.22em; }
+.tk-head { margin: auto 0; font-family: var(--type); font-size: 8.4cqw; line-height: 1.26; letter-spacing: 0.04em; }
+.tk-iss { font-family: var(--type); font-size: 2.1cqw; letter-spacing: 0.2em; color: #4a3020; }
+.tk-cell { width: 15%; border-left: 0.42cqw solid rgb(46 28 18 / 0.88); display: flex; align-items: center; justify-content: center; }
+.tk-no { writing-mode: vertical-rl; font-family: var(--type); font-size: 6.4cqw; letter-spacing: 0.2em; }
+/* 도장: 제목과 하단 문구를 덮지 않게 오른쪽 위 빈 종이 자리로 옮겼다 */
+.stamp { position: absolute; right: 19%; top: 12%; width: 23cqw; height: 23cqw; border-radius: 50%; border: 0.6cqw double rgb(147 40 52 / 0.78); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5cqw; color: rgb(147 40 52 / 0.82); font-family: var(--type); mix-blend-mode: multiply; opacity: 0; transform: scale(1.9) rotate(-18deg); pointer-events: none; }
+.stamp b { font-weight: 400; font-size: 3.6cqw; letter-spacing: 0.1em; }
+.stamp span { font-size: 2.8cqw; letter-spacing: 0.1em; }
+.stamp i { font-style: normal; font-size: 2.1cqw; }
+.stamp.on { animation: press 1.35s cubic-bezier(0.22, 0.7, 0.2, 1) forwards; }
+@keyframes press { 0% { opacity: 0; transform: scale(1.9) rotate(-18deg); } 60% { opacity: 1; transform: scale(0.98) rotate(-12deg); } 100% { opacity: 1; transform: scale(1) rotate(-12deg); } }
+.slip { margin-top: 22px; font-size: 1rem; color: #f2e6cf; }
+/* 고유번호는 명조로 차분하게, COPY는 상자 없이 자간을 띄운 작은 글자와 가는 밑줄로 */
+.code { margin-top: 14px; display: flex; align-items: baseline; gap: 14px; }
+.code-lab { font-family: var(--serif); font-size: 0.8rem; letter-spacing: 0.08em; color: #eadbbd; }
+.code-no { font-family: var(--serif); font-weight: 700; font-size: 1.5rem; letter-spacing: 0.28em; color: #f6ecd9; }
+.code button { border: 0; background: none; padding: 4px 0 2px; font-family: var(--serif); font-size: 0.72rem; letter-spacing: 0.3em; color: #e3cc9f; border-bottom: 1px solid rgb(227 204 159 / 0.6); cursor: pointer; }
+.code button:hover, .code button:focus-visible { color: #f6ecd9; border-color: #f6ecd9; outline: none; }
+.slip-dim { margin-top: 10px; font-size: 0.85rem; color: #eadbbd; }
+.tk-wrap .cta { margin-top: 24px; width: 100%; max-width: 270px; min-height: 52px; background: #f2e6cf; color: #2b1d12; font-size: 1.05rem; }
+/* 번호 찾기: 티켓 위에 직접 번호를 적는다 */
+.tk-field { margin: auto 0; display: flex; flex-direction: column; gap: 1.6cqw; }
+.tk-lab { font-family: var(--type); font-size: 4.2cqw; letter-spacing: 0.06em; }
+.tk-show { font-family: var(--type); font-size: 10cqw; letter-spacing: 0.24em; color: #2e1c12; }
+/* 티켓 아래 여섯 칸 줄. 적는 숫자가 그대로 위 티켓에 타자기 글씨로 찍힌다 */
+.slots { position: relative; margin-top: 12px; display: flex; gap: 10px; justify-content: center; cursor: text; }
+.slots input { position: absolute; inset: 0; width: 100%; opacity: 0; border: 0; font-size: 16px; }
+.slots span { width: 30px; height: 42px; display: grid; place-items: end center; padding-bottom: 4px; border-bottom: 1.5px solid rgb(227 204 159 / 0.7); font-family: var(--serif); font-weight: 700; font-size: 1.5rem; color: #f6ecd9; }
+.slots span.cur { border-bottom-color: #f6ecd9; }
+/* 번호가 맞으면 그 티켓의 작품이 같은 화면 위에 펼쳐진다 */
+.reveal { position: absolute; inset: 0; z-index: 5; overflow-y: auto; background: var(--wood); animation: rise 2.4s var(--ease) both; }
+.reveal[hidden] { display: none; }
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.reveal .paper { margin-top: 56px; }
+.reveal .close { position: absolute; top: 18px; left: 18px; z-index: 6; background: none; border: 0; color: #f3dca6; font-family: var(--serif); font-size: 0.9rem; cursor: pointer; padding: 6px 0; }
+.reveal img.w-img { display: block; width: 100%; box-shadow: 0 10px 22px rgb(0 0 0 / 0.25); }
+.reveal .meta { margin-top: 12px; font-size: 0.85rem; color: var(--a-soft); }
+.reveal .e { margin-top: 4px; font-size: 1.4rem; font-weight: 800; }
+.reveal .qq { margin-top: 2px; font-family: var(--pen); font-size: 1.35rem; line-height: 1.35; }
+.reveal .acts { margin-top: 18px; display: grid; gap: 8px; }
+.reveal .acts .btn { width: 100%; }
+/* 다락방 로더: 엎어 둔 다이어리의 한 장이 지붕 마루를 넘어가고, 창의 불빛이 숨 쉬듯 밝아진다 */
+.attic-loader .lp { transform-box: view-box; transform-origin: 32px 30px; animation: lp 2.4s cubic-bezier(0.45, 0.05, 0.3, 1) infinite; }
+.attic-loader .win { animation: glow 2.4s ease-in-out infinite; }
+@keyframes lp { 0%, 12% { transform: scaleX(1); } 50% { transform: scaleX(0.05); } 88%, 100% { transform: scaleX(-1); } }
+@keyframes glow { 0%, 100% { fill: #e9c27a; } 50% { fill: #f8e1a8; } }
+@media (prefers-reduced-motion: reduce) { .attic-loader .lp, .attic-loader .win { animation: none; } }
+.ex { margin-top: 8px; font-size: 0.8rem; color: #e9d6b0; font-weight: 600; }
+.back { position: absolute; top: 22px; left: 18px; color: #f3dca6; font-size: 0.9rem; background: none; border: 0; font-family: var(--serif); cursor: pointer; }
+.found { margin-top: 18px; min-height: 1.6em; font-size: 0.95rem; color: #f2e6cf; }
+
+/* ---------- 4. 동의서 (줄눈 제거) ---------- */
+.agree { margin-top: 20px; list-style: none; padding: 0; display: grid; gap: 18px; }
+.agree label { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; cursor: pointer; }
+.agree input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.chk { width: 28px; height: 28px; margin-top: 2px; box-shadow: inset 0 0 0 1.5px var(--a-soft); display: grid; place-items: center; }
+.chk svg { width: 22px; height: 22px; stroke: var(--a-ink); stroke-width: 3; fill: none; stroke-linecap: round; stroke-dasharray: 30; stroke-dashoffset: 30; transition: stroke-dashoffset 0.9s var(--ease); }
+.agree input:checked + .chk svg { stroke-dashoffset: 0; }
+.agree input:focus-visible + .chk { outline: 2px solid var(--a-red); outline-offset: 2px; }
+.agree b { display: block; font-size: 1rem; line-height: 1.55; }
+.agree small { display: block; margin-top: 2px; font-size: 0.85rem; line-height: 1.6; color: var(--a-soft); }
+.seal-row { margin-top: 24px; display: flex; align-items: center; gap: 16px; min-height: 96px; }
+.seal { width: 92px; height: 92px; flex: 0 0 auto; border-radius: 50%; border: 3px double rgb(147 40 52 / 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgb(147 40 52 / 0.85); font-family: var(--type); mix-blend-mode: multiply; opacity: 0; transform: scale(1.9) rotate(-16deg); }
+.seal b { font-weight: 400; font-size: 0.68rem; letter-spacing: 0.12em; }
+.seal span { font-size: 0.86rem; letter-spacing: 0.12em; }
+.seal i { font-style: normal; font-size: 0.55rem; }
+.seal.on { animation: press 1.35s cubic-bezier(0.22, 0.7, 0.2, 1) forwards; }
+
+/* ---------- 5. 오늘의 마음 (칸 + 잉크 번짐) ---------- */
+.emos { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.emo { position: relative; overflow: hidden; min-height: 52px; border: 0; background: transparent; box-shadow: inset 0 0 0 1px var(--a-soft); color: var(--a-ink); font-family: var(--serif); font-size: 1rem; cursor: pointer; isolation: isolate; }
+/* 고르면 칸 가운데서 검은 잉크가 번져 칸을 채운다. 가장자리를 흐려 번진 느낌을 낸다 */
+/* 누른 자리에 잉크 한 방울이 떨어져 종이에 스미듯 칸을 채운다.
+   가장자리는 SVG 노이즈로 일그러뜨리고, 처음엔 번진 듯 흐렸다가 점점 또렷해진다 */
+.emo .ink { position: absolute; z-index: -1; left: var(--x, 50%); top: var(--y, 50%); width: 260%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #1f140d 0 50%, rgb(31 20 13 / 0.75) 57%, rgb(31 20 13 / 0.25) 63%, transparent 68%); filter: url(#ink-bleed) blur(3px); transform: translate(-50%, -50%) scale(0); opacity: 0.6; pointer-events: none; }
+/* 잉크가 덮인 뒤에야 글자가 밝아진다. 고르기를 풀면 바로 제색으로 */
+.emo.on { color: var(--paper); transition: color 1.2s ease 0.5s; }
+.emo.on .ink { animation: ink-fill 2.8s cubic-bezier(0.25, 0.6, 0.35, 1) forwards; }
+@keyframes ink-fill {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.6; filter: url(#ink-bleed) blur(3px); }
+  12% { transform: translate(-50%, -50%) scale(0.08); opacity: 0.95; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: url(#ink-bleed) blur(0); }
+}
+.write { margin-top: 14px; display: grid; gap: 6px; }
+.write label { font-size: 0.9rem; color: var(--a-soft); }
+/* 감정의 한 줄이 칸 밖으로 넘치지 않게, 한 줄짜리 입력 대신 두 줄까지 접히는 칸으로 둔다 */
+.write textarea { display: block; width: 100%; height: 72px; border: 0; resize: none; overflow: hidden; box-shadow: inset 0 0 0 1px var(--a-soft); background: rgb(255 255 255 / 0.35); padding: 10px 14px; font-family: var(--pen); font-size: 1.3rem; line-height: 1.35; color: var(--a-ink); }
+.write textarea::placeholder { color: rgb(95 76 60 / 0.5); transition: color 0.6s; }
+
+/* ---------- 6. 감각 고르기 ---------- */
+.hint-top { font-size: 0.9rem; color: var(--a-soft); }
+.cards { margin-top: 16px; display: grid; gap: 14px; }
+.card { display: block; width: 100%; text-align: left; border: 0; padding: 12px 12px 14px; background: #faf6ee; box-shadow: inset 0 0 0 1px var(--paper-2); cursor: pointer; font-family: var(--serif); color: var(--a-ink); transition: box-shadow 0.6s var(--ease); }
+.card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.card .q { margin-top: 10px; font-family: var(--pen); font-size: 1.6rem; line-height: 1.25; }
+.card .who { margin-top: 6px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.card .who b { font-size: 1.15rem; }
+.card .who span { font-size: 0.8rem; color: var(--a-soft); }
+.card p { margin-top: 4px; font-size: 0.85rem; line-height: 1.6; color: var(--a-soft); }
+.card.on { box-shadow: inset 0 0 0 2px var(--c); }
+
+/* ---------- 7. 감각 상세 (아티스트 색) ---------- */
+.det { min-height: 100%; padding: 22px 18px 30px; background: #fbf6f1; color: var(--a-ink); }
+.det.lia { --c: var(--lia); --t: #f4e9e1; background: #fbf6f1; }
+.det.ol { --c: var(--ol); --t: #e5ede7; background: #f5f8f5; }
+.det.let { --c: var(--let); --t: #f9e5dc; background: #fdf6f2; }
+.det { transition: background 0.8s var(--ease); }
+.det-switch { margin-top: 18px; display: flex; gap: 8px; }
+.det-switch button { flex: 1; min-height: 42px; border: 0; background: var(--surface); color: var(--ink); font-family: var(--display); font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: inset 0 0 0 1px var(--line); }
+.det-switch button.on { box-shadow: inset 0 0 0 2px var(--ink); }
+.det-top { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.85rem; }
+.det-top button { background: none; border: 0; padding: 6px 0; font-family: var(--serif); font-size: 0.9rem; color: var(--c); cursor: pointer; }
+.det-top b { color: var(--c); font-size: 1rem; }
+.det img.hero { margin-top: 16px; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; }
+.det h4 { margin: 18px 0 0; font-size: 1.5rem; line-height: 1.35; }
+.det .d1 { margin-top: 8px; font-size: 0.95rem; line-height: 1.7; }
+.det .apply { margin-top: 14px; padding: 12px 14px; background: var(--t); font-size: 0.88rem; line-height: 1.6; }
+.det .sample { margin-top: 16px; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; align-items: center; }
+.det .sample img { width: 96px; box-shadow: 0 6px 14px rgb(0 0 0 / 0.2); transform: rotate(-2deg); }
+.det .sample p { font-size: 0.88rem; color: var(--a-soft); line-height: 1.6; }
+.det .go { margin-top: 22px; width: 100%; background: var(--c); color: #fff; }
+
+/* ---------- 8. 질문에 답하기 ---------- */
+.paper.lia { --c: var(--lia); background: #f4e9dd; }
+.ctx { display: flex; flex-wrap: wrap; gap: 6px; }
+.ctx span { padding: 2px 10px; background: rgb(138 63 42 / 0.1); color: var(--c); font-size: 0.85rem; }
+.asks { margin-top: 14px; font-family: var(--pen); font-size: 1.35rem; color: var(--c); }
+.qh { font-size: 1.6rem; font-weight: 800; line-height: 1.35; }
+/* 답 칸의 줄을 글줄 높이(36px)에 맞춰 글자가 줄 위에 앉게 한다 */
+.ans { margin-top: 12px; width: 100%; border: 0; resize: none; background: repeating-linear-gradient(transparent 0 35px, rgb(95 76 60 / 0.25) 35px 36px); line-height: 36px; font-family: var(--pen); font-size: 1.45rem; color: var(--a-ink); padding: 0 2px; height: 108px; }
+.polas { margin-top: 14px; display: flex; gap: 10px; align-items: flex-start; }
+.pola { width: 84px; padding: 5px 5px 16px; background: #fff; box-shadow: 0 4px 10px rgb(0 0 0 / 0.18); }
+.pola:nth-child(1) { transform: rotate(-3deg); }
+.pola:nth-child(2) { transform: rotate(2deg); }
+.pola img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.pola.add { display: grid; place-items: center; height: 104px; background: transparent; box-shadow: inset 0 0 0 1px var(--a-soft); font-size: 0.8rem; color: var(--a-soft); padding: 0; border: 0; font-family: var(--serif); }
+.read { margin-top: 16px; padding: 14px; background: rgb(255 255 255 / 0.45); }
+.read[hidden] { display: none; }
+.read { animation: rise 2.4s var(--ease) both; }
+.read h5 { margin: 0; font-size: 0.95rem; }
+.read-wait { margin-top: 8px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--a-soft); }
+.read-wait .attic-loader { width: 44px; height: 44px; flex: 0 0 auto; }
+.read.ready .read-wait { display: none; }
+.read:not(.ready) .read-tags, .read:not(.ready) .story { display: none; }
+.read-tags { margin-top: 10px; font-size: 0.8rem; color: var(--a-soft); }
+/* 읽어 내기 두 갈래. 일기장 색인 탭처럼 위쪽만 둥글게, 고른 쪽이 종이에 붙는다 */
+.lens { margin-top: 10px; display: flex; gap: 4px; border-bottom: 1px solid var(--a-soft); }
+.lens button { white-space: nowrap; border: 0; padding: 6px 10px 5px; border-radius: 6px 6px 0 0; background: rgb(0 0 0 / 0.05); color: var(--a-soft); font-family: var(--serif); font-size: 0.85rem; cursor: pointer; transition: background 0.6s var(--ease), color 0.6s var(--ease); }
+.lens button.on { background: var(--c); color: #fff; }
+/* 1번: 고른 마음을 짚고 그 마음에 맞춘 질문을 손글씨로 */
+.step-h em { font-style: normal; font-family: var(--pen); font-weight: 400; font-size: 1.35rem; line-height: 1; color: var(--c); }
+/* 앞에서 고른 마음은 굵기만 살짝 달리해 조용히 짚는다. 다른 글보다 튀지 않게 */
+.step-h em.emo-chip { font-family: var(--serif); font-size: 0.9rem; font-weight: 700; color: var(--a-ink); }
+.step-ask { margin-top: 4px; font-family: var(--pen); font-size: 1.3rem; line-height: 1.35; color: var(--a-ink); word-break: keep-all; }
+.today { margin-top: 14px; display: flex; align-items: baseline; gap: 10px; padding: 8px 12px; background: rgb(255 255 255 / 0.5); border-left: 2px solid var(--c); }
+.today span { font-size: 0.8rem; color: var(--a-soft); }
+.today b { font-family: var(--pen); font-weight: 400; font-size: 1.6rem; line-height: 1; color: var(--c); }
+/* 탭 아래 한 줄 풀이, 그 아래 다락방이 적은 이야기. 이야기는 손글씨로, 다이어리 본문처럼 */
+.lens-line { margin-top: 8px; font-size: 0.9rem; line-height: 1.6; color: var(--a-ink); word-break: keep-all; animation: rise 2.4s var(--ease) both; }
+.story { margin-top: 6px; padding: 4px 0 4px 12px; border-left: 2px solid var(--c); font-family: var(--pen); font-size: 1.35rem; line-height: 1.45; color: var(--a-ink); word-break: keep-all; animation: rise 2.4s var(--ease) both; }
+/* 다락방에게 이야기를 청하는 버튼. 누를 때만 LLM을 부르고, 받은 글은 아래 칸에 들어가 고쳐 쓸 수 있다 */
+.readbtn { margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px 8px 10px; border: 1px solid var(--c); background: rgb(255 255 255 / 0.5); color: var(--c); font-family: var(--serif); font-size: 0.9rem; cursor: pointer; transition: background 0.6s var(--ease); }
+.readbtn:hover { background: rgb(255 255 255 / 0.85); }
+.readbtn[hidden], .read-wait[hidden], .note-tag[hidden] { display: none; }
+/* 완료 꼬리표: 크라프트지 짐표처럼. 펀치 구멍, 바늘땀 테두리, 타자기 글자, 살짝 기울어 붙어 있다.
+   모든 움직임은 아주 느리고 차분하게. 다 읽으면 꼬리표가 조용히 옅어질 뿐 도장 같은 효과는 없다 */
+.note-tag { position: relative; display: flex; align-items: center; gap: 10px; margin: 16px auto 0; padding: 10px 18px 10px 30px; width: fit-content; border: 0; background: #d9c29b repeating-linear-gradient(115deg, rgb(255 255 255 / 0.06) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 4px #d9c29b, inset 0 0 0 5px rgb(70 45 20 / 0.45), 0 3px 6px rgb(60 35 15 / 0.22); border-radius: 3px 8px 8px 3px; transform: rotate(-1.5deg); color: #3a2618; cursor: pointer; max-height: 90px; overflow: hidden; transition: transform 2.8s var(--ease), filter 2.8s var(--ease), opacity 2.8s var(--ease), max-height 2.8s var(--ease), margin 2.8s var(--ease), padding 2.8s var(--ease); }
+.note-tag::before { content: ""; position: absolute; left: 13px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--paper); box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.35); }
+.note-tag:hover { transform: rotate(-0.8deg); filter: brightness(1.03); }
+.note-tag b { font-family: var(--pen); font-weight: 400; font-size: 1.3rem; line-height: 1; }
+.note-tag i { font-style: normal; font-family: var(--type); font-size: 0.62rem; letter-spacing: 0.22em; opacity: 0.75; }
+.note-tag:disabled { cursor: default; }
+/* 다 읽으면 꼬리표는 천천히 접혀 사라지고, 아래 오늘의 이야기 칸이 그 자리로 올라온다 */
+.note-tag.is-gone { opacity: 0; max-height: 0; margin-top: 0; padding-top: 0; padding-bottom: 0; pointer-events: none; }
+/* 다락방이 적어 준 글은 칸 안에서 천천히 배어 나온다 */
+.ans.is-fill { animation: rise 3s var(--ease) both; }
+.note-tag:disabled:hover { transform: rotate(-1.5deg); filter: none; }
+.step-sub { margin-top: 4px; font-size: 0.8rem; color: var(--a-soft); line-height: 1.6; }
+.ans { height: 144px; }
+/* 해시태그는 맨 아래, 버튼 바로 위. 문장을 쓰는 대로 바뀐다 */
+.tags-end { margin-top: 14px; }
+.tags-end p { font-size: 0.8rem; color: var(--a-soft); }
+/* 사진 → 다락방이 읽어 낸 말 → 나의 문장, 순서를 번호로 보여 준다 */
+.step-h { margin-top: 18px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; color: var(--a-ink); }
+.step-h b { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--c); color: #fff; font-size: 0.75rem; }
+/* 예시 문장은 매번 무작위로 두 줄. 누르면 답 칸으로 옮겨져 고쳐 쓸 수 있다 */
+.examples { margin-top: 6px; display: grid; gap: 6px; }
+.ex { text-align: left; border: 0; border-left: 2px solid var(--c); padding: 4px 10px; background: transparent; font-family: var(--pen); font-size: 1.3rem; line-height: 1.35; color: var(--a-ink); cursor: pointer; animation: rise 2.4s var(--ease) both; }
+.ex:hover, .ex:focus-visible { background: rgb(255 255 255 / 0.5); outline: none; }
+.reroll { margin-top: 10px; border: 0; background: none; padding: 0; font-family: var(--serif); font-size: 0.8rem; color: var(--a-soft); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.read p.s { margin-top: 6px; font-family: var(--pen); font-size: 1.3rem; line-height: 1.35; }
+.labels { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+/* 고르기 전 태그도 또렷하게: 밝은 종이 바탕에 짙은 글씨, 시선 색 테두리 */
+.lab { border: 0; padding: 4px 10px; background: #fffaf2; box-shadow: inset 0 0 0 1px rgb(60 40 25 / 0.35); color: #2b1d12; font-family: var(--serif); font-size: 0.88rem; font-weight: 600; cursor: pointer; clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
+.lab.on { background: var(--c); box-shadow: none; color: #fff; }
+.read .use { margin-top: 10px; }
+
+/* ---------- 9. 결과 ---------- */
+.res-img { margin-top: 16px; width: 100%; box-shadow: 0 10px 22px rgb(0 0 0 / 0.25); }
+.stub-row { margin-top: 16px; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; align-items: center; }
+.stub { container-type: inline-size; position: relative; aspect-ratio: 962 / 549; transform: rotate(-2deg); filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.3)); }
+.stub img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.stub span { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--type); font-size: 13cqw; letter-spacing: 0.12em; color: #2e1c12; }
+.stub-row p { font-size: 0.85rem; line-height: 1.6; color: var(--a-soft); }
+/* 마음 → 시선 → 사진 → 문장이 이어져 작품이 된 과정. 왼쪽 실선이 한 줄로 꿰어 준다 */
+/* 결과 화면의 주인공: 다락방이 보내는 편지 한 장. 엮인 과정(마음·시선·사진·이야기·관계)과 라벨을 한 번씩만 담는다 */
+.letter { position: relative; margin-top: 20px; padding: 22px 20px 18px; background: #fffaf2 repeating-linear-gradient(transparent 0 31px, rgb(120 90 60 / 0.08) 31px 32px); box-shadow: 0 6px 16px rgb(60 35 15 / 0.12), inset 0 0 0 1px rgb(110 80 50 / 0.18); }
+.letter::before { content: ""; position: absolute; top: -9px; left: 50%; width: 64px; height: 18px; margin-left: -32px; background: rgba(240,215,150,0.7); transform: rotate(-2deg); }
+.letter .to { font-family: var(--pen); font-size: 1.35rem; color: var(--a-red); }
+.letter h5 { margin: 6px 0 0; font-size: 1.35rem; font-weight: 800; line-height: 1.35; color: var(--a-ink); word-break: keep-all; }
+.lt-open, .lt-body { margin-top: 12px; font-size: 0.92rem; line-height: 1.85; color: var(--a-ink); word-break: keep-all; }
+.lt-open b { font-weight: 700; }
+.lt-quote { margin: 14px 0 0; padding: 4px 0 4px 12px; border-left: 2px solid var(--a-soft); font-family: var(--pen); font-size: 1.3rem; line-height: 1.45; color: var(--a-ink); word-break: keep-all; }
+.lt-foot { margin-top: 16px; padding-top: 12px; border-top: 1px dashed rgb(110 80 50 / 0.35); }
+.lt-foot .labels { margin-top: 0; }
+.lt-sign { margin-top: 10px; text-align: right; font-family: var(--type); font-size: 0.66rem; letter-spacing: 0.06em; color: var(--a-soft); line-height: 1.6; }
+.lt-sign .pen-s { font-family: var(--pen); font-size: 1.15rem; letter-spacing: 0; color: var(--a-ink); }
+.chain-tags .lab, .chain-tags .lab.on { background: #2b1d12; box-shadow: none; color: #fbf6ec; cursor: default; }
+/* 큐레이터 노트를 미술관 작품 라벨 형식으로 */
+.label-card { margin-top: 18px; padding: 16px; background: #fffaf2; box-shadow: inset 0 0 0 1px var(--paper-2); }
+/* 창작자가 직접 이름을 적으면 라벨 전체가 그 이름으로 바뀐다. 티켓 번호는 반쪽 티켓에만 남긴다 */
+/* 옛 다이어리 앞장의 장서표처럼, 이 한 장의 주인을 손글씨로 적는다 */
+.plate { position: relative; margin: 20px 6px 4px; padding: 16px 18px 12px; text-align: center; background: #f6ecd6; box-shadow: inset 0 0 0 1px rgb(90 60 35 / 0.55), inset 0 0 0 5px #f6ecd6, inset 0 0 0 6px rgb(90 60 35 / 0.35), 0 6px 14px rgb(60 35 15 / 0.18); transform: rotate(-1deg); }
+.plate::before, .plate::after { content: ""; position: absolute; top: -9px; width: 54px; height: 20px; background: hsl(45 60% 75% / 0.8); }
+.plate::before { left: 14px; transform: rotate(-6deg); }
+.plate::after { right: 14px; transform: rotate(5deg); }
+.plate-top { font-family: var(--type); font-size: 0.72rem; letter-spacing: 0.24em; color: #5a3c24; }
+.plate-lab { display: block; margin-top: 2px; font-size: 0.78rem; color: var(--a-soft); }
+.plate input { width: 86%; margin: 4px auto 0; display: block; min-height: 50px; border: 0; background: repeating-linear-gradient(90deg, rgb(90 60 35 / 0.6) 0 3px, transparent 3px 7px) left bottom / 100% 1.5px no-repeat; text-align: center; font-family: var(--pen); font-size: 2rem; color: #2b1d12; outline: none; }
+.plate input:focus-visible { background-color: rgb(255 255 255 / 0.35); }
+.plate input::placeholder { font-size: 1.2rem; color: rgb(90 60 35 / 0.4); }
+.plate-foot { margin-top: 6px; font-family: var(--type); font-size: 0.7rem; letter-spacing: 0.12em; color: #6a4a30; }
+.plate-hint { margin-top: 8px; font-size: 0.72rem; color: var(--a-soft); }
+.label-card .autograph { margin-top: -2px; font-family: var(--pen); font-size: 2rem; line-height: 1; color: var(--a-ink); transform: rotate(-4deg); transform-origin: left; }
+.label-card .to { font-family: var(--pen); font-size: 1.35rem; color: var(--a-red); margin-bottom: 4px; }
+.label-card .from { margin-top: 8px; text-align: right; font-family: var(--pen); font-size: 1.15rem; color: var(--a-soft); }
+.label-card h5 { margin: 0; font-size: 1.15rem; }
+.label-card dl { margin: 8px 0 0; display: grid; grid-template-columns: 3.4em minmax(0, 1fr); gap: 3px 10px; font-size: 0.85rem; }
+.label-card dt { color: var(--a-soft); }
+.label-card dd { margin: 0; }
+.label-card p { margin-top: 10px; font-size: 0.92rem; line-height: 1.75; }
+.res-actions { margin-top: 20px; display: grid; gap: 8px; }
+.res-actions .btn { width: 100%; }
+.res-actions .row { display: flex; justify-content: center; gap: 16px; }
+.res-actions .row .textlink { white-space: nowrap; font-size: 0.9rem; }
+.toast { min-height: 1.4em; margin-top: 4px; text-align: center; font-size: 0.85rem; color: var(--a-soft); }
+
+/* ---------- 10. 서가 ---------- */
+/* 브랜드는 위에 작게, 제목은 그 아래 크게 */
+.shelf-brand { font-family: var(--serif); font-size: 0.85rem; letter-spacing: 0.36em; color: var(--a-soft); }
+.mine { margin-top: 16px; display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 14px; align-items: end; padding: 12px; background: #fffaf2; }
+.mine img { width: 130px; box-shadow: 0 8px 16px rgb(0 0 0 / 0.25); transform: rotate(-2deg); }
+.mine .k { font-family: var(--pen); font-size: 1.2rem; color: var(--a-red); }
+/* 작품 안에 감정이 이미 크게 적혀 있어, 옆에는 서명과 번호만 둔다 */
+.mine .sig { font-family: var(--pen); font-size: 2rem; line-height: 1.1; color: var(--a-ink); }
+.mine .no { font-family: var(--type); font-size: 0.78rem; letter-spacing: 0.14em; color: var(--a-soft); }
+.mine .qq { margin-top: 4px; font-family: var(--pen); font-size: 1.15rem; line-height: 1.3; }
+.sec { margin-top: 22px; font-size: 1.05rem; font-weight: 700; }
+.same { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.filters { margin-top: 10px; display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.filters button { flex: 0 0 auto; min-height: 38px; padding: 0 12px; border: 0; background: transparent; box-shadow: inset 0 0 0 1px var(--a-soft); font-family: var(--serif); font-size: 0.9rem; color: var(--a-ink); cursor: pointer; }
+.filters button { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 1rem; }
+.filters button[data-k]:not([data-k="all"]) { color: var(--k); box-shadow: inset 0 0 0 1px var(--k); font-weight: 700; }
+.filters button.on { background: var(--a-ink); color: var(--paper); }
+.filters button.on[data-k]:not([data-k="all"]) { background: var(--k); color: #fff; }
+.w[hidden] { display: none; }
+/* LIA·OL 작품은 아래 종이 띠가 카드 바탕과 같은 색이라 작아 보였다. 모든 작품에 같은 테두리를 둘러 크기가 똑같이 읽히게 한다 */
+.w img, .mine img { box-shadow: 0 0 0 1px rgb(70 45 25 / 0.32), 0 4px 10px rgb(0 0 0 / 0.16); }
+/* 서가 끝의 초대장: 봉랍을 찍은 카드 한 장. 버튼은 글자와 가는 밑줄로만 */
+/* 초대장: 얇은 선 하나, 아이콘과 한 줄, 글자 버튼만. 장식은 덜어 냈다 */
+.inv-card { margin: 28px 0 8px; padding: 16px; display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; border-top: 1px solid rgb(110 80 50 / 0.3); border-bottom: 1px solid rgb(110 80 50 / 0.3); }
+.inv-mark { width: 36px; height: 36px; }
+.inv-kick { font-family: var(--type); font-size: 0.62rem; letter-spacing: 0.3em; color: #7a5a3e; }
+.inv-line { margin-top: 2px; font-size: 0.9rem; line-height: 1.5; color: var(--a-ink); word-break: keep-all; }
+.inv-btn { border: 0; background: none; padding: 4px 0 2px; font-family: var(--serif); font-size: 0.85rem; color: var(--a-ink); border-bottom: 1px solid var(--a-ink); cursor: pointer; white-space: nowrap; }
+.inv-btn::after { content: " →"; }
+.inv-btn:hover, .inv-btn:focus-visible { color: #7d2229; border-color: #7d2229; outline: none; }
+.inv-card .more-toast { grid-column: 1 / -1; }
+.seal-wax { position: absolute; top: -18px; left: 50%; width: 38px; height: 38px; margin-left: -19px; display: grid; place-items: center; border-radius: 47% 53% 50% 50%; background: radial-gradient(circle at 35% 30%, #b04a4f, #7d2229 70%); box-shadow: 0 2px 4px rgb(0 0 0 / 0.3), inset 0 0 0 3px rgb(0 0 0 / 0.12); }
+.seal-wax svg { width: 22px; height: 22px; }
+/* 초대장 프레임 안쪽 맨 위에 다락방 아이콘 */
+/* 1장에서 받은 것과 같은 종이 티켓을 한 장 더 접어 넣은 모양 */
+.more-toast { min-height: 1.3em; margin-top: 6px; font-size: 0.8rem; color: var(--a-soft); }
+.grid { margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.w { background: #fffaf2; padding: 6px 6px 10px; }
+/* 사진과 글 사이에 숨 쉴 여백을 둔다 */
+.w img + .qq, .w img + .e { margin-top: 12px; }
+.w img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; cursor: pointer; }
+.w .qq { cursor: pointer; }
+.w .e { margin-top: 12px; font-weight: 700; font-size: 0.95rem; }
+/* 시선 아래 줄에 서명한 별명과 고유 번호를 아주 작게 */
+.w .e .by { display: block; white-space: nowrap; margin-top: 1px; font-family: var(--type); font-weight: 400; font-size: 0.66rem; letter-spacing: 0.04em; color: var(--a-soft); }
+.w-acts { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 0 10px; }
+.w-acts .like { margin-top: 0; }
+.w .qq { margin-top: 4px; padding: 0 2px; font-family: var(--pen); font-size: 1.05rem; line-height: 1.3; color: var(--a-ink); }
+.like { margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; min-height: 32px; border: 0; background: none; padding: 0; font-family: var(--serif); font-size: 0.82rem; color: var(--a-soft); cursor: pointer; }
+.like svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.8; fill: none; }
+.like.on { color: var(--a-red); }
+.like.on svg { fill: currentColor; }
+/* 작품 카드를 누르면 아래에서 작품과 한마디 쪽지 묶음이 천천히 올라온다 */
+.note-btn { margin: 0; display: inline-flex; align-items: center; gap: 4px; min-height: 32px; border: 0; background: none; padding: 0; font-family: var(--serif); font-size: 0.82rem; color: var(--a-soft); cursor: pointer; }
+.note-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linejoin: round; }
+.sheet { position: absolute; inset: 10px; border-radius: 26px; overflow: hidden; pointer-events: none; }
+.sheet::before { content: ""; position: absolute; inset: 0; background: rgb(30 18 10 / 0.35); opacity: 0; transition: opacity 2.4s var(--ease); }
+.sheet-in { position: absolute; left: 0; right: 0; bottom: 0; max-height: 78%; overflow-y: auto; padding: 18px 16px 16px; background: #f6efe2; box-shadow: 0 -8px 24px rgb(0 0 0 / 0.2); transform: translateY(100%); transition: transform 2.4s var(--ease); }
+.sheet.on { pointer-events: auto; }
+.sheet.on::before { opacity: 1; }
+.sheet.on .sheet-in { transform: none; }
+.sheet-top { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 12px; align-items: end; }
+.sheet-top img { width: 96px; aspect-ratio: 3 / 4; object-fit: cover; box-shadow: 0 0 0 1px rgb(70 45 25 / 0.3); }
+.sheet-k { font-family: var(--type); font-size: 0.62rem; letter-spacing: 0.3em; color: #7a5a3e; }
+.sheet-q { margin-top: 2px; font-family: var(--pen); font-size: 1.15rem; line-height: 1.3; color: var(--a-ink); }
+.sheet-x { border: 0; background: none; font-family: var(--serif); font-size: 0.82rem; color: var(--a-soft); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+/* 한마디는 작은 쪽지처럼. 번갈아 살짝 기울어 붙어 있다 */
+.slips { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.slips li { padding: 8px 12px; background: #fffaf2; box-shadow: 0 1px 3px rgb(60 35 15 / 0.15); font-family: var(--pen); font-size: 1.15rem; line-height: 1.3; color: var(--a-ink); transform: rotate(-0.6deg); animation: rise 2.4s var(--ease) both; }
+.slips li:nth-child(even) { transform: rotate(0.5deg); }
+.slips li small { display: block; margin-top: 2px; font-family: var(--serif); font-size: 0.7rem; color: var(--a-soft); }
+.slips .empty { background: none; box-shadow: none; font-family: var(--serif); font-size: 0.85rem; color: var(--a-soft); transform: none; }
+.slip-form { margin-top: 14px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; border-bottom: 1px solid rgb(60 40 25 / 0.4); }
+.slip-form input { border: 0; background: transparent; padding: 8px 2px; font-family: var(--pen); font-size: 1.2rem; color: var(--a-ink); outline: none; }
+.slip-form button { border: 0; background: none; font-family: var(--serif); font-size: 0.85rem; color: var(--a-ink); cursor: pointer; }
+.slip-hint { margin-top: 8px; font-size: 0.72rem; color: var(--a-soft); }
+
+.open { margin-top: 96px; }
+.icon-sheet { text-align: center; }
+.icon-big img { width: 200px; margin: 18px auto 0; display: block; filter: drop-shadow(0 8px 16px rgb(40 25 15 / 0.18)); }
+.icon-sizes { margin-top: 10px; display: flex; justify-content: center; align-items: flex-end; gap: 18px; }
+.icon-cap { margin-top: 22px; font-size: 0.85rem; color: var(--a-soft); }
+.icon-load { margin-top: 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px; background: #fbf6ec; font-family: var(--pen); font-size: 1.25rem; color: var(--a-ink); }
+.icon-load .attic-loader { width: 80px; height: 80px; }
+.icon-load.dark { background: #2a1d15; color: #efe3cc; }
+/* 어두운 바탕에서는 표지와 창틀 선을 크림색으로 바꿔 지붕이 보이게 한다 */
+.icon-load.dark .attic-loader [stroke="#2b1d12"] { stroke: #efe3cc; }
+.open ol { margin: 16px 0 0; padding-left: 1.3em; display: grid; gap: 10px; max-width: 50em; }
+.open li span { color: var(--ink-2); }
+
+@media (max-width: 860px) {
+  .item { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .phone { position: static; margin: 0 auto; height: 700px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pg { transition: none; }
+  .stamp.on, .seal.on { animation: none; opacity: 1; transform: rotate(-12deg); }
+  .emo.on .ink { animation: none; transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  .chk svg { transition: none; }
+}
+
+/* 밝은 글씨는 사진 배경에서 묻히기 쉽다. 어둠막을 진하게, 사진 위 밝은 글씨에는 얇은 그림자를 */
+.ent { text-shadow: 0 1px 2px rgb(0 0 0 / 0.85), 0 0 12px rgb(0 0 0 / 0.55); }
+.ent .ticket, .ent .paper, .ent .diary, .ent .btn.solid { text-shadow: none; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>감정의 다락방 V2 시안</h1>
+    <p class="lead">V.2 문서의 수정사항과 지난 디자인 점검 내용을 합쳐 화면 10장으로 만든 예시입니다. 폰 화면은 실제로 눌러 볼 수 있습니다. 감정 칸, 동의 도장, 감각 카드, 공감 버튼이 움직입니다. 확정되면 이 시안을 기준으로 앱 코드를 한 번에 고칩니다.</p>
+    <div class="key">
+      <span><span class="tag v2">V.2</span> V.2 문서의 수정사항</span>
+      <span><span class="tag rv">점검</span> 지난 디자인 점검에서 나온 것</span>
+    </div>
+    <nav class="toc" aria-label="화면 목록">
+      <a href="#s1">1 입장</a><a href="#s2">2 티켓</a><a href="#s3">3 번호 찾기</a><a href="#s4">4 동의서</a><a href="#s5">5 오늘의 마음</a><a href="#s6">6 시선 고르기</a><a href="#s7">7 시선 상세</a><a href="#s8">8 질문에 답하기</a><a href="#s9">9 당신의 LIAOLLET</a><a href="#s10">10 취향의 서가</a><a href="#s11">11 다락방 아이콘</a>
+    </nav>
+  </header>
+
+  <!-- 1 입장 -->
+  <section class="item" id="s1">
+    <div class="phone"><div class="scr">
+      <div class="ent">
+        <div class="ent-bg" aria-hidden="true"></div>
+        <p class="brand">LIAOLLET</p>
+        <h3>감정의 다락방</h3>
+        <p class="kick">THE ATTIC OF FEELINGS</p>
+        <div class="diary">
+          <img class="d" src="a/diary.png" alt="손에 든 빈티지 다이어리">
+          <div class="leaf" id="leaf" aria-hidden="true">
+            <div class="pg"><div class="f"><img src="a/c-lia.jpg" alt=""></div><div class="b"><img src="a/c-let2.jpg" alt=""></div></div>
+            <div class="pg"><div class="f"><img src="a/c-ol.jpg" alt=""></div><div class="b"><img src="a/c-lia2.jpg" alt=""></div></div>
+            <div class="pg"><div class="f"><img src="a/c-let.jpg" alt=""></div><div class="b"><img src="a/c-ol2.jpg" alt=""></div></div>
+          </div>
+          <img class="rings" src="a/diary.png" alt="" aria-hidden="true">
+        </div>
+        <p class="invite">오늘의 마음을 한 장 적어 보세요</p>
+        <a class="btn cta" href="#s2">창작 에디션 티켓 받기</a>
+        <a class="find" href="#s3">이미 받은 번호가 있나요?</a>
+      </div>
+    </div></div>
+    <div class="notes">
+      <h2>1 입장</h2>
+      <p class="sub">다이어리가 서가의 창 역할을 합니다.</p>
+      <ul>
+        <li><span class="tag v2">V.2</span><span>다이어리 오른쪽 장에 서가의 실제 결과물이 끼워져 있고, 다이어리 고리를 축으로 종이가 한 장씩 왼쪽으로 넘어갑니다. 넘어가는 동안 종이 면에 그늘이 지고, 고리가 종이 위로 보여서 고리에 걸려 도는 것처럼 보입니다. "페이지 넘김"과 "서가 결과물 반영"을 하나로 합쳤습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>"이미 받은 번호가 있나요?"를 누르면 그 자리에서 입력칸이 열리지 않고, 티켓 모양의 찾기 화면(3)으로 넘어갑니다.</span></li>
+        <li><span class="tag rv">점검</span><span>손 사진 아래를 배경 어둠에 녹였습니다. 수평으로 잘린 손목이 보이지 않습니다.</span></li>
+        <li><span class="tag rv">점검</span><span>메인 버튼을 티켓 화면과 같은 크림색으로 채웠습니다.</span></li>
+      </ul>
+      <p class="try">"THE ATTIC OF FEELINGS" 줄은 V.2 시안에 그대로 있어서 남겨 두었습니다. 뺄지는 아래 "정할 것"에 적었습니다.</p>
+    </div>
+  </section>
+
+  <!-- 2 티켓 -->
+  <section class="item" id="s2">
+    <div class="phone"><div class="scr">
+      <div class="tk-wrap">
+        <div class="ent-bg" aria-hidden="true"></div>
+        <p class="brand">LIAOLLET</p>
+        <div class="ticket">
+          <img src="a/ticket.png" alt="">
+          <div class="tk-ink">
+            <div class="tk-body">
+              <p class="tk-admit">ADMIT ONE</p>
+              <p class="tk-head">TICKET TO<br>YOUR FEELING</p>
+              <p class="tk-iss">LIAOLLET CREATIVE EDITION</p>
+            </div>
+            <div class="tk-cell"><span class="tk-no">102101</span></div>
+          </div>
+          <span class="stamp" id="stamp" aria-hidden="true"><b>LIAOLLET</b><span>ADMITTED</span><i>2026.10.21</i></span>
+        </div>
+        <p class="slip">2026.10.21 · 오늘 1번째 창작자</p>
+        <div class="code"><span class="code-lab">고유번호</span><span class="code-no">102101</span><button type="button" data-copy="102101">COPY</button></div>
+        <p class="slip-dim" id="copied">이 번호로 언제든 작품을 다시 펼칠 수 있어요.</p>
+        <button class="btn cta" type="button" id="enter">다락방으로 들어가기</button>
+      </div>
+    </div></div>
+    <div class="notes">
+      <h2>2 티켓 발급</h2>
+      <p class="sub">관객을 손님이 아닌 창작자로 부릅니다.</p>
+      <ul>
+        <li><span class="tag v2">V.2</span><span>"오늘 1번째 손님"을 "오늘 1번째 창작자"로 바꿨습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>고유번호를 따로 한 줄로 보여 주고 복사 버튼을 붙였습니다. 눌러 보면 실제로 복사됩니다.</span></li>
+        <li><span class="tag rv">점검</span><span>도장을 오른쪽 위 빈 종이 자리로 옮겨 제목과 하단 문구를 덮지 않게 했습니다. "다락방으로 들어가기"를 눌러 보세요.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 번호 찾기 -->
+  <section class="item" id="s3">
+    <div class="phone"><div class="scr">
+      <div class="tk-wrap">
+        <div class="ent-bg" aria-hidden="true"></div>
+        <a class="back" href="#s1">← 처음으로</a>
+        <p class="brand">LIAOLLET</p>
+        <div class="ticket">
+          <img src="a/ticket.png" alt="">
+          <div class="tk-ink">
+            <div class="tk-body">
+              <p class="tk-admit">ADMIT AGAIN</p>
+              <div class="tk-field">
+                <p class="tk-lab">YOUR TICKET NO.</p>
+                <p class="tk-show" id="tk-show">______</p>
+              </div>
+              <p class="tk-iss">LIAOLLET CREATIVE EDITION</p>
+            </div>
+            <div class="tk-cell"><span class="tk-no" id="tk-side">· · · · · ·</span></div>
+          </div>
+        </div>
+        <p class="slip">받았던 티켓의 여섯 자리를 적어 주세요</p>
+        <label class="slots" for="find-no">
+          <input id="find-no" inputmode="numeric" maxlength="6" autocomplete="off" aria-label="티켓 번호 여섯 자리">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </label>
+        <p class="found" id="found" aria-live="polite"></p>
+        <button class="btn cta" type="button" id="find-go">내 작품 펼치기</button>
+      </div>
+      <div class="reveal" id="reveal" hidden>
+        <button type="button" class="close" id="reveal-close">← 다른 번호 찾기</button>
+        <div class="paper">
+          <img class="w-img" id="rv-img" src="a/c-lia.jpg" alt="">
+          <p class="meta" id="rv-meta"></p>
+          <p class="e" id="rv-emo"></p>
+          <p class="qq" id="rv-q"></p>
+          <div class="acts">
+            <a class="btn" href="#s10">취향의 서가에서 보기</a>
+            <button type="button" class="btn ghost" id="rv-share">공유 링크 복사</button>
+          </div>
+          <p class="toast" id="rv-toast" aria-live="polite"></p>
+        </div>
+      </div>
+    </div></div>
+    <div class="notes">
+      <h2>3 번호로 다시 찾기</h2>
+      <p class="sub">처음 받은 티켓과 같은 종이 위에 번호를 적습니다.</p>
+      <ul>
+        <li><span class="tag v2">V.2</span><span>번호 찾기를 별도 티켓 화면으로 옮겼습니다. 1장에서 받았던 티켓과 같은 모양이라 무엇을 넣어야 하는지 바로 보입니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>번호가 맞으면 그 티켓의 작품(콜라주, 감정, 글귀, 날짜, 감각)이 바로 펼쳐집니다. 거기서 서가로 가거나 공유 링크를 복사할 수 있습니다.</span></li>
+        <li><span class="tag rv">점검</span><span>예시 번호가 입력값처럼 보이던 문제를 고쳤습니다. 빈 칸은 흐린 0으로만 표시합니다.</span></li>
+      </ul>
+      <p class="try">티켓 아래 여섯 칸 줄에 번호를 적으면 위 티켓에 타자기 글씨로 찍힙니다. 시안에서는 102101, 100301, 100502가 열립니다.</p>
+    </div>
+  </section>
+
+  <!-- 4 동의서 -->
+  <section class="item" id="s4">
+    <div class="phone"><div class="scr">
+      <div class="paper">
+        <span class="pno">p.02 / 07</span>
+        <p class="ttl">입장 동의서</p>
+        <p class="pensub">다락방에 들어서기 전, 작은 약속</p>
+        <ul class="agree">
+          <li><label><input type="checkbox" class="ag"><span class="chk"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 6"/></svg></span><span><b>업로드한 사진과 문장은 작품 생성에만 사용됩니다.</b></span></label></li>
+          <li><label><input type="checkbox" class="ag"><span class="chk"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 6"/></svg></span><span><b>사진 속 인물이 작품에 반영될 수 있습니다.</b><small>타인의 동의 없는 사진은 올리지 말아 주세요.</small></span></label></li>
+          <li><label><input type="checkbox" class="ag"><span class="chk"><svg viewBox="0 0 24 24"><path d="M4 13l5 5L20 6"/></svg></span><span><b>완성된 작품이 익명으로 '취향의 서가'에 전시되고 SNS에 활용되는 것에 동의합니다.</b></span></label></li>
+        </ul>
+        <div class="seal-row">
+          <button class="btn ghost" type="button" id="all" style="white-space:nowrap">모두 동의</button>
+          <span class="seal" id="seal" aria-hidden="true"><b>LIAOLLET</b><span>AGREED</span><i>2026.10.21</i></span>
+        </div>
+        <div class="actions">
+          <a class="btn ghost" href="#s2">← 이전</a>
+          <button class="btn" type="button" id="ag-next" disabled>다음 장 →</button>
+        </div>
+      </div>
+    </div></div>
+    <div class="notes">
+      <h2>4 입장 동의서</h2>
+      <p class="sub">줄을 걷어 내고, 동의는 도장으로 마무리합니다.</p>
+      <ul>
+        <li><span class="tag v2">V.2</span><span>종이의 줄눈을 없앴습니다. 글자와 줄이 겹치지 않습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>세 문장을 V.2 문서의 문구로 바꿨습니다. 둘째 항목은 굵은 한 줄과 작은 안내로 나눴습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>"확인 날인"을 1장 도장처럼 영문 원형 도장(LIAOLLET / AGREED / 날짜)으로 바꿨습니다.</span></li>
+        <li><span class="tag rv">점검</span><span>"[필수]" 반복과 점선 구분선을 지웠습니다. 체크는 펜으로 긋는 표시로 바꿨습니다.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5 오늘의 마음 -->
+  <section class="item" id="s5">
+    <div class="phone"><div class="scr">
+      <div class="paper">
+        <span class="pno">p.03 / 07</span>
+        <p class="ttl">오늘의 마음</p>
+        <p class="pensub">지금, 어떤 마음인가요?</p>
+        <p class="body">하나만 골라 주세요. 딱 맞는 말이 없다면 아래에 직접 적어도 됩니다.</p>
+        <div class="emos" role="radiogroup" aria-label="오늘의 마음" id="emos"></div>
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="ink-bleed" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="26" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+        <div class="write">
+          <label for="mine">직접 쓰기</label>
+          <textarea id="mine" rows="2" maxlength="40" placeholder="오늘의 마음을 내 말로 적어도 좋아요"></textarea>
+        </div>
+        <div class="actions">
+          <a class="btn ghost" href="#s4">← 이전</a>
+          <a class="btn" href="#s6">다음 장 →</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="notes">
+      <h2>5 오늘의 마음</h2>
+      <p class="sub">칸으로 돌아가고, 고를 때 잉크가 번집니다.</p>
+      <ul>
+        <li><span class="tag v2">V.2</span><span>감정을 다시 칸으로 되돌렸습니다. 지난번 시험 적용(펜 동그라미 낱말)은 V.2 기준으로 걷어 냅니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>칸을 누르면 가운데서 검은 잉크가 천천히 번져 칸을 채웁니다. 동그라미 방식이 더 낫다면 바꿀 수 있습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>"직접 쓰기"를 칸이 아니라 아래 별도 입력칸으로 뺐습니다. 감정을 고르면 그 감정의 한 줄("닿지 않는 곳에 마음이 가 있어요")이 입력칸 안에 옅게 떠서, 그대로 두거나 고쳐 쓸 수 있습니다.</span></li>
+        <li><span class="tag rv">점검</span><span>폰에서 누른 칸이 떠 보이던 hover 문제가 없습니다.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 6 감각 고르기 -->
+  <section class="item" id="s6">
+    <div class="phone"><div class="scr">
+      <div class="paper">
+        <span class="pno">p.04 / 07</span>
+        <p class="hint-top"><span class="js-emo">그리움</span>, 그 마음에 대해 세 사람이 다르게 묻습니다</p>
+        <p class="ttl" style="margin-top:4px">누구의 시선으로 볼까요</p>
+        <div class="cards" id="cards">
+          <button type="button" class="card" style="--c: var(--lia)" data-k="lia"><img src="a/p-lia.jpg" alt="창가에서 책을 읽는 긴 머리 여성의 뒷모습"><p class="q">"무엇을 남겨두고 싶나요?"</p><div class="who"><b style="color:var(--lia)">LIA</b></div><p>말보다 침묵을 더 오래 들여다보는 시인. 덜어낸 자리에 여백을 씁니다.</p></button>
+          <button type="button" class="card" style="--c: var(--ol)" data-k="ol"><img src="a/p-ol.jpg" alt="검은 머리카락 사이로 보이는 거친 질감의 색면"><p class="q">"어디가 찢어졌나요?"</p><div class="who"><b style="color:var(--ol)">OL</b></div><p>어긋난 선과 찢어진 틈에서 남겨진 흔적을 읽는 화가. 지나간 흔적을 그려냅니다.</p></button>
+          <button type="button" class="card" style="--c: var(--let)" data-k="let"><img src="a/p-let.jpg" alt="청록 아이라인을 그린 주근깨 얼굴의 클로즈업"><p class="q">"어떤 색의 순간들이 겹쳐 있나요?"</p><div class="who"><b style="color:var(--let)">LET</b></div><p>겹쳐진 색 속에서 미처 보지 못한 장면을 꺼내는 디렉터. 순간들을 겹쳐, 새로운 장면으로 편집합니다.</p></button>
+        </div>
+        <div class="actions">
+          <a class="btn ghost" href="#s5">← 이전</a>
+          <a class="btn" href="#s7" id="to-det">이 시선으로 보기 →</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="notes">
+      <h2>6 시선 고르기</h2>
+      <p class="sub">카드마다 그 사람을 상징하는 이미지가 들어갑니다.</p>
+      <ul>
+        <li><span class="tag v2">V.2</span><span>LIA·OL·LET 카드에 V.2 시안의 인물 이미지를 넣었습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>각 인물의 소개를 한 줄로 정리했습니다. 외모 묘사 대신 무엇을 만드는 사람인지를 적었습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>아티스트 색을 V.2 시안대로 바꿨습니다. LIA 적갈색, OL 짙은 초록, LET 주황빛 빨강입니다.</span></li>
+        <li><span class="tag rv">점검</span><span>카드의 주인공을 이름이 아니라 질문으로 바꿨습니다. 질문이 가장 크게 보입니다.</span></li>
+        <li><span class="tag rv">점검</span><span>선택해도 카드가 기울지 않습니다. 그 사람의 색 테두리만 둘러집니다.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7 감각 상세 -->
+  <section class="item" id="s7">
+    <div class="phone"><div class="scr">
+      <div class="det lia" id="det">
+        <div class="det-top"><a href="#s6" style="color:var(--c);text-decoration:none">← 다른 시선 보기</a><b id="det-name">LIA의 시선</b></div>
+        <img class="hero" id="det-img" src="a/p-lia.jpg" alt="창가에서 책을 읽는 긴 머리 여성의 뒷모습">
+        <h4 id="det-title">남겨진 문장들 사이의 고요함</h4>
+        <p class="d1" id="det-d1">윤곽과 실루엣만 남기고, 진실한 단어만 남기는 시선입니다.</p>
+        <p class="apply" id="det-apply">작품에는 세피아 톤, 여백, 윤곽과 실루엣 중심의 배치가 적용됩니다.</p>
+        <a class="btn go" href="#s8">이 시선으로 계속하기</a>
+      </div>
+    </div></div>
+    <div class="notes">
+      <h2>7 시선 상세</h2>
+      <p class="sub">고른 사람의 색으로 화면 전체가 바뀝니다. 6장에서 카드를 누르거나 아래에서 골라 보세요.</p>
+      <div class="det-switch" id="det-switch"><button type="button" class="on" data-k="lia">LIA</button><button type="button" data-k="ol">OL</button><button type="button" data-k="let">LET</button></div>
+      <ul>
+        <li><span class="tag v2">V.2</span><span>V.2 시안의 상세 화면을 LIA·OL·LET 세 사람 모두 폰 크기로 옮겼습니다. LIA는 따뜻한 적갈색 "남겨진 문장들 사이의 고요함", OL은 짙은 초록 "찢어진 틈새로 스며드는 빛", LET은 주황빛 빨강 "겹겹이 쌓인 경험의 오버레이"입니다.</span></li>
+                <li><span class="tag rv">점검</span><span>아티스트별 색과 질감이 콜라주뿐 아니라 화면에도 이어집니다. 말투는 바꾸지 않습니다(디자인 결정 8번).</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8 질문에 답하기 -->
+  <section class="item" id="s8">
+    <div class="phone"><div class="scr">
+      <div class="paper lia">
+        <span class="pno">p.05 / 07</span>
+        <div class="ctx"><span>LIA의 시선</span></div>
+        <p class="asks">리아가 묻습니다</p>
+        <p class="qh">무엇을 남겨두고 싶나요?</p>
+        <p class="step-h"><b>1</b>오늘의 마음 <em class="emo-chip js-emo">그리움</em></p>
+        <p class="step-ask" id="step-ask">그리운 것이 남아 있는 사진이 있나요?</p>
+        <div class="polas">
+          <div class="pola"><img src="a/p-lia.jpg" alt=""></div>
+          <div class="pola"><img src="a/c-lia2.jpg" alt=""></div>
+          <button type="button" class="pola add" id="add-photo">사진 더하기</button>
+        </div>
+        <button type="button" class="note-tag" id="readbtn"><span><i>ATTIC NOTE</i><br><b>다 올렸어요, 이야기를 적어 주세요</b></span></button>
+        <div class="read-wait" id="read-wait" hidden><img class="attic-loader" src="a/liaollet-icon-anim.svg" alt=""><span>다락방이 마음과 사진을 읽고 있어요</span></div>
+        <p class="step-h"><b>2</b>오늘의 이야기</p>
+        <label class="sr" for="ans" style="position:absolute;left:-9999px">오늘의 이야기</label>
+        <textarea class="ans" id="ans" rows="4" placeholder="직접 적어도, 다락방이 읽어 낸 이야기로 시작해도 좋아요"></textarea>
+        <p class="step-sub" id="ans-sub">사진을 다 올렸다면 꼬리표를 눌러 보세요. 오늘의 첫 줄은 다락방이 열어 둘게요.</p>
+        <div class="tags-end">
+          <p>사진을 다 올리고 글도 적었다면, 마음에 드는 태그도 골라 보세요.</p>
+          <div class="labels" id="labels">
+            <span class="lab on">#LIA</span>
+            <span class="lab on js-emo-tag">#그리움</span>
+            <span class="lab">#창가</span>
+            <span class="lab">#오후의빛</span>
+            <span class="lab">#편지</span>
+            <span class="lab">#서랍</span>
+          </div>
+        </div>
+        <div class="actions">
+          <a class="btn ghost" href="#s7">← 이전</a>
+          <a class="btn" href="#s9" style="background:var(--c)">감각 엮기 →</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="notes">
+      <h2>8 질문에 답하기</h2>
+      <p class="sub">오늘의 마음 → 사진 → 오늘의 이야기(다락방이 읽어 낸 이야기 + 내가 더 쓴 이야기, 한 칸) → 태그 순서입니다.</p>
+      <ul>
+        <li><span class="tag v2">V.2</span><span>쓸 것을 줄였습니다. "원하는 이미지에 대한 요청" 칸과 "해시태그 읽어내기" 버튼을 없앴습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>사진을 다 올린 뒤 누르는 완료 버튼을 크라프트지 짐표(꼬리표) 모양으로 두었습니다. 펀치 구멍과 바늘땀 테두리, 타자기 글자 ATTIC NOTE에 손글씨로 "다 올렸어요, 이야기를 적어 주세요"가 적혀 있고, 누르면 다락방이 읽은 뒤 꼬리표가 천천히 접혀 사라지고, 아래 오늘의 이야기 칸이 그 자리로 올라와 이야기가 천천히 배어 나옵니다. 움직임은 모두 2.8~3초에 걸쳐 차분하게 흐릅니다. 이 꼬리표를 누를 때만 LLM을 부릅니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>다락방의 이야기와 더 적고 싶은 이야기를 한 칸으로 합쳤습니다. "다락방이 읽어 낸 이야기 보기" 버튼을 누르면 LLM이 마음과 사진을 읽고 2~3문장을 그 칸에 적어 줍니다. 그 아래 안내 문구대로 이어 쓰거나 고칠 수 있고, 버튼 없이 처음부터 직접 적어도 됩니다. LLM은 버튼을 누를 때만 부르기 때문에 비용도 줄어듭니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>1번이 고른 마음("오늘의 마음 그리움")을 짚고, 그 마음에 맞춘 질문("그리운 것이 남아 있는 사진이 있나요?")을 띄웁니다. 질문은 감정 12개마다 따로 있고, 직접 쓴 감정이면 "OO이 머문 장면이 있나요?"로 묻습니다. 그다음, 사진을 올리면 LLM이 마음과 사진을 함께 읽어 다이어리 이야기 한 편(2~3문장)을 적습니다. 탭과 "다른 이야기 보기"는 없앴습니다. 맨 아래 태그는 시선(#LIA) → 오늘의 마음(#그리움) → 사진 태그 → 글 내용 태그 순서이고, 글 내용 태그는 쓰는 대로 바뀝니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>다락방이 읽어 낸 말은 LLM이 사진과 오늘의 마음을 더해 2~3문장의 다이어리 이야기로 적어 줍니다. 세 편을 한 번에 받아 두고 "다른 이야기 보기"로 돌려 봅니다. 그 아래 칸은 "더 적고 싶은 이야기가 있나요?"로 바꿔, 비워 두어도 되는 덧붙임 칸이 되었습니다. 작품에는 덧붙인 이야기가 있으면 그것이, 없으면 다락방의 이야기가 새겨집니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>다락방이 읽어 낸 말을 두 갈래로 나눴습니다. "사진을 비춰 보기"는 사진에 보이는 것을, "마음을 펼쳐 보기"는 앞에서 고른 오늘의 마음과 시선을 읽습니다. 탭마다 한 줄 풀이와 예시 문장이 따로 나오고, LLM은 한 번만 불러 두 갈래를 함께 받습니다. 해시태그는 맨 아래로 내려 문장을 쓰는 대로 바뀌게 했고, 마지막 결과 화면에서 모두 종합한 주요 낱말로 다시 정리됩니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>시작 낱말 테이프를 없앴습니다. 사진을 먼저 올리면 다락방(LLM)이 사진을 읽고 키워드와 예시 문장 두 줄을 띄웁니다. 예시는 매번 무작위로 바뀌고 "다른 문장 보기"로 다시 뽑을 수 있습니다. 눌러서 아래 답 칸으로 옮겨 고쳐 써도 되고, 직접 적어도 됩니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>읽어 내기는 버튼 없이 사진을 올리면 자동으로 시작합니다. LLM이 실패하면 오늘의 마음에 맞춘 키워드와 예시 문장으로 채웁니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>위에 앞에서 고른 오늘의 마음과 시선을 보여 줍니다. "감각"이라는 말은 화면 전체에서 "시선"으로 바꿨습니다. 버튼 "감각 엮기"만 V.2 문서 문구라 남겨 두었습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>"콜라주 엮기"를 "감각 엮기"로 바꿨습니다.</span></li>
+        <li><span class="tag rv">점검</span><span>답 칸의 줄을 글줄 높이에 맞춰 글자가 줄 위에 앉습니다. 사진은 폴라로이드처럼, 태그는 종이 라벨로 바꿨습니다. 종이 색도 LIA 쪽으로 물들었습니다.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 9 결과 -->
+  <section class="item" id="s9">
+    <div class="phone"><div class="scr">
+      <div class="paper">
+        <span class="pno">p.06 / 07</span>
+        <p class="ttl">당신의 LIAOLLET</p>
+        <p class="pensub">LIA의 시선으로 엮은 한 장</p>
+        <img class="res-img" src="a/c-lia.jpg" alt="그리움을 주제로 LIA의 시선으로 엮은 콜라주">
+        <div class="stub-row">
+          <div class="stub"><img src="a/ticket.png" alt=""><span>102101</span></div>
+          <p>이 번호로 언제든 다시 펼칠 수 있어요. 작품에도 새겨져 있습니다.</p>
+        </div>
+        <div class="plate">
+          <p class="plate-top">FROM THE DIARY OF</p>
+          <label class="plate-lab" for="sign-name">오늘의 한 장을 남긴 사람</label>
+          <input id="sign-name" maxlength="10" value="새벽" placeholder="별명이나 이니셜" autocomplete="off">
+          <p class="plate-foot">2026. 10. 21 &nbsp;·&nbsp; LIAOLLET</p>
+          <p class="plate-hint">실명 대신 별명이나 이니셜로 서명해 주세요</p>
+        </div>
+        <div class="letter" aria-label="다락방이 보내는 편지">
+          <p class="to">To. <span class="nm">새벽</span> 님께</p>
+          <h5>부치지 못한 편지</h5>
+          <blockquote class="lt-quote js-story">창가로 든 오후의 빛이 책장 위에 오래 머물렀다. 부치지 못한 편지처럼, 그 빛을 접어 서랍에 넣어 두고 싶다. 그날 끝내 이름을 부르지 못했다.</blockquote>
+          <p class="lt-body">부르지 못한 이름이 창가의 빛에 머물러, 리아의 여백 속에 한 장으로 남았습니다.</p>
+          <div class="lt-foot">
+            <div class="labels chain-tags"><span class="lab">#창가</span><span class="lab">#오후의빛</span><span class="lab">#편지</span></div>
+            <p class="lt-sign"><span class="js-emo">그리움</span> · LIA의 시선 · 2026. 10. 21<br><span class="pen-s">from. 감정의 다락방</span></p>
+          </div>
+        </div>
+        <div class="res-actions">
+          <a class="btn" href="#s10">취향의 서가에 꽂기</a>
+          <div class="row">
+            <button type="button" class="textlink" data-copy="https://liaollet.app/w/102101" data-msg="공유 링크를 복사했어요">공유 링크 복사</button>
+            <button type="button" class="textlink" data-msg="이미지를 저장했어요(시안)">이미지 저장</button>
+            <a class="textlink" href="#s8">다시 엮기</a>
+          </div>
+          <p class="toast" id="toast" aria-live="polite"></p>
+        </div>
+      </div>
+    </div></div>
+    <div class="notes">
+      <h2>9 당신의 LIAOLLET</h2>
+      <p class="sub">작품이 주인공이고, 티켓은 반쪽만 남깁니다.</p>
+      <ul>
+        <li><span class="tag v2">V.2</span><span>편지를 짧게 줄였습니다. To. → 제목 → 오늘의 이야기(인용) → 관계 한 문장 → 낱말 셋과 "마음 · 시선 · 날짜". 이야기에 이미 있는 장면을 다시 적던 여는 말과, 관계를 되풀이하던 맺음말을 지웠습니다. 한 내용은 한 번만 나옵니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>"이렇게 엮였습니다"와 작품 라벨을 하나로 합쳐 다락방이 보내는 편지 한 장으로 만들었습니다. To. 서명 → 작품 제목 → 오늘 고른 마음과 시선, 사진에서 본 것(여는 말) → 오늘의 이야기(인용) → 그것이 어떻게 이어졌고 시선이 무엇을 남겼는지(본문) → 종합 낱말과 날짜, from. 감정의 다락방. 중복되던 시선·재료·날짜 칸과 노트의 첫 문장은 지웠습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>오늘의 이야기를 고치거나 덧붙인 글은 작품에 새기기 전에 LLM이 맞춤법, 띄어쓰기, 문장 부호만 바로잡습니다. 낱말, 어순, 말투는 그대로 둡니다. 고친 글은 칸에도 돌려놓아 무엇이 새겨지는지 보입니다(따로 알림 문구는 두지 않습니다). LLM이 없을 때는 겹친 띄어쓰기, 문장 부호 앞뒤 빈칸처럼 뜻을 건드리지 않는 것만 고칩니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>앞에서 고른 것들이 끊기지 않고 이어집니다. 오늘의 마음(3장) → 시선(5장) → 사진에서 읽은 키워드 → 나의 문장(8장)을 모두 LLM에 넘기고, LLM이 문장이 사진 속 어떤 이미지를 붙잡아 그 마음으로 이었는지를 한 문장(관계)으로 씁니다. 결과 화면의 "이렇게 엮였습니다"에 그 흐름과 관계 문장이 나오고, 제목·재료·노트도 이 관계에서 나옵니다. 콜라주에는 고른 키워드와 나의 문장이 새겨집니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>창작 에디션 티켓 상자를 작은 티켓 반쪽으로 줄였습니다. 1장에서 받은 티켓 종이를 그대로 씁니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>"그리움"이 세 번 반복되지 않게 했습니다. 제목 줄에서 빼고, 작품 안에만 남깁니다(코드에서는 작품 태그에서도 감정 태그를 뺍니다).</span></li>
+        <li><span class="tag v2">V.2</span><span>"함께 찍혀 있습니다"를 "새겨져 있습니다"로 바꿨습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>공유 링크 복사를 넣었습니다. 실제 링크는 서버와 DB가 붙어야 작동합니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>큐레이터 노트를 미술관 작품 라벨 형식으로 바꿨습니다. 창작자가 옛 다이어리 앞장의 장서표(FROM THE DIARY OF) 같은 칸에 손글씨로 서명(별명이나 이니셜)하면, 라벨 맨 위가 "To. 새벽 님께"로 바뀝니다. 이름과 번호는 각각 한 번씩만 나오고, 노트는 "남겨 주신 마음은…"으로 바로 시작합니다. 작가·창작자 칸은 따로 두지 않습니다. 티켓 번호는 반쪽 티켓 한 곳에만 남겨 중복을 없앴습니다. 재료는 사진 장수 대신 LLM이 뽑은 키워드(창가 · 편지 · 오후의 빛)로 적습니다.</span></li>
+        <li><span class="tag rv">점검</span><span>버튼 순서를 정리했습니다. 주 행동 하나를 폭 전체로, 나머지는 글자 링크로 둡니다.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 10 서가 -->
+  <section class="item" id="s10">
+    <div class="phone"><div class="scr">
+      <div class="paper">
+        <span class="pno">p.07 / 07</span>
+        <p class="shelf-brand">LIAOLLET</p>
+        <p class="ttl">취향의 서가</p>
+        <div class="mine">
+          <img src="a/c-lia.jpg" alt="방금 꽂은 내 작품">
+          <div>
+            <p class="k">방금 꽂은 기록</p>
+            <p class="sig">새벽</p>
+            <p class="no">No. 102101</p>
+            <p class="qq">창가에 두고 온 편지</p>
+            <button type="button" class="like"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>공감 <span>0</span></button>
+          </div>
+        </div>
+        <p class="sec">그리움을 남긴 사람들</p>
+        <div class="same">
+          <div class="w"><img src="a/c-lia2.jpg" alt=""><p class="qq">아무 일도 없던 오후, 그 빛만 기억한다.</p><button type="button" class="like"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>공감 <span>12</span></button></div>
+          <div class="w"><img src="a/c-let2.jpg" alt=""><p class="qq">모든 순간이 겹쳐 하나의 내가 된다.</p><button type="button" class="like"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>공감 <span>18</span></button></div>
+        </div>
+        <p class="sec">모두의 기록</p>
+        <div class="filters" id="filters">
+          <button type="button" class="on" data-k="all">전체</button><button type="button" data-k="lia" style="--k: var(--lia)">LIA</button><button type="button" data-k="ol" style="--k: var(--ol)">OL</button><button type="button" data-k="let" style="--k: var(--let)">LET</button>
+        </div>
+        <div class="grid" id="grid">
+          <div class="w" data-k="ol"><img src="a/c-ol.jpg" alt=""><p class="e" style="color:var(--ol)">OL<span class="by">소금 · No. 100301</span></p><p class="qq">찢어진 자리에서 빛이 들어왔다.</p><div class="w-acts"><button type="button" class="like"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>공감 <span>7</span></button></div></div>
+          <div class="w" data-k="let"><img src="a/c-let.jpg" alt=""><p class="e" style="color:var(--let)">LET<span class="by">여름밤 · No. 100502</span></p><p class="qq">그해 여름이 한꺼번에 겹친다.</p><div class="w-acts"><button type="button" class="like"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>공감 <span>21</span></button></div></div>
+          <div class="w" data-k="lia"><img src="a/c-lia2.jpg" alt=""><p class="e" style="color:var(--lia)">LIA<span class="by">윤 · No. 100101</span></p><p class="qq">그 빛만 기억한다.</p><div class="w-acts"><button type="button" class="like"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>공감 <span>15</span></button></div></div>
+          <div class="w" data-k="ol"><img src="a/c-ol2.jpg" alt=""><p class="e" style="color:var(--ol)">OL<span class="by">J · No. 100803</span></p><p class="qq">어디로 가야 할지 아직 모르겠다.</p><div class="w-acts"><button type="button" class="like"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>공감 <span>9</span></button></div></div>
+          <div class="w" data-k="let"><img src="a/c-let2.jpg" alt=""><p class="e" style="color:var(--let)">LET<span class="by">달 · No. 101001</span></p><p class="qq">모든 순간이 겹쳐 하나의 내가 된다.</p><div class="w-acts"><button type="button" class="like"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>공감 <span>18</span></button></div></div>
+          <div class="w" data-k="lia"><img src="a/c-lia.jpg" alt=""><p class="e" style="color:var(--lia)">LIA<span class="by">새벽 · No. 100701</span></p><p class="qq">말하지 않은 것들이 가장 오래 남는다.</p><div class="w-acts"><button type="button" class="like"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>공감 <span>12</span></button></div></div>
+        </div>
+        <div class="inv-card">
+          <img class="inv-mark" src="a/liaollet-icon.svg" alt="" width="36" height="36">
+          <div>
+            <p class="inv-kick">INVITATION</p>
+            <p class="inv-line">그리운 얼굴에게 티켓 한 장을 건네 보세요</p>
+          </div>
+          <button type="button" class="inv-btn" id="invite">건네기</button>
+          <p class="more-toast" id="invite-toast" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+      <div class="sheet" id="sheet" aria-hidden="true">
+        <div class="sheet-in" role="dialog" aria-label="작품에 남긴 한마디">
+          <div class="sheet-top"><img id="sheet-img" src="" alt=""><div><p class="sheet-k">작품 · 한마디</p><p class="sheet-q" id="sheet-q"></p></div><button type="button" class="sheet-x" id="sheet-x">닫기</button></div>
+          <ul class="slips" id="slips"></ul>
+          <div class="slip-form">
+            <label for="slip-in" style="position:absolute;left:-9999px">한마디 남기기</label>
+            <input id="slip-in" maxlength="40" placeholder="이 작품에 한마디 남기기 (40자)" autocomplete="off">
+            <button type="button" id="slip-go">붙이기</button>
+          </div>
+          <p class="slip-hint">이름 없이 남겨집니다. 서로의 마음에 다정하게 답해 주세요.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <h2>10 LIAOLLET 취향의 서가</h2>
+      <p class="sub">내 기록이 맨 위, 같은 마음이 그 아래.</p>
+      <ul>
+        <li><span class="tag v2">V.2</span><span>방금 꽂은 작품을 맨 위에 크게 띄웁니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>같은 마음을 고른 사람의 작품을 바로 아래에 추천합니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>"나도 그랬어"를 공감(좋아요) 버튼으로 바꿨습니다. 눌러 보세요.</span></li>
+        <li><span class="tag v2">V.2</span><span>제목을 "LIAOLLET 취향의 서가"로 바꿨습니다.</span></li>
+        <li><span class="tag v2">V.2</span><span>마지막을 "한 장 더 쓰기" 대신 다락방 아이콘 봉랍을 찍은 "감정의 다락방 초대장"으로 바꿨습니다. 1장과 같은 종이 티켓(ADMIT ONE MORE)을 한 장 더 넣고, "그리운 얼굴이 떠올랐다면, 이 티켓을 건네주세요 · 티켓 건네기"로 건넵니다. 폰에서는 공유 창이 열려 친구에게 바로 보낼 수 있고, 안 되면 링크를 복사합니다. 같은 사람이 계속 만드는 일은 서버에서 티켓 번호와 LLM 호출 횟수로 막습니다.</span></li>
+        <li><span class="tag rv">점검</span><span>서가의 예시 작품을 재료 사진이 아니라 실제 콜라주로 바꿨습니다. 이 시안의 콜라주 6장은 지금 앱의 콜라주 코드로 직접 만든 것입니다.</span></li>
+        <li><span class="tag rv">점검</span><span>모두의 기록은 LIA·OL·LET 시선이 주가 되도록, 필터를 세 사람(각자의 색)으로만 두고 카드에는 이름(LIA·OL·LET)만 그 사람의 색으로 적었습니다. 감정은 작품 안에 이미 적혀 있어 카드에서 뺐습니다.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 11 아이콘 -->
+  <section class="item" id="s11">
+    <div class="phone"><div class="scr">
+      <div class="paper icon-sheet">
+        <p class="ttl">다락방 아이콘</p>
+        <p class="pensub">사람들의 감각이 빛나는 다락방</p>
+        <div class="icon-big"><img src="a/liaollet-icon-anim.svg" alt="LIAOLLET 아이콘: 크림색 바탕 위 짙은 갈색 집, 집 안에서 빛나는 작은 점들과 LIAOLLET 글자"></div>
+        <div class="icon-sizes"><img src="a/liaollet-icon.svg" alt="" width="64"><img src="a/liaollet-icon.svg" alt="" width="40"><img src="a/liaollet-icon.svg" alt="" width="24"></div>
+        <p class="icon-cap">로딩</p>
+        <div class="icon-load"><img class="attic-loader" src="a/liaollet-icon-anim.svg" alt=""><span>엮는 중…</span></div>
+        <div class="icon-load dark"><img class="attic-loader" src="a/liaollet-icon-anim.svg" alt=""><span>다락방 문을 여는 중</span></div>
+      </div>
+    </div></div>
+    <div class="notes">
+      <h2>11 다락방 아이콘</h2>
+      <p class="sub">앱 전체에서 쓰는 표시이자 로딩 애니메이션. 올려 주신 이미지를 그대로 옮겼습니다.</p>
+      <ul>
+        <li><span class="tag v2">요청</span><span>채팅에 올려 주신 아이콘을 SVG로 다시 그렸습니다. 크림색 둥근 바탕, 짙은 갈색 집, 집 안의 빛나는 점들, 가운데 LIAOLLET 글자입니다. 집 안의 점은 다락방에 모인 사람들의 감각을 뜻합니다. 집을 바탕 가운데로 옮겼습니다. 벡터라 어떤 크기로 써도 깨지지 않습니다.</span></li>
+        <li><span class="tag v2">요청</span><span>애니메이션: 집 안의 점들이 하나씩 부드럽게 빛났다 잦아들고, 그 사이 따뜻한 빛 세 점이 차례로 켜집니다. 사람들의 감각이 하나둘 빛나는 모습입니다. 연기는 없앴습니다. 동작 줄이기 설정에서는 멈춥니다.</span></li>
+        <li><span class="tag v2">요청</span><span>쓰는 곳: 8장 "다락방이 읽어 낸 말"을 기다릴 때(적용됨), 서가 끝 초대장의 봉랍(집 모양으로 바꿈), 콜라주를 엮을 때, 번호로 작품을 찾을 때, 첫 화면 로딩, 브라우저 탭 아이콘.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="open">
+    <h2>코드 반영 전에 정할 것</h2>
+    <ol>
+      <li><b>5장 선택 모션</b> <span>잉크 번짐(시안)과 펜 동그라미 중 하나를 고릅니다.</span></li>
+      <li><b>"THE ATTIC OF FEELINGS" 줄</b> <span>남길지 뺄지 정합니다. 지난 점검에서는 빼는 쪽을 권했습니다.</span></li>
+      <li><b>인물 이미지 사용 권한</b> <span>6·7장 인물 사진은 V.2 시안에서 가져왔습니다. LET 사진에는 "Suntanned skin" 글자가 찍혀 있어서 잡지 이미지로 보입니다. 전시에 쓸 수 있는 사진인지 확인하거나, 직접 찍은 사진으로 바꿔야 합니다.</span></li>
+      <li><b>재료 사진</b> <span>목업 봉투(m2, m5)와 광고 포스터(m7)는 빼고, 이 시안처럼 깨끗한 사진(m4, m6, m8)과 인물 이미지로 서가 시드를 다시 만듭니다.</span></li>
+      <li><b>공유 링크와 LLM 문장</b> <span>둘 다 서버(Supabase, LLM)가 붙어야 실제로 작동합니다. 그전까지는 시안처럼 화면만 먼저 만들어 둘 수 있습니다.</span></li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  var EMOS = [
+    ["그리움", "닿지 않는 곳에 마음이 가 있어요."], ["설렘", "아직 오지 않은 것이 벌써 기다려져요."], ["고요함", "아무 일도 일어나지 않아서 좋은 날이에요."],
+    ["서운함", "말하기엔 작고, 넘기기엔 남아 있어요."], ["벅참", "담아두기에 조금 큰 마음이에요."], ["쓸쓸함", "곁에 있어도 비어 있는 자리가 있어요."],
+    ["후련함", "오래 들고 있던 것을 내려놓았어요."], ["막막함", "어디로 가야 할지 아직 모르겠어요."], ["아련함", "흐릿해졌는데도 선명한 데가 있어요."],
+    ["다정함", "누군가를 생각하면 마음이 데워져요."], ["지침", "조금 쉬어도 괜찮다고 말해주고 싶어요."], ["홀가분함", "가벼워진 만큼 조금 허전하기도 해요."]
+  ];
+  var box = document.getElementById("emos"), mine = document.getElementById("mine");
+  // 3장에서 고른 마음이 이후 장(시선 고르기, 답하기, 결과)에 그대로 따라오게 한다
+  var ASK = {
+    "그리움": "그리운 것이 남아 있는 사진이 있나요?", "설렘": "마음을 두근거리게 한 장면이 있나요?", "고요함": "고요했던 순간을 담은 사진이 있나요?",
+    "서운함": "서운함이 남은 자리를 보여 줄 수 있나요?", "벅참": "벅차올랐던 순간의 사진이 있나요?", "쓸쓸함": "쓸쓸함이 머문 풍경이 있나요?",
+    "후련함": "후련해진 날의 장면이 있나요?", "막막함": "막막했던 길목을 담은 사진이 있나요?", "아련함": "아련하게 떠오르는 장면이 있나요?",
+    "다정함": "다정함을 느낀 순간이 있나요?", "지침": "지친 하루의 한 장면이 있나요?", "홀가분함": "홀가분해진 순간의 사진이 있나요?"
+  };
+  function carryEmotion(k) {
+    document.querySelectorAll(".js-emo").forEach(function (n) { n.textContent = k; });
+    document.querySelectorAll(".js-emo-tag").forEach(function (n) { n.textContent = "#" + k.replace(/\s/g, ""); });
+    document.getElementById("step-ask").textContent = ASK[k] || (k + "이 머문 장면이 있나요?");
+  }
+  mine.addEventListener("input", function () { if (mine.value.trim()) carryEmotion(mine.value.trim().slice(0, 12)); });
+  EMOS.forEach(function (e, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "emo"; b.textContent = e[0];
+    b.setAttribute("role", "radio"); b.setAttribute("aria-checked", "false");
+    var ink = document.createElement("span"); ink.className = "ink"; b.appendChild(ink);
+    b.addEventListener("click", function (ev) {
+      // 손가락이 닿은 자리에서 번지기 시작한다. 키보드로 고르면 가운데서
+      var r = b.getBoundingClientRect();
+      var x = ev.clientX ? ev.clientX - r.left : r.width / 2, y = ev.clientY ? ev.clientY - r.top : r.height / 2;
+      b.style.setProperty("--x", x + "px"); b.style.setProperty("--y", y + "px");
+      box.querySelectorAll(".emo").forEach(function (x) { x.classList.remove("on"); x.setAttribute("aria-checked", "false"); });
+      void b.offsetWidth;
+      b.classList.add("on"); b.setAttribute("aria-checked", "true");
+      mine.placeholder = e[1];
+      carryEmotion(e[0]);
+    });
+    box.appendChild(b);
+    if (i === 0) b.click();
+  });
+
+  function copy(text, done) {
+    var ok = function () { done(true); };
+    try { navigator.clipboard.writeText(text).then(ok, function () { done(false); }); } catch (e) { done(false); }
+  }
+  document.querySelectorAll("[data-copy]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var msg = b.getAttribute("data-msg");
+      copy(b.getAttribute("data-copy"), function (ok) {
+        if (msg) { document.getElementById("toast").textContent = ok ? msg : "복사할 수 없는 환경이에요. 링크를 길게 눌러 복사해 주세요."; }
+        else { document.getElementById("copied").textContent = ok ? "고유번호를 복사했어요." : "복사할 수 없는 환경이에요. 번호를 적어 두세요."; }
+      });
+    });
+  });
+  document.querySelectorAll("[data-msg]:not([data-copy])").forEach(function (b) {
+    b.addEventListener("click", function () { document.getElementById("toast").textContent = b.getAttribute("data-msg"); });
+  });
+
+  // 맨 위 장이 고리를 축으로 넘어가 왼쪽 장에 내려앉고, 뒷면의 작품을 보인 채 머문다.
+  // 다음 장이 그 위로 내려앉으면 가려진 앞 장을 오른쪽 맨 아래로 되돌려 끝없이 넘긴다.
+  var order = Array.prototype.slice.call(document.querySelectorAll("#leaf .pg"));
+  function stack() { order.forEach(function (pg, i) { pg.style.zIndex = String(order.length - i); }); }
+  stack();
+  var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!still) {
+    var lastTurned = null, turn = 0;
+    setInterval(function () {
+      var top = order.shift();
+      top.style.zIndex = String(100 + turn++);
+      top.classList.add("flip");
+      setTimeout(function () {
+        if (lastTurned) {
+          lastTurned.style.transition = "none";
+          lastTurned.classList.remove("flip");
+          order.push(lastTurned);
+          stack();
+          void lastTurned.offsetWidth;
+          lastTurned.style.transition = "";
+        }
+        lastTurned = top;
+      }, 2800);
+    }, 5200);
+  }
+
+  var enter = document.getElementById("enter"), stamp = document.getElementById("stamp");
+  enter.addEventListener("click", function () {
+    stamp.classList.remove("on"); void stamp.offsetWidth; stamp.classList.add("on");
+    enter.textContent = "확인되었습니다";
+    enter.disabled = true;
+    // 도장이 다 찍히고 잠깐 머문 뒤 동의서로 넘어간다
+    setTimeout(function () {
+      document.getElementById("s4").scrollIntoView({ behavior: still ? "auto" : "smooth" });
+      enter.textContent = "다락방으로 들어가기";
+      enter.disabled = false;
+    }, 2400);
+  });
+
+  var findNo = document.getElementById("find-no"), found = document.getElementById("found");
+  var slotEls = document.querySelectorAll(".slots span"), tkShow = document.getElementById("tk-show"), tkSide = document.getElementById("tk-side");
+  function paintNo() {
+    var v = findNo.value;
+    slotEls.forEach(function (el, i) { el.textContent = v[i] || ""; el.classList.toggle("cur", i === v.length && document.activeElement === findNo); });
+    tkShow.textContent = (v + "______").slice(0, 6);
+    tkSide.textContent = v ? v : "· · · · · ·";
+  }
+  findNo.addEventListener("input", function () { findNo.value = findNo.value.replace(/[^0-9]/g, "").slice(0, 6); found.textContent = ""; paintNo(); });
+  findNo.addEventListener("focus", paintNo);
+  findNo.addEventListener("blur", paintNo);
+  document.getElementById("find-go").addEventListener("click", function () {
+    var v = findNo.value;
+    if (v.length < 6) found.textContent = "티켓 번호는 여섯 자리예요.";
+    else if (WORKS[v]) openWork(v);
+    else found.textContent = "그 번호로 열리는 기록이 없어요. 티켓의 숫자를 다시 확인해 주세요.";
+  });
+  findNo.addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("find-go").click(); });
+
+  // 시안용 기록. 실제 앱에서는 GET /api/works/:ticket 이 이 자리를 채운다
+  var WORKS = {
+    "102101": { img: "a/c-lia.jpg", emo: "그리움", q: "창가에 두고 온 편지, 끝내 부치지 못한 말들이 아직 거기 있어.", date: "2026.10.21", who: "LIA" },
+    "100301": { img: "a/c-ol.jpg", emo: "후련함", q: "찢어진 자리에서 오히려 빛이 들어왔다.", date: "2026.10.03", who: "OL" },
+    "100502": { img: "a/c-let.jpg", emo: "벅참", q: "그해 여름의 장면들이 한꺼번에 겹쳐 떠오른다.", date: "2026.10.05", who: "LET" }
+  };
+  var reveal = document.getElementById("reveal"), rvNo = "";
+  function openWork(no) {
+    var w = WORKS[no]; rvNo = no;
+    document.getElementById("rv-img").src = w.img;
+    document.getElementById("rv-img").alt = w.emo + "을 주제로 " + w.who + "의 시선으로 엮은 콜라주";
+    document.getElementById("rv-meta").textContent = w.date + " · " + w.who + "의 시선 · TICKET " + no;
+    document.getElementById("rv-emo").textContent = w.emo;
+    document.getElementById("rv-q").textContent = w.q;
+    document.getElementById("rv-toast").textContent = "";
+    found.textContent = "";
+    reveal.hidden = false;
+    reveal.scrollTop = 0;
+  }
+  document.getElementById("reveal-close").addEventListener("click", function () { reveal.hidden = true; findNo.focus(); });
+  document.getElementById("rv-share").addEventListener("click", function () {
+    copy("https://liaollet.app/w/" + rvNo, function (ok) {
+      document.getElementById("rv-toast").textContent = ok ? "공유 링크를 복사했어요" : "복사할 수 없는 환경이에요.";
+    });
+  });
+
+  var ags = document.querySelectorAll(".ag"), seal = document.getElementById("seal"), next = document.getElementById("ag-next");
+  function syncAgree() {
+    var all = Array.prototype.every.call(ags, function (a) { return a.checked; });
+    next.disabled = !all;
+    if (all && !seal.classList.contains("on")) seal.classList.add("on");
+    if (!all) seal.classList.remove("on");
+  }
+  ags.forEach(function (a) { a.addEventListener("change", syncAgree); });
+  document.getElementById("all").addEventListener("click", function () { ags.forEach(function (a) { a.checked = true; }); syncAgree(); });
+  next.addEventListener("click", function () { location.hash = "s5"; });
+
+  var cards = document.querySelectorAll(".card");
+  cards.forEach(function (c) {
+    c.addEventListener("click", function () { cards.forEach(function (x) { x.classList.remove("on"); }); c.classList.add("on"); });
+  });
+  cards[0].classList.add("on");
+
+  // 시선 상세: 세 사람의 사진, 문장, 적용되는 질감, 색이 바뀐다
+  var DET = {
+    lia: { name: "LIA", img: "a/p-lia.jpg", alt: "창가에서 책을 읽는 긴 머리 여성의 뒷모습", title: "남겨진 문장들 사이의 고요함", d1: "윤곽과 실루엣만 남기고, 진실한 단어만 남기는 시선입니다.", apply: "작품에는 세피아 톤, 여백, 윤곽과 실루엣 중심의 배치가 적용됩니다." },
+    ol: { name: "OL", img: "a/p-ol.jpg", alt: "검은 머리카락 사이로 보이는 거친 질감의 색면", title: "찢어진 틈새로 스며드는 빛", d1: "어긋난 선과 찢어진 틈에서 남겨진 흔적을 읽어 내는 시선입니다.", apply: "작품에는 흑백 대비, 손으로 찢은 종이 가장자리, 콘테 스트로크 같은 거친 질감이 적용됩니다." },
+    let: { name: "LET", img: "a/p-let.jpg", alt: "청록 아이라인을 그린 주근깨 얼굴의 클로즈업", title: "겹겹이 쌓인 경험의 오버레이", d1: "겹쳐진 색 속에서 미처 보지 못한 장면을 꺼내, 새로운 장면으로 편집하는 시선입니다.", apply: "작품에는 선명한 색, 어두운 바탕, 여러 장면을 겹친 다층 레이어가 적용됩니다." }
+  };
+  var det = document.getElementById("det");
+  function showDet(k) {
+    var d = DET[k];
+    det.className = "det " + k;
+    document.getElementById("det-name").textContent = d.name + "의 시선";
+    var im = document.getElementById("det-img"); im.src = d.img; im.alt = d.alt;
+    document.getElementById("det-title").textContent = d.title;
+    document.getElementById("det-d1").textContent = d.d1;
+    document.getElementById("det-apply").textContent = d.apply;
+    document.querySelectorAll("#det-switch button").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-k") === k); });
+  }
+  document.querySelectorAll("#det-switch button").forEach(function (b) { b.addEventListener("click", function () { showDet(b.getAttribute("data-k")); }); });
+  cards.forEach(function (c) { c.addEventListener("click", function () { showDet(c.getAttribute("data-k")); }); });
+
+  // 서명을 적는 대로 라벨의 이름이 바뀐다. 비워 두면 "오늘의 창작자"로 부른다
+  var signIn = document.getElementById("sign-name");
+  signIn.addEventListener("input", function () {
+    var v = signIn.value.trim() || "오늘의 창작자";
+    document.querySelectorAll("#s9 .nm").forEach(function (n) { n.textContent = v; });
+  });
+
+  // "다락방이 읽어 낸 이야기 보기"를 누르면 잠시 읽은 뒤 같은 칸에 2~3문장이 들어간다. 이어 쓰거나 고칠 수 있다
+  var ans = document.getElementById("ans"), readBtn = document.getElementById("readbtn"), readWait = document.getElementById("read-wait");
+  var STORY = "창가로 든 오후의 빛이 책장 위에 오래 머물렀다. 부치지 못한 편지처럼, 그 빛을 접어 서랍에 넣어 두고 싶다.";
+  readBtn.addEventListener("click", function () {
+    readBtn.hidden = true; readWait.hidden = false;
+    setTimeout(function () {
+      readWait.hidden = true; readBtn.hidden = false; readBtn.disabled = true;
+      void readBtn.offsetWidth; readBtn.classList.add("is-gone");
+      ans.classList.remove("is-fill"); void ans.offsetWidth; ans.classList.add("is-fill");
+      ans.value = ans.value.trim() ? STORY + "\n" + ans.value.trim() : STORY;
+      carryStory();
+      ans.placeholder = "";
+      document.getElementById("ans-sub").textContent = "더 하고 싶은 말이 있으면 편하게 덧붙여 주세요.";
+      ans.focus(); ans.setSelectionRange(ans.value.length, ans.value.length);
+    }, 1400);
+  });
+
+  // 5페이지 오늘의 이야기 칸에 적은 글이 결과 화면 "이렇게 엮였습니다"에 그대로 이어진다.
+  // 실제 앱처럼 띄어쓰기와 문장 부호 빈칸만 다듬어 옮긴다
+  var storyOut = document.querySelector(".js-story"), storyDefault = storyOut.textContent;
+  function tidy(t) {
+    return t.replace(/[ \t]+/g, " ").replace(/ +([,.?!])/g, "$1").replace(/([,.?!])(?=[가-힣A-Za-z])/g, "$1 ").replace(/ *\n */g, " ").trim();
+  }
+  function carryStory() { storyOut.textContent = tidy(ans.value) || storyDefault; }
+  ans.addEventListener("input", carryStory);
+  // 사진이 바뀌면 이전에 읽은 이야기는 맞지 않으니 버튼을 다시 띄운다
+  document.getElementById("add-photo").addEventListener("click", function () {
+    readBtn.disabled = false; readBtn.classList.remove("is-gone");
+  });
+
+  document.querySelectorAll(".lab:not(.chain-tags .lab)").forEach(function (l) { l.addEventListener("click", function () { l.classList.toggle("on"); }); });
+  // 친구에게 다락방 주소를 건넨다. 폰에서는 공유 창이 열리고, 안 되면 링크를 복사한다
+  document.getElementById("invite").addEventListener("click", function () {
+    var t = document.getElementById("invite-toast"), url = "https://liaollet.app/";
+    var text = "감정의 다락방 초대장이 도착했어요. 티켓 한 장을 들고 오늘의 마음을 남기러 오세요.";
+    var fallback = function () {
+      copy(url, function (ok) { t.textContent = ok ? "초대 티켓(링크)을 복사했어요. 그리운 이에게 붙여 넣어 건네주세요." : "링크: " + url; });
+    };
+    if (!navigator.share) return fallback();
+    navigator.share({ title: "LIAOLLET 감정의 다락방", text: text, url: url }).then(function () { t.textContent = "티켓을 건넸어요"; }, function (e) { if (!e || e.name !== "AbortError") fallback(); });
+  });
+
+  // 모두의 기록은 LIA·OL·LET 시선으로 거른다
+  document.querySelectorAll("#filters button").forEach(function (f, _, all) {
+    f.addEventListener("click", function () {
+      all.forEach(function (x) { x.classList.remove("on"); }); f.classList.add("on");
+      var k = f.getAttribute("data-k");
+      document.querySelectorAll("#grid .w").forEach(function (w) { w.hidden = k !== "all" && w.getAttribute("data-k") !== k; });
+    });
+  });
+  // 한마디: 작품마다 쪽지를 남긴다. 시안에서는 화면 안에서만 쌓인다
+  var SLIPS = [
+    ["찢어진 자리로 든 빛, 저도 본 적 있어요.", "우리도 그 틈으로 나왔죠."],
+    ["그해 여름이 저에게도 겹쳐 보여요.", "색이 참 따뜻하네요.", "다시 보러 왔어요."],
+    ["그 빛만 기억한다는 말이 오래 남아요."],
+    ["저도 아직 모르겠어요. 같이 걸어요.", "갈림길도 길이에요."],
+    [],
+    ["말하지 않은 것들, 저도 그래요.", "읽고 한참 머물렀어요.", "다정한 작품이에요.", "부치지 못한 편지가 떠올랐어요."]
+  ];
+  var sheet = document.getElementById("sheet"), slips = document.getElementById("slips"), slipIn = document.getElementById("slip-in"), cur = -1;
+  var cards = Array.prototype.slice.call(document.querySelectorAll("#grid .w"));
+  function drawSlips() {
+    slips.innerHTML = "";
+    if (!SLIPS[cur].length) { var e = document.createElement("li"); e.className = "empty"; e.textContent = "아직 남긴 한마디가 없어요. 첫 쪽지를 붙여 보세요."; slips.appendChild(e); return; }
+    SLIPS[cur].forEach(function (t, i) { var li = document.createElement("li"); li.textContent = t; var sm = document.createElement("small"); sm.textContent = "익명의 관람객 · " + (i === SLIPS[cur].length - 1 && t._new ? "방금" : "오늘"); li.appendChild(sm); slips.appendChild(li); });
+  }
+  cards.forEach(function (w, i) {
+    // 카드를 누르면 작품이 펼쳐지고, 그 안에서 한마디를 보고 남긴다. 목록 카드는 가볍게 둔다
+    w.querySelector("img").addEventListener("click", open);
+    w.querySelector(".qq").addEventListener("click", open);
+    function open() {
+      cur = i;
+      document.getElementById("sheet-img").src = w.querySelector("img").src;
+      document.getElementById("sheet-q").textContent = w.querySelector(".qq").textContent;
+      drawSlips(); sheet.classList.add("on"); sheet.setAttribute("aria-hidden", "false");
+    }
+  });
+  document.getElementById("sheet-x").addEventListener("click", function () { sheet.classList.remove("on"); sheet.setAttribute("aria-hidden", "true"); });
+  sheet.addEventListener("click", function (ev) { if (ev.target === sheet) document.getElementById("sheet-x").click(); });
+  function addSlip() {
+    // 링크와 겹친 띄어쓰기는 걷어 낸다. 짧은 쪽지만 붙는다
+    var t = slipIn.value.replace(/https?:\/\/\S+/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
+    if (!t || cur < 0) return;
+    SLIPS[cur].push(t); slipIn.value = ""; drawSlips();
+  }
+  document.getElementById("slip-go").addEventListener("click", addSlip);
+  slipIn.addEventListener("keydown", function (ev) { if (ev.key === "Enter") addSlip(); });
+
+  document.querySelectorAll(".like").forEach(function (l) {
+    l.addEventListener("click", function () {
+      var n = l.querySelector("span"), on = l.classList.toggle("on");
+      n.textContent = String(Number(n.textContent) + (on ? 1 : -1));
+    });
+  });
+})();
+</script>

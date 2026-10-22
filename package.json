@@ -1,0 +1,32 @@
+{
+  "name": "liaollet",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/assets.mjs",
+    "dev": "next dev --turbopack",
+    "prebuild": "node scripts/assets.mjs",
+    "build": "next build",
+    "start": "next start",
+    "test:e2e": "npx -y -p playwright@1.56 node scripts/e2e.mjs",
+    "preview": "next build && next start",
+    "assets": "node scripts/assets.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/host-grotesk": "^5.3.0",
+    "@fontsource/nanum-gothic-coding": "^5.3.0",
+    "@fontsource/nanum-myeongjo": "^5.3.0",
+    "@fontsource/nanum-pen-script": "^5.3.0",
+    "@fontsource/special-elite": "^5.3.0",
+    "@langchain/core": "^1.2.20",
+    "@langchain/google-genai": "^2.3.4",
+    "@langchain/langgraph": "^1.5.1",
+    "@supabase/supabase-js": "^2.118.0",
+    "framer-motion": "^12.23.24",
+    "next": "15.5.28",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
+  }
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 펼친 채 엎어 둔 다이어리가 곧 다락방의 지붕이 된다 -->
+  <path d="M32 15 L13 45 Q22 42.5 32 45.5 Q42 42.5 51 45 Z" fill="#f4e8cf" stroke="#8a6a4a" stroke-width="1"/>
+  <path d="M32 18.5 L17.5 41.5 M32 18.5 L46.5 41.5" stroke="#b49572" stroke-width="0.9"/>
+  <path d="M28.6 14.6 Q32 9.6 35.4 14.6" stroke="#2b1d12" stroke-width="3"/>
+  <path d="M28.8 14.4 L8.5 47.5 M35.2 14.4 L55.5 47.5" stroke="#2b1d12" stroke-width="3.2"/>
+  <!-- 지붕 아래 둥근 다락창, 불이 켜져 있다 -->
+  <circle cx="32" cy="33.5" r="4.6" fill="#e9c27a" stroke="#2b1d12" stroke-width="1.7"/>
+  <path d="M32 29 V38 M27.4 33.5 H36.6" stroke="#2b1d12" stroke-width="1.1"/>
+  <!-- 아래로 늘어진 책갈피 끈 -->
+  <path d="M33 45.2 C33.4 49 34.2 52 35.6 55.5 L33.2 54 L32.4 56.6" stroke="#93303a" stroke-width="1.6"/>
+</svg>

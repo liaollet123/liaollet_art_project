@@ -1,0 +1,1414 @@
+/* =========================================================================
+   LIAOLLET — 전역 스타일 (Tailwind 없이 순수 CSS)
+   ========================================================================= */
+
+:root {
+  /* 포트폴리오 팔레트 */
+  --hero-light: #fffefb;
+  --hero-dark: #121211;
+  --hero-paragraphs: #262524d9;
+  --hero-border: #20201e4d;
+  --hero-red: #9b2b34;
+
+  /* 감정의 다락방 팔레트 */
+  --attic-paper: hsl(40 45% 90%);
+  --attic-paper-dark: hsl(36 35% 80%);
+  --attic-ink: hsl(25 30% 15%);
+  --attic-ink-soft: hsl(25 15% 35%);
+  --attic-wood: hsl(22 35% 18%);
+  --attic-red: hsl(355 50% 38%);
+  --attic-tape: hsl(45 60% 75% / 0.75);
+  --attic-lia: hsl(25 40% 45%);
+  --attic-ol: hsl(0 0% 12%);
+  --attic-let: hsl(348 64% 46%);
+
+  --font-sans: "Host Grotesk Variable", "Host Grotesk", system-ui, sans-serif;
+  --font-serif: "Nanum Myeongjo", serif;
+  --font-pen: "Nanum Pen Script", cursive;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* 오래된 활자 — 티켓처럼 찍어낸 인쇄물에 쓴다 */
+  --font-type: "Special Elite", "Nanum Gothic Coding", monospace;
+  --font-type-ko: "Nanum Gothic Coding", "Special Elite", monospace;
+}
+
+/* ---------- 리셋 ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: var(--hero-light);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: transparent;
+  color: var(--hero-dark);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.clip {
+  overflow: hidden;
+}
+
+.icon-btn {
+  color: var(--hero-dark);
+  display: inline-flex;
+  transition: opacity 0.2s;
+}
+.icon-btn:hover {
+  opacity: 0.6;
+}
+
+/* =========================================================================
+   공통: 헤더 / 오버레이 / 필 버튼 / 폼
+   ========================================================================= */
+
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  pointer-events: none;
+}
+.site-logo {
+  font-size: 1.125rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--hero-dark);
+  pointer-events: auto;
+  transition: opacity 0.2s;
+}
+.site-logo:hover {
+  opacity: 0.6;
+}
+.site-menu-btn {
+  pointer-events: auto;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.overlay--dark {
+  z-index: 9999;
+  background-color: var(--hero-dark);
+}
+.overlay--light {
+  z-index: 9998;
+  background-color: var(--hero-light);
+}
+.overlay-close {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+}
+.nav-close {
+  color: var(--hero-light);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: opacity 0.2s;
+}
+.nav-close:hover {
+  opacity: 0.6;
+}
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* 필 버튼: inset box-shadow로 채워지는 호버 효과 */
+.pill {
+  display: inline-block;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 120%;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+.pill--light {
+  color: var(--hero-light);
+  box-shadow: inset 0 0 0 2px var(--hero-light);
+  letter-spacing: 2px;
+  font-size: 14px;
+  padding: 18px 40px;
+}
+.pill--light:hover {
+  color: var(--hero-dark);
+  box-shadow: inset 0 0 0 60px var(--hero-light);
+}
+.pill--dark {
+  color: var(--hero-dark);
+  box-shadow: inset 0 0 0 2px var(--hero-dark);
+  letter-spacing: 1.85px;
+  font-size: 15px;
+  padding: 18px 36px;
+}
+.pill--dark:hover {
+  color: var(--hero-light);
+  box-shadow: inset 0 0 0 40px var(--hero-dark);
+}
+
+.contact-panel {
+  width: 100%;
+  max-width: 28rem;
+  padding: 0 32px;
+}
+.contact-title {
+  font-size: 1.875rem;
+  font-weight: 400;
+  margin-bottom: 40px;
+  color: var(--hero-dark);
+}
+
+.line-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.line-form label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--hero-dark);
+}
+.line-form input,
+.line-form textarea {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--hero-border);
+  padding: 12px 0;
+  font-size: 0.875rem;
+  background: transparent;
+  outline: none;
+  color: var(--hero-dark);
+  resize: none;
+}
+.line-form input:focus,
+.line-form textarea:focus {
+  border-bottom-color: var(--hero-dark);
+}
+.req {
+  color: var(--hero-red);
+}
+.solid-btn {
+  align-self: flex-end;
+  margin-top: 16px;
+  padding: 14px 32px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  background-color: var(--hero-dark);
+  color: var(--hero-light);
+  transition: opacity 0.2s;
+}
+.solid-btn:hover {
+  opacity: 0.8;
+}
+.form-thanks {
+  font-size: 0.875rem;
+  color: var(--hero-dark);
+}
+
+.text-link {
+  display: inline-block;
+  text-decoration: underline;
+  font-size: 0.875rem;
+  color: var(--hero-dark);
+  transition: opacity 0.2s;
+}
+.text-link:hover {
+  opacity: 0.7;
+}
+
+/* 포트폴리오 계열 페이지 공통 바탕 */
+.hero-page {
+  min-height: 100vh;
+  background-color: var(--hero-light);
+  color: var(--hero-paragraphs);
+}
+
+/* =========================================================================
+   /portfolio — 히어로 + 포토 그리드
+   ========================================================================= */
+
+.portfolio {
+  min-height: 100vh;
+  color: var(--hero-paragraphs);
+  font-size: 18px;
+  line-height: 170%;
+  letter-spacing: 0.35px;
+}
+
+.hero-color-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  background-color: rgb(155, 43, 52);
+  pointer-events: none;
+  transition: opacity 0.7s ease-in-out;
+}
+
+.hero {
+  position: relative;
+  height: 250vh;
+}
+.hero-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 1000px;
+}
+.hero-text {
+  position: relative;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 7%;
+}
+.hero-title-wrap {
+  width: 90vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2vw 0;
+}
+.hero-title {
+  font-size: clamp(2rem, 6.5vw, 4.5rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  text-wrap: balance;
+  color: var(--hero-dark);
+}
+.hero-sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hero-divider {
+  width: 54px;
+  height: 1px;
+  margin: 18px 0 26px;
+  background-color: var(--hero-border);
+  display: flex;
+  justify-content: center;
+}
+.hero-divider > div {
+  width: 12px;
+  height: 1px;
+  background-color: var(--hero-dark);
+}
+.hero-subtitle {
+  text-transform: uppercase;
+  margin-bottom: 26px;
+  max-width: 390px;
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 132%;
+  color: var(--hero-dark);
+}
+
+.hero-img-block {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  will-change: opacity, filter, transform;
+}
+.hero-grid {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto auto;
+  place-items: center stretch;
+  gap: 15vw;
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale3d(0.8, 0.8, 1);
+  will-change: transform, opacity;
+}
+.hero-img-cell {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+.hero-img {
+  position: relative;
+  width: 40vw;
+  max-width: none;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 30px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+.hero-scroll-track {
+  width: 1px;
+  height: 26px;
+  overflow: hidden;
+  background-color: var(--hero-border);
+}
+.hero-scroll-line {
+  width: 1px;
+  height: 26px;
+  background-color: var(--hero-dark);
+}
+.hero-scroll-text {
+  margin-top: 12px;
+  font-size: 13px;
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 120%;
+  letter-spacing: 1.85px;
+}
+
+.photo-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1365px;
+  margin: 4vw auto;
+  position: relative;
+}
+.photo-grid-row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.photo-col {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 40px;
+  padding: 0 20px;
+  position: relative;
+  min-height: 1px;
+  margin-bottom: 40px;
+}
+.photo-link {
+  display: block;
+}
+.photo-img {
+  width: 100%;
+  max-width: 415px;
+  object-fit: cover;
+  transition: opacity 0.3s;
+}
+.photo-img:hover {
+  opacity: 0.9;
+}
+
+/* =========================================================================
+   /about
+   ========================================================================= */
+
+.about {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 128px 24px 80px;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 64px;
+}
+.about-img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+.about-bio {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.about-title {
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 32px;
+  color: var(--hero-dark);
+}
+.about-text {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 460px;
+  line-height: 1.625;
+}
+.about-contact {
+  margin-top: 40px;
+  font-size: 0.875rem;
+}
+.about-contact p {
+  margin-bottom: 4px;
+}
+.about-contact a {
+  text-decoration: underline;
+  color: var(--hero-dark);
+  transition: opacity 0.2s;
+}
+.about-contact a:hover {
+  opacity: 0.7;
+}
+
+/* =========================================================================
+   /artwork/[slug]
+   ========================================================================= */
+
+.artwork {
+  display: flex;
+  flex-direction: column;
+}
+.artwork-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
+}
+.artwork-split {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.artwork-media {
+  width: 100%;
+}
+.artwork-media img {
+  width: 100%;
+  height: 50vh;
+  object-fit: cover;
+}
+.artwork-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 32px;
+}
+.artwork-meta {
+  margin-bottom: 40px;
+  font-size: 0.875rem;
+  line-height: 2;
+}
+.artwork-title {
+  color: var(--hero-dark);
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+.artwork-desc {
+  font-size: 0.875rem;
+  line-height: 1.625;
+  margin-bottom: 48px;
+  max-width: 440px;
+}
+.artwork-form-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 32px;
+  color: var(--hero-dark);
+}
+.artwork-pager {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--hero-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pager-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+  transition: opacity 0.2s;
+}
+.pager-link:hover {
+  opacity: 0.7;
+}
+.pager-link--next {
+  text-align: right;
+}
+.pager-arrow {
+  transition: transform 0.2s;
+}
+.pager-link--prev:hover .pager-arrow {
+  transform: translateX(-4px);
+}
+.pager-link--next:hover .pager-arrow {
+  transform: translateX(4px);
+}
+.pager-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+  opacity: 0.5;
+}
+.pager-title {
+  color: var(--hero-dark);
+}
+
+/* =========================================================================
+   404
+   ========================================================================= */
+
+.center-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+}
+.center-box {
+  text-align: center;
+}
+.nf-code {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 24px;
+  opacity: 0.6;
+}
+.nf-title {
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 24px;
+  color: var(--hero-dark);
+}
+.nf-text {
+  font-size: 0.875rem;
+  margin-bottom: 40px;
+}
+
+/* =========================================================================
+   / — 감정의 다락방 (6장 다이어리)
+   ========================================================================= */
+
+.attic {
+  min-height: 100vh;
+  padding: 48px 16px;
+  background: radial-gradient(circle at 50% 0%, hsl(30 30% 28%), var(--attic-wood) 70%);
+  font-family: var(--font-serif);
+  color: var(--attic-ink);
+}
+.pen {
+  font-family: var(--font-pen);
+}
+
+/* 버튼 */
+
+/* 2장: 동의서 */
+
+/* 3장: 아티스트 카드 */
+
+/* 4장: 소스 수집 */
+
+/* 5장: 결과 */
+
+/* 6장: 취향의 서가 */
+
+/* 상세 모달 */
+
+/* =========================================================================
+   반응형
+   ========================================================================= */
+
+@media (min-width: 768px) {
+  .site-header {
+    padding: 24px 40px;
+  }
+  .pill--light {
+    font-size: 16px;
+    padding: 22px 52px;
+  }
+  .contact-title {
+    font-size: 2.25rem;
+  }
+
+  .hero-text {
+    padding: 0;
+  }
+  .hero-divider {
+    margin-bottom: 30px;
+  }
+  .hero-subtitle {
+    max-width: 450px;
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
+  .hero-img {
+    width: 30vw;
+  }
+
+  .photo-grid-row {
+    flex-direction: row;
+  }
+  .photo-col {
+    width: 50%;
+    margin-bottom: 0;
+  }
+
+  .about {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+  .about-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 96px;
+  }
+  .about-title,
+  .nf-title {
+    font-size: 3rem;
+  }
+
+  .artwork-close {
+    display: none;
+  }
+  .artwork-split {
+    flex-direction: row;
+  }
+  .artwork-media {
+    width: 50%;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  .artwork-media img {
+    height: 100%;
+  }
+  .artwork-info {
+    width: 50%;
+    padding: 112px 56px 64px;
+  }
+}
+
+@media (min-width: 992px) {
+  .hero-title-wrap {
+    max-width: 800px;
+  }
+  .hero-divider {
+    margin-bottom: 38px;
+  }
+  .hero-subtitle {
+    max-width: 490px;
+    font-size: 24px;
+    margin-bottom: 36px;
+  }
+  .pill--dark {
+    font-size: 16px;
+    padding: 20px 40px;
+  }
+  .hero-grid {
+    gap: 10vw;
+  }
+  .hero-img {
+    width: 20vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .photo-col {
+    width: 33.3333%;
+  }
+  .about {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+  .artwork-info {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+}
+
+/* =========================================================================
+   추가 — 감정 기록 다이어리로 개편하면서 생긴 요소들
+   ========================================================================= */
+
+/* 1장 — 열쇠로 다시 열기 */
+
+/* 2장 — 날인 자리 */
+
+/* 3장 — 오늘의 마음
+   상자 격자는 설문지처럼 읽혔다. 다이어리 줄 위에 낱말을 적어 두고,
+   고른 말에 펜으로 동그라미를 치는 모양으로 바꿨다. */
+/* 하나를 고르면 나머지는 한 걸음 물러나 고른 말이 먼저 읽힌다 */
+/* 폰에서는 누른 뒤 hover가 남아 칸이 떠 보였다. 마우스가 있을 때만 반응한다 */
+
+/* 4장 — 아티스트의 질문 */
+
+/* 5장 — 질문에 답하기 */
+
+/* 6장 — 열쇠 카드 */
+
+/* 7장 — 같은 마음을 남긴 사람 */
+
+/* 7장 — 서가 카드 (공감 버튼이 붙으면서 구조가 바뀜) */
+
+/* 상세 모달 — 화면보다 커지지 않게 하고 닫기 버튼을 둔다 */
+
+/* 한글 줄바꿈 — 단어 중간에서 끊기지 않게 한다 ("다층 오버레/이" 방지) */
+.attic {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* 긴 제목이 오른쪽 위 페이지 번호 밑으로 들어가지 않게 */
+
+/* 아티스트 이름과 부제를 두 줄로 — 부제가 길어도 모양이 무너지지 않는다 */
+
+/* =========================================================================
+   1장 — 다락방의 다이어리, 그리고 창작 에디션 티켓
+   모션은 페이드와 아주 느린 움직임만. 튀는 움직임은 쓰지 않는다.
+   ========================================================================= */
+
+/* 배경 — 아주 느리게 숨 쉬듯 움직인다 */
+
+/* 느리게 떠오르는 공통 등장 */
+
+/* 펼쳐진 다이어리 */
+/* 티켓이 나오면 다이어리는 한 걸음 물러난다 */
+
+/* ---------------- 티켓 ---------------- */
+
+.ticket {
+  display: flex;
+  width: 100%;
+  background: linear-gradient(168deg, hsl(42 46% 85%), hsl(38 40% 77%));
+  color: hsl(28 30% 13%);
+  box-shadow: 0 30px 56px hsl(0 0% 0% / 0.6);
+  clip-path: polygon(
+    0 2%, 1.5% 6%, 0 10%, 1.5% 14%, 0 18%, 1.5% 22%, 0 26%, 1.5% 30%,
+    0 34%, 1.5% 38%, 0 42%, 1.5% 46%, 0 50%, 1.5% 54%, 0 58%, 1.5% 62%,
+    0 66%, 1.5% 70%, 0 74%, 1.5% 78%, 0 82%, 1.5% 86%, 0 90%, 1.5% 94%, 0 98%,
+    100% 100%, 100% 0
+  );
+  animation: ticket-settle 1.6s cubic-bezier(0.22, 0.61, 0.36, 1) both 0.1s;
+}
+@keyframes ticket-settle {
+  from { opacity: 0; transform: translateY(26px) rotate(0.6deg); }
+  to { opacity: 1; transform: translateY(0) rotate(-0.7deg); }
+}
+
+/* 고유번호 — 이 장의 중심 */
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket {
+    animation: none !important;
+  }
+}
+
+/* 다이어리를 정해진 높이로 두고, 티켓이 나오면 높이째 물러나게 한다.
+   (scale만으로는 자리를 비켜주지 않아 버튼이 화면 밖으로 밀렸다) */
+
+/* 프로젝트 이름을 제목 위에 세운다 */
+
+/* =========================================================================
+   티켓 다시 — 오래 눌려 있던 종이. 빳빳한 인쇄물이 아니라 손때 묻은 입장권.
+   번호보다 "오늘의 마음 한 장"이라는 문장이 먼저 읽히게 한다.
+   ========================================================================= */
+@keyframes ticket-settle {
+  from { opacity: 0; transform: translateY(24px) rotate(0.4deg); }
+  to { opacity: 1; transform: translateY(0) rotate(-0.9deg); }
+}
+
+.ticket {
+  position: relative;
+  display: flex;
+  width: 100%;
+  box-shadow: none;
+  animation: none;
+  background:
+    /* 가장자리로 갈수록 그을린 색 */
+    radial-gradient(ellipse 118% 148% at 50% 50%, transparent 52%, hsl(30 32% 44% / 0.3) 100%),
+    /* 오래 눌린 얼룩 */
+    radial-gradient(ellipse 58% 38% at 16% 20%, hsl(34 38% 58% / 0.26), transparent 70%),
+    radial-gradient(ellipse 42% 52% at 84% 76%, hsl(28 34% 52% / 0.22), transparent 72%),
+    radial-gradient(ellipse 36% 30% at 62% 8%, hsl(32 30% 50% / 0.16), transparent 74%),
+    linear-gradient(166deg, hsl(41 42% 85%), hsl(37 36% 79%) 52%, hsl(33 32% 73%));
+  /* 손으로 뜯은 가장자리 — 일정한 톱니가 아니라 제각각 */
+  clip-path: polygon(
+    1.1% 1.3%, 20% 0.4%, 38% 1.2%, 57% 0.3%, 76% 1.1%, 92% 0.4%, 99.4% 1.4%,
+    99.0% 24%, 99.6% 51%, 99.0% 77%, 99.5% 98.5%,
+    80% 99.3%, 61% 98.5%, 42% 99.4%, 23% 98.6%, 2.1% 99.0%,
+    0.4% 92%, 2.2% 86%, 0.7% 80%, 2.5% 74%, 0.9% 68%, 2.0% 62%,
+    0.5% 56%, 2.4% 50%, 1.0% 44%, 2.2% 38%, 0.6% 32%, 1.9% 26%,
+    0.8% 20%, 2.3% 14%, 0.5% 8%
+  );
+}
+
+/* 종이 결 */
+.ticket::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.42;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.46'/%3E%3C/svg%3E");
+}
+
+/* 접혔던 자국 */
+.ticket::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(96deg, transparent 29.4%, hsl(30 28% 42% / 0.15) 30%, hsl(46 55% 95% / 0.3) 30.7%, transparent 31.4%),
+    linear-gradient(184deg, transparent 61%, hsl(30 28% 42% / 0.11) 61.5%, hsl(46 55% 95% / 0.24) 62.1%, transparent 62.8%);
+}
+
+/* 천공선 */
+
+/* 이 티켓이 무엇을 위한 자리인지 — 가장 먼저 읽히는 줄 */
+
+/* 티켓 아래 — 고유번호를 한 줄로 세운다 */
+
+/* =========================================================================
+   티켓 — 참고한 빈티지 입장권에 맞춰 다시. 크라프트 종이, 안쪽 테두리,
+   오래된 타자기 활자. 들어갈 때 LIAOLLET 도장이 찍힌다.
+   ========================================================================= */
+
+/* 누끼 딴 다이어리 — 배경색 없이 공간에 놓인다 */
+
+.ticket {
+  /* 크라프트 종이 */
+  background:
+    radial-gradient(ellipse 120% 150% at 50% 50%, transparent 46%, hsl(24 32% 38% / 0.36) 100%),
+    radial-gradient(ellipse 54% 36% at 20% 24%, hsl(26 34% 52% / 0.3), transparent 70%),
+    radial-gradient(ellipse 44% 50% at 82% 74%, hsl(20 30% 44% / 0.26), transparent 72%),
+    radial-gradient(ellipse 40% 28% at 64% 10%, hsl(28 30% 48% / 0.2), transparent 74%),
+    linear-gradient(164deg, hsl(28 38% 73%), hsl(25 33% 67%) 50%, hsl(22 29% 61%));
+  padding: 15px 13px;
+}
+.ticket::before {
+  opacity: 0.5;
+}
+
+/* 안쪽 테두리와 번호 칸 */
+
+/* LIAOLLET 입장 확인 도장 */
+
+/* 도장이 찍히는 순간 티켓이 한 번 눌린다 */
+
+/* 티켓 아래 — 한 줄씩만 */
+
+/* =========================================================================
+   입장 다시 — 실제 빈티지 티켓 종이를 쓰고, 글자는 영문으로 얹는다.
+   모든 움직임을 느리게. 튀거나 되돌아오는 움직임은 쓰지 않는다.
+   ========================================================================= */
+
+/* ---- 느린 등장 ---- */
+
+/* ---- 다이어리: 종이가 천천히 넘어간다 ---- */
+
+/* ---- 티켓: 실제 종이 위에 글자를 얹는다 ---- */
+@keyframes ticket-settle {
+  from { opacity: 0; transform: translateY(22px) rotate(0.2deg); }
+  to { opacity: 1; transform: translateY(0) rotate(-1.1deg); }
+}
+
+.ticket {
+  container-type: inline-size;
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 962 / 549;
+  padding: 0;
+  background: none;
+  clip-path: none;
+  box-shadow: none;
+  animation: none;
+}
+.ticket::before,
+.ticket::after {
+  content: none;
+}
+
+/* 테두리와 번호 칸 — 원본 티켓의 자리에 맞춘다 */
+
+/* ---- 도장: 천천히 내려와 눌린다 ---- */
+
+/* 도장이 닿는 순간 티켓이 아주 살짝 눌린다 */
+
+/* 도장이 번호 칸을 넘어가 글자가 잘려 보이지 않게 — 본문 안쪽에 눌리게 한다 */
+
+/* =========================================================================
+   V2 — 감정의 다락방 (lv-*)
+   시안(design/v2-mockup)을 옮긴 것. 모션은 느리게, 튕기는 움직임은 쓰지 않는다 (디자인 결정 2번)
+   ========================================================================= */
+
+:root {
+  --lv-paper: #f2e9da;
+  --lv-paper-2: #e6d9c4;
+  --lv-ink: #2b1d12;
+  --lv-soft: #5f4c3c;
+  --lv-wood: #3a281d;
+  --lv-red: #93303a;
+  --lv-gold: #e3cc9f;
+  --lv-cream: #f2e6cf;
+  --lv-lia: #8a3f2a;
+  --lv-ol: #3d5a45;
+  --lv-let: #b5401c;
+  --lv-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lv {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: radial-gradient(circle at 50% 0%, hsl(30 30% 28%), var(--lv-wood) 70%);
+  color: var(--lv-ink);
+  font-family: var(--font-serif);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.lv button { font-family: inherit; }
+.lv button.pen { font-family: var(--font-pen); }
+.lv :focus-visible { outline: 2px solid var(--lv-red); outline-offset: 2px; }
+.lv-rise { animation: lv-rise 2.4s var(--lv-ease) both; }
+/* 종이는 2.4초에 걸쳐 천천히 떠오르지만, 글자와 버튼은 앞쪽 3분의 1 안에 다 보이게 한다.
+   움직임은 잔잔하게 두고 관객이 누를 곳을 기다리지는 않게 */
+@keyframes lv-rise { 0% { opacity: 0; transform: translateY(16px); } 35% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+
+/* 종이 한 장 */
+.lv-paper { position: relative; max-width: 560px; margin: 32px auto 40px; padding: 40px 24px 28px; background: var(--lv-paper); box-shadow: 0 14px 28px rgb(0 0 0 / 0.35); }
+@media (max-width: 600px) { .lv-paper { margin: 26px 14px 32px; } }
+.lv-paper::before { content: ""; position: absolute; top: -12px; left: 26px; width: 92px; height: 26px; background: hsl(45 60% 75% / 0.8); transform: rotate(-2deg); }
+.lv-pno { position: absolute; top: 14px; right: 16px; font-family: var(--font-type); font-size: 0.75rem; color: var(--lv-soft); }
+.lv-ttl { margin: 0; font-size: 1.85rem; font-weight: 800; line-height: 1.3; }
+.lv-pensub { margin-top: 4px; font-size: 1.5rem; line-height: 1.3; color: var(--lv-soft); }
+.lv-body { margin-top: 12px; font-size: 1rem; line-height: 1.75; }
+.lv-hint { font-size: 0.92rem; color: var(--lv-soft); }
+
+.lv-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px; border: 0; background: var(--lv-ink); color: var(--lv-paper); font-size: 1rem; line-height: 1; cursor: pointer; text-decoration: none; transition: background 0.6s var(--lv-ease); }
+.lv-btn:disabled { background: transparent; color: hsl(25 15% 55%); box-shadow: inset 0 0 0 1px hsl(25 15% 75%); cursor: default; }
+.lv-btn.is-ghost { background: transparent; color: var(--lv-ink); box-shadow: inset 0 0 0 1px var(--lv-ink); }
+.lv-btn-full { width: 100%; }
+.lv-actions { margin-top: 28px; display: flex; justify-content: space-between; gap: 10px; }
+
+/* 로더: 다락방 아이콘 */
+.lv-loader { margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-family: var(--font-pen); font-size: 1.3rem; color: var(--lv-ink); }
+.lv-loader.is-dark { color: var(--lv-cream); }
+.lv-loader.is-inline { margin-top: 8px; flex-direction: row; gap: 10px; font-family: var(--font-serif); font-size: 0.88rem; color: var(--lv-soft); }
+
+/* ---------- 1 입장 ---------- */
+.lv-ent { position: relative; min-height: 100vh; min-height: 100dvh; display: flex; justify-content: center; color: #efe3cc; isolation: isolate; overflow: hidden; }
+.lv-ent-bg { position: absolute; inset: 0; z-index: -1; background: url(/attic/room.jpg) center / cover; }
+.lv-ent-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(20 14 10 / 0.55), rgb(20 14 10 / 0.35) 40%, rgb(20 14 10 / 0.88)); }
+.lv-ent-inner { position: relative; width: 100%; max-width: 420px; padding: 56px 22px 48px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.lv-ent-mark { margin-bottom: 10px; border-radius: 10px; opacity: 0.92; }
+.lv-brand { font-size: 0.95rem; letter-spacing: 0.42em; padding-left: 0.42em; color: var(--lv-gold); }
+.lv-ent-title { margin: 8px 0 0; font-size: 2.2rem; font-weight: 800; color: #f6ecd9; }
+.lv-kick { margin-top: 6px; font-family: var(--font-type); font-size: 0.68rem; letter-spacing: 0.3em; color: #b8a27e; }
+.lv-diary { position: relative; margin-top: 18px; width: 320px; max-width: 100%; }
+/* 손 사진 아래가 수평으로 잘리던 것을 배경 어둠에 녹인다 */
+.lv-diary-img { display: block; width: 100%; -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 98%); mask-image: linear-gradient(180deg, #000 72%, transparent 98%); }
+/* 오른쪽 장에 서가 작품이 끼워져 있고, 고리를 축으로 한 장씩 넘어간다 */
+.lv-leaf { position: absolute; left: 52.6%; top: 4.4%; width: 43.2%; height: 62.4%; perspective: 1200px; }
+.lv-pg { position: absolute; inset: 0; transform-origin: left center; transform-style: preserve-3d; transition: transform 2.6s cubic-bezier(0.45, 0.05, 0.3, 1); }
+.lv-pg-f, .lv-pg-b { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.lv-pg-f { background: #efe5d2; padding: 9% 9% 10% 13%; box-shadow: inset 7px 0 10px -7px rgb(0 0 0 / 0.45); }
+.lv-pg-b { background: #ece2cf; padding: 9% 13% 10% 9%; transform: rotateY(180deg); box-shadow: inset -7px 0 10px -7px rgb(0 0 0 / 0.4); }
+.lv-pg img { display: block; width: 100%; height: 100%; object-fit: cover; box-shadow: 0 2px 5px rgb(0 0 0 / 0.25); }
+.lv-pg-f::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(0 0 0 / 0.28), transparent 70%); opacity: 0; transition: opacity 1.3s ease; }
+.lv-pg.is-flip { transform: rotateY(-180deg); }
+.lv-pg.is-flip .lv-pg-f::after { opacity: 1; }
+/* 종이가 고리에 걸려 도는 것처럼 고리 부분만 오려 맨 위에 다시 얹는다 */
+.lv-diary-rings { position: absolute; inset: 0; width: 100%; clip-path: inset(10.4% 43.6% 41.6% 48.2%); pointer-events: none; }
+.lv-invite { margin-top: 26px; font-family: var(--font-pen); font-size: 1.6rem; color: #f0dfbd; }
+.lv-ent-cta { margin-top: 14px; width: 100%; max-width: 280px; min-height: 52px; border: 0; background: rgb(20 14 10 / 0.25); color: var(--lv-cream); box-shadow: inset 0 0 0 1px rgb(227 204 159 / 0.7); font-size: 1.05rem; cursor: pointer; transition: background 0.6s var(--lv-ease); }
+.lv-ent-cta:hover, .lv-ent-cta:focus-visible { background: rgb(227 204 159 / 0.14); }
+.lv-ent-cta.is-solid { background: var(--lv-cream); color: var(--lv-ink); box-shadow: none; }
+.lv-ent-cta:disabled { opacity: 0.85; cursor: default; }
+.lv-ent-link, .lv-back { margin-top: 14px; border: 0; background: none; color: var(--lv-gold); font-size: 0.95rem; text-decoration: underline; text-underline-offset: 5px; cursor: pointer; }
+.lv-back { position: absolute; top: 20px; left: 18px; margin: 0; font-size: 0.9rem; text-decoration: none; }
+
+/* 티켓 (글자 크기는 cqw 단위라 티켓 폭을 바꾸면 따라온다) */
+.lv-ticket { container-type: inline-size; position: relative; width: 100%; aspect-ratio: 962 / 549; margin-top: 22px; transform: rotate(-1.1deg); filter: drop-shadow(0 16px 24px rgb(0 0 0 / 0.5)); }
+.lv-ticket > img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.lv-tk-ink { position: absolute; left: 9.1%; top: 10.6%; right: 14.8%; bottom: 8.9%; display: flex; border: 0.42cqw solid rgb(46 28 18 / 0.88); color: #2e1c12; text-align: left; }
+.lv-tk-body { flex: 1; min-width: 0; padding: 4cqw 3cqw 3cqw 4cqw; display: flex; flex-direction: column; }
+.lv-tk-admit { font-family: var(--font-type); font-size: 2.9cqw; letter-spacing: 0.22em; }
+.lv-tk-head { margin: auto 0; font-family: var(--font-type); font-size: 8.4cqw; line-height: 1.26; letter-spacing: 0.04em; }
+.lv-tk-iss { font-family: var(--font-type); font-size: 2.1cqw; letter-spacing: 0.2em; color: #4a3020; }
+.lv-tk-cell { width: 15%; border-left: 0.42cqw solid rgb(46 28 18 / 0.88); display: flex; align-items: center; justify-content: center; }
+.lv-tk-no { writing-mode: vertical-rl; font-family: var(--font-type); font-size: 6.4cqw; letter-spacing: 0.2em; }
+.lv-tk-field { margin: auto 0; }
+.lv-tk-lab { font-family: var(--font-type); font-size: 4.2cqw; letter-spacing: 0.06em; }
+.lv-tk-show { font-family: var(--font-type); font-size: 10cqw; letter-spacing: 0.24em; }
+/* 도장: 제목을 덮지 않게 오른쪽 위 빈 종이 자리에. 눌리는 힘이 있어야 해서 1.35초 */
+.lv-stamp { position: absolute; right: 19%; top: 12%; width: 23cqw; height: 23cqw; border-radius: 50%; border: 0.6cqw double rgb(147 40 52 / 0.78); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5cqw; color: rgb(147 40 52 / 0.82); font-family: var(--font-type); mix-blend-mode: multiply; opacity: 0; transform: scale(1.9) rotate(-18deg); pointer-events: none; }
+.lv-stamp b { font-weight: 400; font-size: 3.6cqw; letter-spacing: 0.1em; }
+.lv-stamp span { font-size: 2.8cqw; letter-spacing: 0.1em; }
+.lv-stamp i { font-style: normal; font-size: 2.1cqw; }
+.lv-stamp.is-on, .lv-seal.is-on { animation: lv-press 1.35s cubic-bezier(0.22, 0.7, 0.2, 1) forwards; }
+@keyframes lv-press { 0% { opacity: 0; transform: scale(1.9) rotate(-18deg); } 60% { opacity: 1; transform: scale(0.98) rotate(-12deg); } 100% { opacity: 1; transform: scale(1) rotate(-12deg); } }
+.lv-slip { margin-top: 22px; color: var(--lv-cream); }
+.lv-slip-dim { margin-top: 10px; font-size: 0.85rem; color: #cdb995; }
+/* 고유번호는 명조로 차분하게, COPY는 상자 없이 가는 밑줄로 */
+.lv-code { margin-top: 14px; display: flex; align-items: baseline; gap: 14px; }
+.lv-code-lab { font-size: 0.8rem; letter-spacing: 0.08em; color: #cdb995; }
+.lv-code-no { font-weight: 700; font-size: 1.5rem; letter-spacing: 0.28em; color: #f6ecd9; }
+.lv-code button { border: 0; background: none; padding: 4px 0 2px; font-size: 0.72rem; letter-spacing: 0.3em; color: var(--lv-gold); border-bottom: 1px solid rgb(227 204 159 / 0.6); cursor: pointer; }
+/* 번호 찾기: 아래 여섯 칸 줄에 적으면 위 티켓에 찍힌다 */
+.lv-slots { position: relative; margin-top: 12px; display: flex; gap: 10px; justify-content: center; cursor: text; }
+.lv-slots input { position: absolute; inset: 0; width: 100%; opacity: 0; border: 0; font-size: 16px; }
+.lv-slots span { width: 30px; height: 42px; display: grid; place-items: end center; padding-bottom: 4px; border-bottom: 1.5px solid rgb(227 204 159 / 0.7); font-weight: 700; font-size: 1.5rem; color: #f6ecd9; }
+.lv-slots span.is-cur { border-bottom-color: #f6ecd9; }
+.lv-found { margin-top: 14px; min-height: 1.4em; font-size: 0.92rem; color: var(--lv-cream); }
+.lv-reveal { position: relative; width: 100%; max-width: 480px; padding-top: 40px; }
+.lv-reveal-img { display: block; width: 100%; box-shadow: 0 10px 22px rgb(0 0 0 / 0.25); }
+.lv-meta { margin-top: 12px; font-size: 0.85rem; color: var(--lv-soft); }
+.lv-reveal-title { margin-top: 4px; font-size: 1.4rem; font-weight: 800; }
+.lv-reveal-q { margin: 2px 0 16px; font-size: 1.35rem; line-height: 1.35; }
+
+/* ---------- 2 동의서 (줄눈 없음) ---------- */
+.lv-agree { margin: 20px 0 0; padding: 0; list-style: none; display: grid; gap: 18px; }
+.lv-agree label { position: relative; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; cursor: pointer; }
+.lv-agree input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.lv-chk { width: 28px; height: 28px; margin-top: 2px; box-shadow: inset 0 0 0 1.5px var(--lv-soft); display: grid; place-items: center; }
+.lv-chk svg { width: 22px; height: 22px; stroke: var(--lv-ink); stroke-width: 3; fill: none; stroke-linecap: round; stroke-dasharray: 30; stroke-dashoffset: 30; transition: stroke-dashoffset 0.9s var(--lv-ease); }
+.lv-agree input:checked + .lv-chk svg { stroke-dashoffset: 0; }
+.lv-agree input:focus-visible + .lv-chk { outline: 2px solid var(--lv-red); outline-offset: 2px; }
+.lv-agree b { display: block; font-size: 1rem; line-height: 1.55; }
+.lv-agree small { display: block; margin-top: 2px; font-size: 0.85rem; line-height: 1.6; color: var(--lv-soft); }
+.lv-seal-row { margin-top: 24px; display: flex; align-items: center; gap: 16px; min-height: 96px; }
+.lv-seal { width: 92px; height: 92px; flex: 0 0 auto; border-radius: 50%; border: 3px double rgb(147 40 52 / 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgb(147 40 52 / 0.85); font-family: var(--font-type); mix-blend-mode: multiply; opacity: 0; transform: scale(1.9) rotate(-16deg); }
+.lv-seal b { font-weight: 400; font-size: 0.68rem; letter-spacing: 0.12em; }
+.lv-seal span { font-size: 0.86rem; letter-spacing: 0.12em; }
+.lv-seal i { font-style: normal; font-size: 0.55rem; }
+
+/* ---------- 3 오늘의 마음 (칸 + 잉크 번짐) ---------- */
+.lv-emos { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (min-width: 520px) { .lv-emos { grid-template-columns: repeat(4, 1fr); } }
+.lv-emo { position: relative; overflow: hidden; min-height: 52px; border: 0; background: transparent; box-shadow: inset 0 0 0 1px var(--lv-soft); color: var(--lv-ink); font-size: 1rem; cursor: pointer; isolation: isolate; }
+/* 누른 자리에 잉크 한 방울이 떨어져 스미듯 칸을 채운다. 가장자리는 노이즈로 일그러뜨린다 */
+.lv-ink { position: absolute; z-index: -1; left: var(--x, 50%); top: var(--y, 50%); width: 260%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #1f140d 0 50%, rgb(31 20 13 / 0.75) 57%, rgb(31 20 13 / 0.25) 63%, transparent 68%); filter: url(#lv-ink-bleed) blur(3px); transform: translate(-50%, -50%) scale(0); pointer-events: none; }
+.lv-emo.is-on { color: var(--lv-paper); transition: color 1.2s ease 0.5s; }
+.lv-emo.is-on .lv-ink { animation: lv-ink 2.8s cubic-bezier(0.25, 0.6, 0.35, 1) forwards; }
+@keyframes lv-ink { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0.6; } 12% { transform: translate(-50%, -50%) scale(0.08); opacity: 0.95; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: url(#lv-ink-bleed) blur(0); } }
+.lv-write { margin-top: 16px; display: grid; gap: 6px; }
+.lv-write label { font-size: 0.9rem; color: var(--lv-soft); }
+.lv-write textarea { width: 100%; height: 72px; border: 0; resize: none; box-shadow: inset 0 0 0 1px var(--lv-soft); background: rgb(255 255 255 / 0.35); padding: 10px 14px; font-size: 1.3rem; line-height: 1.35; color: var(--lv-ink); }
+.lv-write textarea::placeholder { color: rgb(95 76 60 / 0.5); }
+
+/* ---------- 4 시선 고르기 ---------- */
+.lv-cards { margin-top: 16px; display: grid; gap: 14px; }
+.lv-card { display: block; width: 100%; text-align: left; border: 0; padding: 12px 12px 14px; background: #faf6ee; box-shadow: inset 0 0 0 1px var(--lv-paper-2); color: var(--lv-ink); cursor: pointer; transition: box-shadow 0.6s var(--lv-ease); }
+.lv-card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.lv-card-q { display: block; margin-top: 10px; font-size: 1.65rem; line-height: 1.25; }
+.lv-card-name { display: block; margin-top: 6px; font-size: 1.15rem; color: var(--c); }
+.lv-card-p { display: block; margin-top: 4px; font-size: 0.88rem; line-height: 1.6; color: var(--lv-soft); }
+.lv-card.is-on { box-shadow: inset 0 0 0 2px var(--c); }
+
+/* ---------- 5 시선 상세 (아티스트 색) ---------- */
+.lv-det { max-width: 560px; min-height: 100vh; margin: 0 auto; padding: 22px 20px 36px; color: var(--lv-ink); transition: background 0.8s var(--lv-ease); }
+.lv-det.is-lia { --c: var(--lv-lia); --t: #f4e9e1; background: #fbf6f1; }
+.lv-det.is-ol { --c: var(--lv-ol); --t: #e5ede7; background: #f5f8f5; }
+.lv-det.is-let { --c: var(--lv-let); --t: #f9e5dc; background: #fdf6f2; }
+.lv-det-top { display: flex; justify-content: space-between; align-items: baseline; }
+.lv-det-top button { border: 0; background: none; padding: 6px 0; font-size: 0.9rem; color: var(--c); cursor: pointer; }
+.lv-det-top b { color: var(--c); }
+.lv-det-img { display: block; margin-top: 16px; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; }
+.lv-det-title { margin: 18px 0 0; font-size: 1.55rem; line-height: 1.35; }
+.lv-det-d { margin-top: 8px; line-height: 1.7; }
+.lv-det-apply { margin-top: 14px; padding: 12px 14px; background: var(--t); font-size: 0.9rem; line-height: 1.6; }
+.lv-det-go { margin-top: 22px; background: var(--c); color: #fff; }
+
+/* ---------- 6 질문에 답하기 ---------- */
+.lv-tint.is-lia { --c: var(--lv-lia); background: #f4e9dd; }
+.lv-tint.is-ol { --c: var(--lv-ol); background: #ecefe9; }
+.lv-tint.is-let { --c: var(--lv-let); background: #f6e9e1; }
+.lv-ctx { display: flex; flex-wrap: wrap; gap: 6px; }
+.lv-ctx span { padding: 2px 10px; background: color-mix(in srgb, var(--c) 12%, transparent); color: var(--c); font-size: 0.85rem; }
+.lv-asks { margin-top: 14px; font-size: 1.4rem; color: var(--c); }
+/* 색 있는 마스킹 테이프에 낱말을 적어 붙인 모양. 양 끝은 손으로 끊은 듯 */
+/* 답 칸의 줄을 글줄 높이(36px)에 맞춰 글자가 줄 위에 앉게 한다 */
+.lv-ans { margin-top: 12px; width: 100%; height: 144px; border: 0; resize: none; padding: 0 2px; background: repeating-linear-gradient(transparent 0 35px, rgb(95 76 60 / 0.25) 35px 36px); line-height: 36px; font-size: 1.45rem; color: var(--lv-ink); }
+.lv-polas { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.lv-pola { width: 84px; padding: 5px 5px 16px; border: 0; background: #fff; box-shadow: 0 4px 10px rgb(0 0 0 / 0.18); cursor: pointer; }
+.lv-pola:nth-child(odd) { transform: rotate(-3deg); }
+.lv-pola:nth-child(even) { transform: rotate(2deg); }
+.lv-pola img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.lv-pola.is-add { height: 104px; padding: 0; background: transparent; box-shadow: inset 0 0 0 1px var(--lv-soft); font-size: 0.8rem; color: var(--lv-soft); transform: none; }
+/* 사진 → 다락방이 읽어 낸 말 → 나의 문장, 순서를 번호로 보여 준다 */
+.lv-step-h { margin-top: 18px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; color: var(--lv-ink); }
+.lv-step-h b { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--c, var(--lv-lia)); color: #fff; font-size: 0.75rem; }
+/* 7장: 마음 → 시선 → 사진 → 문장이 이어져 작품이 된 과정을 한눈에. 왼쪽 실선이 한 줄로 꿰어 준다 */
+.lv-chain { margin-top: 18px; padding: 14px 16px; background: rgb(255 255 255 / 0.5); }
+.lv-chain-h { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--lv-soft); }
+.lv-chain ol { margin: 10px 0 0; padding: 0 0 0 14px; list-style: none; border-left: 1px solid var(--lv-soft); display: grid; gap: 8px; }
+.lv-chain li { position: relative; display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 8px; align-items: baseline; font-size: 0.85rem; }
+.lv-chain li::before { content: ""; position: absolute; left: -18px; top: 0.45em; width: 7px; height: 7px; border-radius: 50%; background: var(--lv-ink); }
+.lv-chain li span { color: var(--lv-soft); }
+.lv-chain li b { font-weight: 600; color: var(--lv-ink); word-break: keep-all; }
+.lv-chain li b.pen { font-weight: 400; font-size: 1.15rem; line-height: 1.3; }
+/* 6장 맨 아래, 버튼 바로 위. 문장을 쓰는 대로 바뀐다 */
+.lv-tags-end { margin-top: 14px; }
+.lv-tags-end p { font-size: 0.8rem; color: var(--lv-soft); }
+/* 탭 아래 한 줄 풀이, 그 아래 다락방이 적은 이야기. 이야기는 손글씨로, 다이어리 본문처럼 */
+/* 1번: 고른 마음을 짚고 그 마음에 맞춘 질문을 손글씨로 */
+/* 앞에서 고른 마음은 굵기만 살짝 달리해 조용히 짚는다. 다른 글보다 튀지 않게 */
+.lv-step-h em { font-style: normal; font-size: 0.9rem; font-weight: 700; color: var(--lv-ink); }
+.lv-step-ask { margin-top: 4px; font-size: 1.3rem; line-height: 1.35; color: var(--lv-ink); word-break: keep-all; }
+/* 다락방에게 이야기를 청하는 버튼. 누를 때만 LLM을 부른다 */
+/* 완료 꼬리표: 크라프트지 짐표처럼. 펀치 구멍, 바늘땀 테두리, 타자기 글자, 살짝 기울어 붙어 있다.
+   모든 움직임은 아주 느리고 차분하게. 다 읽으면 꼬리표가 조용히 옅어질 뿐 도장 같은 효과는 없다 */
+.lv-notetag { position: relative; display: flex; align-items: center; gap: 10px; margin: 16px auto 0; padding: 10px 18px 10px 30px; width: fit-content; border: 0; background: #d9c29b repeating-linear-gradient(115deg, rgb(255 255 255 / 0.06) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 4px #d9c29b, inset 0 0 0 5px rgb(70 45 20 / 0.45), 0 3px 6px rgb(60 35 15 / 0.22); border-radius: 3px 8px 8px 3px; transform: rotate(-1.5deg); color: #3a2618; cursor: pointer; max-height: 90px; overflow: hidden; transition: transform 2.8s var(--lv-ease), filter 2.8s var(--lv-ease), opacity 2.8s var(--lv-ease), max-height 2.8s var(--lv-ease), margin 2.8s var(--lv-ease), padding 2.8s var(--lv-ease); }
+.lv-notetag::before { content: ""; position: absolute; left: 13px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--lv-paper, #f3ecdf); box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.35); }
+.lv-notetag:hover { transform: rotate(-0.8deg); filter: brightness(1.03); }
+.lv-notetag b { font-family: var(--font-pen); font-weight: 400; font-size: 1.3rem; line-height: 1; }
+.lv-notetag i { font-style: normal; font-family: var(--font-type); font-size: 0.62rem; letter-spacing: 0.22em; opacity: 0.75; }
+.lv-notetag:disabled { cursor: default; }
+/* 다 읽으면 꼬리표는 천천히 접혀 사라지고, 아래 오늘의 이야기 칸이 그 자리로 올라온다 */
+.lv-notetag.is-gone { opacity: 0; max-height: 0; margin-top: 0; padding-top: 0; padding-bottom: 0; pointer-events: none; }
+/* 다락방이 적어 준 글은 칸 안에서 천천히 배어 나온다 */
+.lv-ans.is-fill { animation: lv-rise 3s var(--lv-ease) both; }
+.lv-notetag:disabled:hover { transform: rotate(-1.5deg); filter: none; }
+.lv-step-sub { margin-top: 4px; font-size: 0.8rem; color: var(--lv-soft); line-height: 1.6; }
+.lv-chain-h.is-end { margin: 14px 0 6px; }
+.lv-chain-rel { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--lv-soft); font-size: 0.9rem; line-height: 1.6; word-break: keep-all; }
+.lv-labels { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+.lv-label { border: 0; padding: 4px 10px; background: #fffaf2; box-shadow: inset 0 0 0 1px rgb(60 40 25 / 0.35); color: #2b1d12; font-size: 0.88rem; font-weight: 600; cursor: pointer; clip-path: polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
+.lv-label.is-on { background: var(--c, var(--lv-ink)); box-shadow: none; color: #fff; }
+.lv-btn.is-tint { background: var(--c); }
+.lv-btn.is-tint:disabled { background: transparent; }
+.lv-notice { margin-top: 16px; font-size: 1.25rem; line-height: 1.4; color: var(--lv-red); }
+
+/* ---------- 7 결과 ---------- */
+.lv-result { display: block; margin-top: 16px; width: 100%; box-shadow: 0 10px 22px rgb(0 0 0 / 0.25); }
+.lv-stub-row { margin-top: 16px; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; align-items: center; }
+.lv-stub { container-type: inline-size; position: relative; aspect-ratio: 962 / 549; transform: rotate(-2deg); filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.3)); }
+.lv-stub img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.lv-stub span { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-type); font-size: 13cqw; letter-spacing: 0.12em; color: #2e1c12; }
+.lv-stub-row p { font-size: 0.85rem; line-height: 1.6; color: var(--lv-soft); }
+/* 옛 다이어리 앞장의 장서표처럼, 이 한 장을 남긴 사람을 손글씨로 적는다 */
+.lv-plate { position: relative; margin: 22px 6px 4px; padding: 16px 18px 12px; text-align: center; background: #f6ecd6; box-shadow: inset 0 0 0 1px rgb(90 60 35 / 0.55), inset 0 0 0 5px #f6ecd6, inset 0 0 0 6px rgb(90 60 35 / 0.35), 0 6px 14px rgb(60 35 15 / 0.18); transform: rotate(-1deg); }
+.lv-plate::before, .lv-plate::after { content: ""; position: absolute; top: -9px; width: 54px; height: 20px; background: hsl(45 60% 75% / 0.8); }
+.lv-plate::before { left: 14px; transform: rotate(-6deg); }
+.lv-plate::after { right: 14px; transform: rotate(5deg); }
+.lv-plate-top { font-family: var(--font-type); font-size: 0.72rem; letter-spacing: 0.24em; color: #5a3c24; }
+.lv-plate-lab { display: block; margin-top: 2px; font-size: 0.78rem; color: var(--lv-soft); }
+.lv-plate input { display: block; width: 86%; margin: 4px auto 0; min-height: 50px; border: 0; background: repeating-linear-gradient(90deg, rgb(90 60 35 / 0.6) 0 3px, transparent 3px 7px) left bottom / 100% 1.5px no-repeat; text-align: center; font-size: 2rem; color: var(--lv-ink); outline: none; }
+.lv-plate input::placeholder { font-size: 1.2rem; color: rgb(90 60 35 / 0.4); }
+.lv-plate-foot { margin-top: 6px; font-family: var(--font-type); font-size: 0.7rem; letter-spacing: 0.12em; color: #6a4a30; }
+.lv-plate-hint { margin-top: 8px; font-size: 0.72rem; color: var(--lv-soft); }
+/* 큐레이터 노트는 미술관 작품 라벨 형식 */
+.lv-label-card { margin-top: 18px; padding: 16px; background: #fffaf2; box-shadow: inset 0 0 0 1px var(--lv-paper-2); }
+.lv-to { font-size: 1.35rem; color: var(--lv-red); margin-bottom: 4px; }
+.lv-label-card h3 { margin: 0; font-size: 1.2rem; }
+.lv-label-card dl { margin: 8px 0 0; display: grid; grid-template-columns: 3.4em minmax(0, 1fr); gap: 3px 10px; font-size: 0.86rem; }
+.lv-label-card dt { color: var(--lv-soft); }
+.lv-label-card dd { margin: 0; }
+.lv-note { margin-top: 10px; font-size: 0.94rem; line-height: 1.75; }
+.lv-from { margin-top: 8px; text-align: right; font-size: 1.15rem; color: var(--lv-soft); }
+.lv-res-actions { margin-top: 20px; display: grid; gap: 8px; }
+.lv-res-links { display: flex; justify-content: center; gap: 16px; }
+.lv-res-links button, .lv-res-links a { border: 0; background: none; padding: 6px 0; font-size: 0.9rem; color: var(--lv-ink); text-decoration: underline; text-underline-offset: 4px; white-space: nowrap; cursor: pointer; }
+.lv-toast { min-height: 1.3em; margin-top: 6px; text-align: center; font-size: 0.82rem; color: var(--lv-soft); }
+
+/* ---------- 8 서가 ---------- */
+.lv-shelf-brand { font-size: 0.85rem; letter-spacing: 0.36em; color: var(--lv-soft); }
+.lv-mine { margin-top: 16px; display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 14px; align-items: end; padding: 12px; background: #fffaf2; }
+.lv-mine img { width: 130px; transform: rotate(-2deg); }
+.lv-mine-k { font-size: 1.2rem; color: var(--lv-red); }
+.lv-mine-sig { font-size: 2rem; line-height: 1.1; }
+.lv-mine-no { font-family: var(--font-type); font-size: 0.78rem; letter-spacing: 0.14em; color: var(--lv-soft); }
+.lv-mine-q { margin-top: 4px; font-size: 1.15rem; line-height: 1.3; }
+.lv-sec { margin: 24px 0 0; font-size: 1.05rem; }
+.lv-filters { margin-top: 10px; display: flex; gap: 6px; }
+.lv-filters button { flex: 1 1 0; min-width: 0; min-height: 40px; border: 0; background: transparent; box-shadow: inset 0 0 0 1px var(--lv-soft); font-size: 1rem; color: var(--lv-ink); cursor: pointer; }
+.lv-filters button.is-artist { color: var(--k); box-shadow: inset 0 0 0 1px var(--k); font-weight: 700; }
+.lv-filters button.is-on { background: var(--lv-ink); color: var(--lv-paper); }
+.lv-filters button.is-artist.is-on { background: var(--k); color: #fff; }
+.lv-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 520px) { .lv-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.lv-w { background: #fffaf2; padding: 6px 6px 8px; }
+.lv-w-open { display: block; width: 100%; border: 0; padding: 0; background: none; text-align: left; cursor: pointer; }
+/* LIA·OL 작품은 글 띠가 바탕과 같은 색이라 작아 보였다. 같은 테두리를 둘러 크기를 맞춰 읽히게 */
+.lv-w img, .lv-mine img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; margin-bottom: 8px; box-shadow: 0 0 0 1px rgb(70 45 25 / 0.32), 0 4px 10px rgb(0 0 0 / 0.16); }
+.lv-mine img { width: 130px; }
+.lv-w-name { display: block; margin-top: 4px; font-size: 1rem; font-weight: 700; }
+/* 사진과 글 사이에 숨 쉴 여백을 둔다 */
+.lv-w-q { display: block; margin-top: 4px; padding: 0 2px; font-size: 1.05rem; line-height: 1.3; color: var(--lv-ink); }
+.lv-like { margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; min-height: 32px; border: 0; background: none; padding: 0; font-size: 0.82rem; color: var(--lv-soft); cursor: pointer; }
+.lv-like svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linejoin: round; }
+.lv-w-acts { display: flex; flex-wrap: wrap; gap: 0 10px; }
+/* 시선 아래 줄에 서명한 별명과 고유 번호를 아주 작게 */
+.lv-w-name small { display: block; white-space: nowrap; margin-top: 1px; font-family: var(--font-type); font-weight: 400; font-size: 0.66rem; letter-spacing: 0.04em; color: var(--lv-soft); }
+/* 한마디: 작은 쪽지처럼 번갈아 살짝 기울어 붙는다 */
+.lv-notes { margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgb(60 40 25 / 0.35); }
+.lv-notes-k { font-family: var(--font-type); font-size: 0.62rem; letter-spacing: 0.3em; color: #7a5a3e; }
+.lv-slips { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.lv-slips li { padding: 8px 12px; background: #fffaf2; box-shadow: 0 1px 3px rgb(60 35 15 / 0.15); font-size: 1.15rem; line-height: 1.3; transform: rotate(-0.6deg); animation: lv-rise 2.4s var(--lv-ease) both; }
+.lv-slips li:nth-child(even) { transform: rotate(0.5deg); }
+.lv-slips li small { display: block; margin-top: 2px; font-family: var(--font-serif); font-size: 0.7rem; color: var(--lv-soft); }
+.lv-slips-empty { margin-top: 8px; font-size: 0.85rem; color: var(--lv-soft); }
+.lv-slip-form { margin-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; border-bottom: 1px solid rgb(60 40 25 / 0.4); }
+.lv-slip-form input { border: 0; background: transparent; padding: 8px 2px; font-size: 1.2rem; color: var(--lv-ink); outline: none; }
+.lv-slip-form button { border: 0; background: none; font-size: 0.85rem; color: var(--lv-ink); cursor: pointer; }
+.lv-slip-hint { margin-top: 8px; font-size: 0.72rem; color: var(--lv-soft); }
+.lv-like.is-on { color: var(--lv-red); }
+.lv-like.is-on svg { fill: currentColor; }
+/* 서가 끝의 초대장: 다락방 집 모양 봉랍과 1장과 같은 종이 티켓 */
+/* 초대장: 얇은 선 하나, 아이콘과 한 줄, 글자 버튼만. 장식은 덜어 냈다 */
+/* 티켓 건네기: 입장 때 받은 그 티켓을 한 장 더 건네는 자리 */
+.lv-inv { margin: 32px 0 8px; padding: 22px 0 18px; border-top: 1px solid rgb(110 80 50 / 0.3); border-bottom: 1px solid rgb(110 80 50 / 0.3); text-align: center; }
+.lv-inv-kick { font-family: var(--font-type); font-size: 0.66rem; letter-spacing: 0.32em; color: #7a5a3e; }
+.lv-inv-line { margin-top: 6px; font-size: 1rem; line-height: 1.55; word-break: keep-all; color: var(--lv-ink); }
+.lv-inv .lv-ticket { margin: 16px auto 18px; max-width: 420px; filter: drop-shadow(0 10px 16px rgb(60 40 20 / 0.28)); }
+.lv-inv-url { margin-top: 10px; width: 100%; padding: 10px 12px; border: 1px solid rgb(110 80 50 / 0.45); border-radius: 4px; background: #fffaf0; color: var(--lv-ink); font-family: var(--font-type); font-size: 0.85rem; }
+.lv-inv .lv-toast { text-align: center; }
+.lv-quiet { display: block; margin: 18px auto 0; border: 0; background: none; padding: 8px; font-size: 0.85rem; color: var(--lv-soft); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+
+/* 작품 상세 */
+.lv-modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px max(16px, env(safe-area-inset-left, 0px)); background: rgb(20 14 10 / 0.72); overflow-y: auto; }
+.lv-modal-body { position: relative; width: 100%; max-width: 460px; max-height: calc(100dvh - 40px); overflow-y: auto; padding: 50px 18px 18px; background: var(--lv-paper); animation: lv-rise 1.2s var(--lv-ease) both; }
+.lv-modal-body > img { display: block; width: 100%; }
+.lv-modal-close { position: absolute; top: 10px; right: 12px; border: 0; background: none; padding: 8px; font-size: 0.9rem; color: var(--lv-ink); cursor: pointer; }
+
+/* 한 티켓으로 남긴 여러 장 사이를 오간다 */
+.lv-hits { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+.lv-hits button { border: 1px solid rgb(60 40 25 / 0.35); background: transparent; padding: 4px 10px; font-family: var(--font-type); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--lv-ink); cursor: pointer; }
+.lv-hits button.is-on { background: var(--lv-ink); color: var(--lv-paper); border-color: var(--lv-ink); }
+.lv-mine-hidden { margin-top: 6px; font-size: 0.78rem; line-height: 1.6; color: var(--lv-soft); word-break: keep-all; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lv-rise, .lv-modal-body { animation: none; }
+  .lv-notetag, .lv-notetag.is-gone { transition: none; }
+  .lv-ans.is-fill, .lv-slips li { animation: none; }
+  .lv-pg { transition: none; }
+  .lv-stamp.is-on, .lv-seal.is-on { animation: none; opacity: 1; transform: rotate(-12deg); }
+  .lv-emo.is-on .lv-ink { animation: none; transform: translate(-50%, -50%) scale(1); }
+  .lv-chk svg { transition: none; }
+}
+
+/* ---------- 운영자 화면 (/admin). 전시 화면이 아니라 꾸밈 없이 ---------- */
+.adm { max-width: 760px; margin: 0 auto; padding: 24px 16px 60px; font-family: var(--font-serif); color: #2b1d12; background: #fbf6ec; min-height: 100dvh; }
+.adm h1 { font-size: 1.4rem; }
+.adm h2 { margin-top: 28px; font-size: 1.05rem; }
+.adm-login { margin-top: 12px; display: flex; gap: 8px; }
+.adm-login input { flex: 1; padding: 8px; border: 1px solid #b9a88f; background: #fff; }
+.adm button { padding: 6px 12px; border: 1px solid #2b1d12; background: #fff; cursor: pointer; white-space: nowrap; }
+.adm-msg { margin-top: 10px; color: #8a3f2a; }
+.adm-list { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.adm-list li { display: grid; grid-template-columns: 60px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px; background: #fff; border: 1px solid #e3d8c6; }
+.adm-list.is-notes li { grid-template-columns: minmax(0, 1fr) auto; }
+.adm-list li.is-hidden { opacity: 0.45; }
+.adm-list img { width: 60px; aspect-ratio: 3 / 4; object-fit: cover; }
+.adm-list p { margin: 2px 0 0; font-size: 0.85rem; word-break: keep-all; }
+.adm-list small { font-size: 0.72rem; color: #8a7a66; }
+
+/* 결과 화면의 주인공: 다락방이 보내는 편지 한 장(엮인 과정 + 작품 라벨을 합친 것) */
+.lv-letter { position: relative; margin-top: 20px; padding: 22px 20px 18px; background: #fffaf2 repeating-linear-gradient(transparent 0 31px, rgb(120 90 60 / 0.08) 31px 32px); box-shadow: 0 6px 16px rgb(60 35 15 / 0.12), inset 0 0 0 1px rgb(110 80 50 / 0.18); }
+.lv-letter::before { content: ""; position: absolute; top: -9px; left: 50%; width: 64px; height: 18px; margin-left: -32px; background: rgba(240, 215, 150, 0.7); transform: rotate(-2deg); }
+.lv-letter h3 { margin: 6px 0 0; font-size: 1.35rem; font-weight: 800; line-height: 1.35; color: var(--lv-ink); word-break: keep-all; }
+.lv-lt-open, .lv-lt-body { margin-top: 12px; font-size: 0.92rem; line-height: 1.85; color: var(--lv-ink); word-break: keep-all; }
+.lv-lt-open b { font-weight: 700; }
+.lv-lt-quote { margin: 14px 0 0; padding: 4px 0 4px 12px; border-left: 2px solid var(--lv-soft); font-size: 1.3rem; line-height: 1.45; color: var(--lv-ink); word-break: keep-all; white-space: pre-line; }
+.lv-lt-foot { margin-top: 16px; padding-top: 12px; border-top: 1px dashed rgb(110 80 50 / 0.35); }
+.lv-lt-foot .lv-labels { margin-top: 0; }
+.lv-lt-sign { margin-top: 10px; text-align: right; font-family: var(--font-type); font-size: 0.66rem; letter-spacing: 0.06em; color: var(--lv-soft); line-height: 1.6; }
+.lv-lt-sign .pen { font-size: 1.15rem; letter-spacing: 0; color: var(--lv-ink); }
+
+/* 오늘 이미 남긴 한 장 (1장, 하루 한 장 제한) */
+.lv-today-work { margin-top: 18px; text-align: left; }
+.lv-today-work .lv-btn-full + .lv-btn-full { margin-top: 8px; }
+
+/* ---------------------------------------------------------------------------
+   밝은 글씨 가독성. 밝은 글씨는 사진 배경에서 묻히기 쉬워, 모든 밝은 글씨가 바로 읽히게 한다:
+   1) 사진 위 어둠막을 글자가 놓이는 가운데까지 충분히 진하게
+   2) 사진 위 밝은 글씨에는 얇은 그림자를 깔아 배경의 밝은 부분과 떨어뜨린다
+   3) 흐리던 금색·베이지 글씨를 더 밝게, 작은 글씨는 조금 크고 굵게
+   종이(밝은 바탕) 위 글씨와 티켓 위 글씨, 밝은 버튼 안 글씨에는 그림자를 쓰지 않는다
+   --------------------------------------------------------------------------- */
+.lv-ent-bg::after { background: linear-gradient(180deg, rgb(16 11 8 / 0.72), rgb(16 11 8 / 0.62) 45%, rgb(16 11 8 / 0.9)); }
+.lv-ent { color: #fbf3e4; text-shadow: 0 1px 2px rgb(0 0 0 / 0.85), 0 0 12px rgb(0 0 0 / 0.55); }
+.lv-ent .lv-ticket, .lv-ent .lv-paper, .lv-ent .lv-ent-cta.is-solid, .lv-ent .lv-diary { text-shadow: none; }
+.lv-brand { color: #f3dca6; font-weight: 600; }
+.lv-kick { color: #e9d6b0; font-size: 0.74rem; font-weight: 600; }
+.lv-slip { color: #fbf3e4; font-weight: 600; }
+.lv-slip-dim, .lv-code-lab { color: #eadbbd; font-size: 0.9rem; }
+.lv-found { color: #ffe9c2; font-weight: 600; }
+.lv-ent-link, .lv-back { color: #f3dca6; font-weight: 600; }
+.lv-code button { color: #f3dca6; font-weight: 700; border-bottom-color: #f3dca6; }
+.lv-ent-cta { background: rgb(16 11 8 / 0.55); color: #fbf3e4; box-shadow: inset 0 0 0 1.5px #e9d6b0; font-weight: 600; }
+.lv-loader.is-dark { color: #fbf3e4; }
+.lv-slots span { border-bottom-color: #e9d6b0; }
+
+/* 색 바탕 위 흰 글씨는 바탕을 충분히 진하게 둔다(LET의 주황빛 빨강은 조금 어둡게 눌러 쓴다) */
+.lv-label.is-on, .lv-step-h b, .lv-det-go, .lv-filters button.is-artist.is-on { font-weight: 700; }
+.is-let .lv-label.is-on, .is-let .lv-step-h b, .is-let .lv-det-go { background: #9a3414; }
+.lv-filters button.is-artist.is-on[style*="--lv-let"] { background: #9a3414; }
+.adm-acts { display: flex; flex-direction: column; gap: 6px; }
+.adm button.is-danger { border-color: #8a1f1f; color: #8a1f1f; }
+.adm button.is-danger:hover { background: #8a1f1f; color: #fff; }
+
+/* 시선 상세 갤러리: 넣어 둔 사진을 가로로 넘겨 본다 */
+.lv-det-gallery { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; }
+.lv-det-gallery img { flex: 0 0 62%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; scroll-snap-align: start; }
