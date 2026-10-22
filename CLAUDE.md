@@ -84,7 +84,7 @@ composeGraph  START → llm ─┬→ tidy ─────┐
 | `story` | p.06 오늘의 이야기 |
 | `tags` | p.06 활성화된 태그 |
 | `signature` | p.07 서명 |
-| `likes` | p.08 공감 수 (`like_work` 함수로 올리고 내린다) |
+| `likes` | p.08 공감 수 (`set_like` 함수로 올리고 내린다. 누가 눌렀는지는 `work_likes` 표에 (작품, 기기) 한 줄씩. 한 기기에 한 작품 공감 하나) |
 | `created_at` | 만든 시간 |
 
 - 사진과 콜라주는 서버가 Cloudinary에 올리고(`lib/server/cloud.js`, 서명 업로드) 표에는 주소만 남긴다

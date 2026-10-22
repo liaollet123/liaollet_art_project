@@ -76,6 +76,35 @@ language sql as $$
   update liaollet set likes = greatest(0, likes + p_delta) where id = p_id returning likes;
 $$;
 
+-- 누가 어느 작품에 공감했는지. 브라우저의 기억만 믿으면 버튼을 빠르게 연타했을 때 수가 계속 올라가서,
+-- (작품, 기기) 한 쌍에 한 줄만 두고 줄이 실제로 생기거나 지워질 때만 likes 를 움직인다
+create table if not exists work_likes (
+  work_id bigint not null references liaollet (id) on delete cascade,
+  device_id text not null,
+  created_at timestamptz not null default now(),
+  primary key (work_id, device_id)
+);
+alter table work_likes enable row level security;
+
+-- 같은 요청이 몇 번 와도 결과가 같다. 이미 공감한 기기가 또 누르면 아무것도 바뀌지 않는다
+create or replace function set_like(p_id bigint, p_device text, p_on boolean) returns int
+language plpgsql as $$
+declare changed int;
+declare cur int;
+begin
+  if not exists (select 1 from liaollet where id = p_id) then return null; end if;
+  if p_on then
+    insert into work_likes (work_id, device_id) values (p_id, p_device) on conflict do nothing;
+  else
+    delete from work_likes where work_id = p_id and device_id = p_device;
+  end if;
+  get diagnostics changed = row_count;
+  update liaollet set likes = greatest(0, likes + case when p_on then changed else -changed end)
+    where id = p_id returning likes into cur;
+  return cur;
+end;
+$$;
+
 -- 서가가 비어 있지 않게 시드 작품 열두 장(이전 화풍 여섯 장 + 지금 화풍 여섯 장)
 insert into tickets (no, day, seq) values
   ('100101','1001',1),('100201','1002',1),('100301','1003',1),('100402','1004',2),('100502','1005',2),('100601','1006',1),('100701','1007',1),('100803','1008',3),('100902','1009',2),('101001','1010',1),('101101','1011',1),('101202','1012',2)

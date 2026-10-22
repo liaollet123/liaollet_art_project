@@ -257,7 +257,8 @@ export default function Attic() {
         source,
         collage: art.toDataURL("image/jpeg", 0.8),
         story: answer.trim(),
-        tags: picked,
+        // 시선과 오늘의 마음 태그는 화면에서 늘 켜져 있으니 저장에도 넣는다. 서가의 감정 이름도 이 태그에서 읽는다
+        tags: Array.from(new Set([...tags.slice(0, 2), ...picked])),
         signature: sign.trim(),
         publishable: label?.publishable,
       });
@@ -303,9 +304,13 @@ export default function Attic() {
   // 8장 — 서가
   // ---------------------------------------------------------------------------
 
+  // 응답을 기다리는 동안의 연타는 받지 않는다. 서버가 한 기기에 하나만 세지만, 숫자가 깜빡이지 않게 화면에서도 막는다
+  const likingRef = useRef(new Set());
   const onLike = async (w) => {
     // 저장되지 않은 작품(거르기에 걸린 것)에는 공감이 없다
     if (!/^\d+$/.test(String(w.id))) return;
+    if (likingRef.current.has(w.id)) return;
+    likingRef.current.add(w.id);
     const on = !liked[w.id];
     const bump = (x) => (x.id === w.id ? { ...x, likes: Math.max(0, (x.likes || 0) + (on ? 1 : -1)) } : x);
     // 누르는 즉시 숫자를 바꾸고, 서버가 돌려준 수로 맞춘다
@@ -313,6 +318,7 @@ export default function Attic() {
     setOpen((o) => (o ? bump(o) : o));
     setSaved((s) => (s ? bump(s) : s));
     const r = await toggleLike(w.id, on);
+    likingRef.current.delete(w.id);
     setLiked({ ...r.liked });
     if (typeof r.likes === "number") {
       const fix = (x) => (x.id === w.id ? { ...x, likes: r.likes } : x);

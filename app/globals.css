@@ -1390,6 +1390,8 @@ a {
 .lv-ent-bg::after { background: linear-gradient(180deg, rgb(16 11 8 / 0.72), rgb(16 11 8 / 0.62) 45%, rgb(16 11 8 / 0.9)); }
 .lv-ent { color: #fbf3e4; text-shadow: 0 1px 2px rgb(0 0 0 / 0.85), 0 0 12px rgb(0 0 0 / 0.55); }
 .lv-ent .lv-ticket, .lv-ent .lv-paper, .lv-ent .lv-ent-cta.is-solid, .lv-ent .lv-diary { text-shadow: none; }
+/* 번호로 찾은 작품과 "오늘의 한 장"은 밝은 종이 위에 놓인다. 어두운 배경용 밝은 글씨를 물려받으면 종이색에 묻힌다 */
+.lv-ent .lv-paper { color: var(--lv-ink); }
 .lv-brand { color: #f3dca6; font-weight: 600; }
 .lv-kick { color: #e9d6b0; font-size: 0.74rem; font-weight: 600; }
 .lv-slip { color: #fbf3e4; font-weight: 600; }
