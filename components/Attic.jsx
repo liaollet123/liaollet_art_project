@@ -185,7 +185,8 @@ export default function Attic() {
     const ctrl = new AbortController();
     readAbort.current = ctrl;
     setReadBusy(true);
-    const thumbs = await Promise.all(photos.slice(0, 3).map((p) => thumb(p).catch(() => null)));
+    // 이야기는 사진 속 작은 디테일(씨, 보트, 파라솔 색)을 짚어야 해서 엮기와 같은 512px로 보낸다. 384px에서는 디테일이 뭉개졌다
+    const thumbs = await Promise.all(photos.slice(0, 3).map((p) => thumb(p, 512).catch(() => null)));
     const r = await analyze({ emotion: chosen, artist, photos: thumbs.filter(Boolean) }, ctrl.signal);
     if (ctrl.signal.aborted) return;
     const next = r.story ? r : fallbackRead({ emotion: chosen, artist, count: photos.length });
