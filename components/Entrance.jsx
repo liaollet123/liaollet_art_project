@@ -233,9 +233,6 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
               뭐라고 부르면 좋을까요?
             </p>
             <label className="lv-signline">
-              <span className="lv-signline-x" aria-hidden="true">
-                X
-              </span>
               <input
                 id="lv-sign"
                 className="pen"

@@ -127,6 +127,17 @@ export default function Attic() {
     setReadBusy(false);
   }, [photos, chosen, artist]);
 
+  // 다락방이 적어 준 이야기 끝에는 "LIA에게 쓸쓸함은 …"처럼 시선과 마음의 이름이 들어간다.
+  // 시선이나 마음이 바뀌면 그 이야기는 맞지 않으니 지운다(관객이 덧붙인 말은 지킨다).
+  // 그러지 않으면 다시 엮을 때 고르지 않은 시선의 이름이 글에 남아 결과물에 새겨진다. 시선이 바뀌면 그 시선에서 고른 태그도 맞지 않는다
+  useEffect(() => {
+    setPicked([]);
+    const prev = lastStory.current;
+    if (!prev) return;
+    lastStory.current = "";
+    setAnswer((v) => (v.startsWith(prev) ? v.slice(prev.length).trim() : v));
+  }, [chosen, artist]);
+
   // ---------------------------------------------------------------------------
   // 1장 — 티켓
   // ---------------------------------------------------------------------------
@@ -454,7 +465,8 @@ export default function Attic() {
           onShelve={toShelf}
           shareMsg={shareMsg}
           onShare={shareLink}
-          onReweave={() => go(6)}
+          // 다시 엮기는 시선부터 다시 고른다. 같은 시선을 고르면 이야기와 사진은 그대로 이어진다
+          onReweave={() => go(4)}
         />
       )}
 
