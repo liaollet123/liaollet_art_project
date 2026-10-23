@@ -1,13 +1,7 @@
 import { useState } from "react";
 import { Ticket } from "../Entrance";
+import Scrapbook from "./Scrapbook";
 import { Paper, Stamp, today } from "./ui";
-
-// 편지 머리의 날짜 칸. 전시장이 서울이라 관객 기기의 시간대와 상관없이 서울 날짜를 적는다
-function diaryDate() {
-  const parts = new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", year: "numeric", month: "numeric", day: "numeric", weekday: "short" }).formatToParts(new Date());
-  const get = (t) => parts.find((x) => x.type === t)?.value || "";
-  return { y: get("year"), m: get("month"), d: get("day"), w: get("weekday") };
-}
 
 /**
  * 7장 — 당신의 LIAOLLET. 작품이 주인공이다.
@@ -18,7 +12,6 @@ function diaryDate() {
 export default function Result({ artist, chosen, ticket, result, label, sign, saved, saving, toast, shareMsg, onShelve, onShare, onReweave }) {
   const to = sign.trim() || "오늘의 창작자";
   const letter = label?.letter?.length ? label.letter : label?.relation ? [label.relation] : [];
-  const day = diaryDate();
   const limit = ticket?.limit || 3;
   const left = Math.max(0, limit - (ticket?.used || 1));
   // 다시 엮기도 기회 한 번이라, 누르면 바로 넘어가지 않고 남은 기회를 먼저 알려 준다
@@ -27,40 +20,16 @@ export default function Result({ artist, chosen, ticket, result, label, sign, sa
     <Paper no={7} className="lv-rise">
       <h2 className="lv-ttl">당신의 LIAOLLET</h2>
       <p className="lv-pensub pen">{artist}의 시선으로 엮은 한 장</p>
-      {/*
-        스크랩북 한 장(참고: 크라프트 대지 위 수채 종이): 흰 여백 안의 크라프트지, 위에는 손으로 찢은 크림 띠.
-        가장자리가 들쭉날쭉한 종이에 콜라주를 담아 반투명 마스킹 테이프로 붙이고, 편지도 같은 결의 크림지에 테이프로 붙인다.
-        종이·테이프 질감은 참고 이미지에서 떠 온 실제 결(public/attic/kraft.jpg, cream.jpg, strip.jpg, tape.png)
-      */}
-      <div className={`lv-scrap is-${artist.toLowerCase()}`}>
-        <div className="lv-board">
-          <img className="lv-strip" src="/attic/strip.jpg" alt="" aria-hidden="true" />
-          <figure className="lv-art">
-            <img className="lv-tape is-art" src="/attic/tape.png" alt="" aria-hidden="true" />
-            <div className="lv-art-paper">
-              <img className="lv-result" src={result} alt={`${label?.title || chosen}, ${artist}의 시선으로 엮은 콜라주`} />
-            </div>
-          </figure>
-          <div className="lv-sheet" aria-label={`${artist}가 보내는 편지`}>
-            <img className="lv-tape is-sheet" src="/attic/tape.png" alt="" aria-hidden="true" />
-            <div className="lv-sheet-paper">
-              <p className="lv-dp-date">
-                {day.m}월 {day.d}일 {day.w}요일 · {chosen}
-              </p>
-              <p className="lv-dp-to">To. {to}</p>
-              <div className="lv-dp-body">
-                {letter.map((l, i) => (
-                  <p key={i}>{l}</p>
-                ))}
-              </div>
-              <p className="lv-dp-from">from. {artist}</p>
-              <span className="lv-dp-stamp" aria-hidden="true">
-                <Stamp id="stamp-letter" word={artist} date={ticket?.date || today()} />
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Scrapbook
+        artist={artist}
+        image={result}
+        title={label?.title || chosen}
+        emotion={chosen}
+        to={to}
+        letter={letter}
+        stampId="stamp-letter"
+        stampDate={ticket?.date || today()}
+      />
       <div className="lv-res-actions">
         <button className="lv-btn lv-btn-full" onClick={onShelve} disabled={saving}>
           {saving ? "서가에 꽂는 중…" : "취향의 서가에 꽂기"}

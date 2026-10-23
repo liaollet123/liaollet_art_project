@@ -8,7 +8,7 @@ import { hasBlocked, scrubPII } from "@/lib/server/moderate";
  * GET  /api/works            → { works }  서가의 작품 (최근 60장)
  * GET  /api/works?ticket=NO  → { works }  그 작품 번호의 작품
  * GET  /api/works?sign=아이디 → { works }  그 아이디(서명)로 남긴 작품들, 최근 것부터
- * POST /api/works  { ticket, artist, source[], collage, story, tags[], publishable }
+ * POST /api/works  { ticket, artist, source[], collage, story, tags[], letter[], publishable }
  *   ticket 은 6장에서 엮을 때 받은 작품 번호. 서명(1장에서 적은 이름)은 그 번호에 묶인 아이디를 서버가 쓴다(브라우저가 보낸 이름은 믿지 않는다)
  *   → { work }  표 한 줄로 저장한다. 사진과 콜라주는 Cloudinary에 올리고 주소만 남긴다.
  *   거르기에 걸리면 저장하지 않고 { hidden: true, work } 만 돌려준다(서가에는 오르지 않는다)
@@ -43,10 +43,12 @@ export async function POST(req) {
   const story = scrubPII(String(b.story || "").slice(0, 400));
   const signature = info.signature;
   const tags = (Array.isArray(b.tags) ? b.tags : []).slice(0, 12).map((t) => String(t).slice(0, 12));
+  // 결과 장의 아티스트 편지. 나중에 1장 "내 작품 펼치기"에서 같은 모습으로 다시 보이려면 함께 남겨야 한다
+  const letter = (Array.isArray(b.letter) ? b.letter : []).slice(0, 5).map((s) => scrubPII(String(s).slice(0, 200))).filter(Boolean);
 
   // 그래프의 판정(publishable)은 브라우저를 거쳐 오므로 막는 쪽으로만 믿는다. 낱말 검사는 서버에서 다시 한다
-  if (b.publishable === false || hasBlocked([story, signature, ...tags].join(" "))) {
-    return json({ hidden: true, work: { ...toWork({ id: "local", ticket: b.ticket, artist: b.artist, story, tags, signature, collage, source: [] }) } });
+  if (b.publishable === false || hasBlocked([story, signature, ...tags, ...letter].join(" "))) {
+    return json({ hidden: true, work: { ...toWork({ id: "local", ticket: b.ticket, artist: b.artist, story, tags, signature, letter, collage, source: [] }) } });
   }
 
   let urls;
@@ -57,7 +59,7 @@ export async function POST(req) {
     return json({ error: "이미지를 올리지 못했어요" }, 502);
   }
 
-  const work = await insertWork({ ticket: b.ticket, artist: b.artist, source: urls.slice(1), collage: urls[0], story, tags, signature });
+  const work = await insertWork({ ticket: b.ticket, artist: b.artist, source: urls.slice(1), collage: urls[0], story, tags, signature, letter });
   if (work.duplicate) return json({ error: "limit", limited: true }, 429);
   return json({ work });
 }
