@@ -20,10 +20,15 @@ create table if not exists tickets (
 -- 이미 만든 표에도 칸을 더한다(여러 번 실행해도 안전)
 alter table tickets add column if not exists device_id text;
 alter table tickets add column if not exists signature text;
+-- TodayCookies = 오늘 날짜(YYMMDD) + ':' + 기기 쿠키. 서명을 등록할 때 같은 값이 세 개 이상이면 오늘은 더 만들 수 없다
+alter table tickets add column if not exists today_cookies text;
+-- 이미 쌓인 줄에도 같은 규칙으로 채운다(여러 번 실행해도 같은 값)
+update tickets set today_cookies = day || ':' || device_id where today_cookies is null and device_id is not null;
 -- 한 사람에 하루 세 번이라 (기기, 날짜) 고유 제약은 두지 않는다. 기기별·아이디별 조회만 빠르게
 drop index if exists tickets_one_per_device_day;
 drop index if exists tickets_device;
 create index if not exists tickets_device_day on tickets (device_id, day);
+create index if not exists tickets_today_cookies on tickets (today_cookies);
 create index if not exists tickets_signature on tickets (lower(signature));
 
 -- 작품. 저장하는 칸은 아홉 개뿐이다. 사진과 콜라주는 Cloudinary에 올리고 주소(URL)만 남긴다.
