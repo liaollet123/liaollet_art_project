@@ -161,7 +161,8 @@ export default function Attic() {
     const ctrl = new AbortController();
     readAbort.current = ctrl;
     setReadBusy(true);
-    const thumbs = await Promise.all(photos.slice(0, 2).map((p) => thumb(p).catch(() => null)));
+    // 올린 사진은 최대 세 장이다. 한 장이라도 빠지면 그 사진이 이야기에 없어서, 셋 다 작은 썸네일로 보낸다
+    const thumbs = await Promise.all(photos.slice(0, 3).map((p) => thumb(p).catch(() => null)));
     const r = await analyze({ ticket: ticket?.no, emotion: chosen, artist, photos: thumbs.filter(Boolean) }, ctrl.signal);
     if (ctrl.signal.aborted) return;
     const next = r.story ? r : fallbackRead({ emotion: chosen, artist, count: photos.length });
@@ -190,8 +191,8 @@ export default function Attic() {
     setNotice("");
     setBusy(true);
     try {
-      // 장면을 읽고(그리고 이미지 모델이 켜져 있으면 시선의 화풍으로 다시 그리게) 작은 썸네일 두 장을 함께 보낸다
-      const images = (await Promise.all(photos.slice(0, 2).map((p) => thumb(p, 512).catch(() => null)))).filter(Boolean);
+      // 장면을 읽고(그리고 이미지 모델이 켜져 있으면 시선의 화풍으로 다시 그리게) 올린 사진 모두를 작은 썸네일로 함께 보낸다
+      const images = (await Promise.all(photos.slice(0, 3).map((p) => thumb(p, 512).catch(() => null)))).filter(Boolean);
       const input = {
         ticket: ticket?.no,
         emotion: chosen,

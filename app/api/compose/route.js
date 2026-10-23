@@ -3,7 +3,7 @@ import { composeGraph } from "@/lib/server/graphs";
 import { body, guard, json } from "@/lib/server/http";
 
 /**
- * POST /api/compose  { ticket, emotion, artist, answer, hints, photos, images: [썸네일 data URL, 최대 2장] }
+ * POST /api/compose  { ticket, emotion, artist, answer, hints, photos, images: [썸네일 data URL, 최대 3장] }
  *   → { fixed, line, title, keywords, relation, note, scene, motifs, publishable,
  *       image: { prompt, negative, url? }, source }
  *   image.url 은 IMAGE_PROVIDER 가 켜져 있고 생성에 성공했을 때만 온다
@@ -27,7 +27,7 @@ export async function POST(req) {
     hints: (Array.isArray(b.hints) ? b.hints : []).map((t) => String(t).slice(0, 12)).slice(0, 6),
     photos: Math.max(0, Math.min(3, Number(b.photos) || 0)),
     // 장면을 읽고 이미지를 다시 그릴 때 참고하는 썸네일. 크기를 넘는 것은 버린다
-    images: (Array.isArray(b.images) ? b.images : []).filter((u) => typeof u === "string" && u.length < 200_000).slice(0, 2),
+    images: (Array.isArray(b.images) ? b.images : []).filter((u) => typeof u === "string" && u.length < 200_000).slice(0, 3),
   };
   const { out, source } = await composeGraph.invoke({ input });
   return json({ ...out, source });

@@ -1,3 +1,4 @@
+import { ARTISTS } from "@/lib/attic";
 import { Paper, today } from "./ui";
 
 /** 7장 — 당신의 LIAOLLET. 작품이 주인공, 티켓은 반쪽만, 서명으로 내 작품이 된다 */
@@ -33,8 +34,8 @@ export default function Result({ artist, chosen, ticket, result, label, reading,
         <p className="lv-plate-foot">{today().replace(/\./g, ". ")} · LIAOLLET</p>
         <p className="lv-plate-hint">실명 대신 별명이나 이니셜로 서명해 주세요</p>
       </div>
-      {/* 다락방이 보내는 편지 한 장. 엮인 과정과 라벨을 한 번씩만 담는다 */}
-      <div className="lv-letter" aria-label="다락방이 보내는 편지">
+      {/* 고른 시선의 아티스트가 보내는 편지 한 장. 본문은 아티스트가 1인칭으로 쓴다 */}
+      <div className="lv-letter" aria-label={`${ARTISTS[artist]?.name || artist}이 보내는 편지`}>
         <p className="lv-to pen">To. {signName} 님께</p>
         <h3>{label?.title}</h3>
         {answer.trim() && <blockquote className="lv-lt-quote pen">{answer.trim()}</blockquote>}
@@ -52,7 +53,7 @@ export default function Result({ artist, chosen, ticket, result, label, reading,
           <p className="lv-lt-sign">
             {chosen} · {artist}의 시선 · {today().replace(/\./g, ". ")}
             <br />
-            <span className="pen">from. 감정의 다락방</span>
+            <span className="pen">from. {ARTISTS[artist]?.name || artist}</span>
           </p>
         </div>
       </div>
