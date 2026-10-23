@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Loader from "./Loader";
-import Scrapbook from "./attic/Scrapbook";
 import { Stamp } from "./attic/ui";
 
 // 다이어리 오른쪽 장에 끼워 둔 서가 작품들. 앞면과 뒷면에 각각 한 장씩, 여섯 장 모두 다른 작품(중복 없음)
@@ -237,6 +236,9 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
               Signature
             </span>
             <label className="lv-signline">
+              <span className="lv-signline-x" aria-hidden="true">
+                X
+              </span>
               <input
                 id="lv-sign"
                 className="pen"
@@ -322,19 +324,8 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
           <button className="lv-back" onClick={() => setFound(null)}>
             ← 다른 서명 찾기
           </button>
-          <div className="lv-paper lv-found-work">
-            {/* 결과 장(7장)과 같은 스크랩북 한 장: 콜라주와, 그때 받은 아티스트의 편지 */}
-            <Scrapbook
-              artist={found.artist}
-              image={found.image}
-              title={found.title || found.emotion}
-              emotion={found.emotion}
-              to={found.sign || "오늘의 창작자"}
-              letter={found.letter || []}
-              when={found.created_at}
-              stampId="stamp-found"
-              stampDate={found.date}
-            />
+          <div className="lv-paper">
+            <img className="lv-reveal-img" src={found.image} alt={`${found.title || found.emotion}, ${found.artist}의 시선으로 엮은 콜라주`} />
             <p className="lv-meta">
               {found.date} · {found.artist}의 시선 · No. {found.key}
             </p>
@@ -352,8 +343,7 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
                 </div>
               </>
             )}
-            {/* 편지를 남기기 전에 꽂힌 작품(시드 포함)은 편지가 없으니, 그때 쓴 이야기를 대신 보여 준다 */}
-            {!found.letter?.length && <p className="lv-reveal-q pen">{found.answer}</p>}
+            <p className="lv-reveal-q pen">{found.answer}</p>
             <button className="lv-btn lv-btn-full" onClick={() => onOpenShelf(found)}>
               취향의 서가에서 보기
             </button>
