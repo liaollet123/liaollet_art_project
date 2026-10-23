@@ -1129,7 +1129,6 @@ a {
 .lv-reveal { position: relative; width: 100%; max-width: 480px; padding-top: 40px; }
 .lv-reveal-img { display: block; width: 100%; box-shadow: 0 10px 22px rgb(0 0 0 / 0.25); }
 .lv-meta { margin-top: 12px; font-size: 0.85rem; color: var(--lv-soft); }
-.lv-reveal-title { margin-top: 4px; font-size: 1.4rem; font-weight: 800; }
 .lv-reveal-q { margin: 2px 0 16px; font-size: 1.35rem; line-height: 1.35; }
 
 /* ---------- 2 동의서 (줄눈 없음) ---------- */
@@ -1478,7 +1477,8 @@ a {
 .lv-who-q { margin: 0; font-size: 1.3rem; font-weight: 700; line-height: 1.4; color: #fbf3e4; word-break: keep-all; }
 .lv-who-sub { margin: 8px 0 0; max-width: 300px; font-size: 0.85rem; line-height: 1.6; color: #eadbbd; word-break: keep-all; }
 /* 서명란: 왼쪽 끝 작은 X 표시와 한 줄 밑줄, 그 위에 손글씨로 서명한다 */
-.lv-signline { margin: 20px auto 0; width: min(290px, 100%); display: flex; align-items: flex-end; gap: 10px; padding-bottom: 4px; border-bottom: 1.5px solid #e9d6b0; cursor: text; }
+.lv-signcap { display: block; margin: 20px auto 0; width: min(290px, 100%); text-align: left; font-family: var(--font-type); font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: #cdb995; }
+.lv-signline { margin: 4px auto 0; width: min(290px, 100%); display: flex; align-items: flex-end; gap: 10px; padding-bottom: 4px; border-bottom: 1.5px solid #e9d6b0; cursor: text; }
 .lv-signline:focus-within { border-bottom-color: #fff6e6; }
 .lv-signline-x { flex: none; padding-bottom: 6px; font-family: var(--font-type); font-size: 0.95rem; color: #cdb995; }
 .lv-signline input { flex: 1; min-width: 0; padding: 0; border: 0; background: transparent; font-size: 2.2rem; line-height: 1.2; color: #f6ecd9; outline: none; }

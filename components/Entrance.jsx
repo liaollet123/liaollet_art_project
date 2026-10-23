@@ -188,7 +188,6 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
             <p className="lv-meta">
               {ticket.work.date} · {ticket.work.artist}의 시선 · No. {ticket.work.key}
             </p>
-            <p className="lv-reveal-title">{ticket.work.title || ticket.work.emotion}</p>
             <button className="lv-btn lv-btn-full" onClick={async () => setLinkMsg(await onSendLink(ticket.work))}>
               내 작품 링크 보내기
             </button>
@@ -232,6 +231,10 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
               <br />
               뭐라고 부르면 좋을까요?
             </p>
+            {/* 계약서 서명란처럼 줄 위 왼쪽에 영문 Signature 를 작게 */}
+            <span className="lv-signcap" aria-hidden="true">
+              Signature
+            </span>
             <label className="lv-signline">
               <span className="lv-signline-x" aria-hidden="true">
                 X
@@ -326,7 +329,7 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
             <p className="lv-meta">
               {found.date} · {found.artist}의 시선 · No. {found.key}
             </p>
-            <p className="lv-reveal-title">{found.title || found.emotion}</p>
+            {/* 제목은 작품 이미지의 띠에 이미 적혀 있어, 아래에는 내용(남긴 글)만 둔다 */}
             {hits.length > 1 && (
               <>
                 <p className="lv-hits-lab">from. {found.sign} · 남긴 기록 {hits.length}장</p>

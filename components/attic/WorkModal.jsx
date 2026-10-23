@@ -54,7 +54,6 @@ export default function WorkModal({ work, liked, onLike, onClose }) {
         <p className="lv-meta">
           {work.date} · {work.artist}의 시선{work.key ? ` · No. ${work.key}` : ""}
         </p>
-        <p className="lv-reveal-title">{work.title || work.emotion}</p>
         {storyAfterTitle(work.answer, work.title) && <p className="lv-reveal-q pen">{storyAfterTitle(work.answer, work.title)}</p>}
         <Like on={!!liked[work.id]} count={work.likes || 0} onClick={() => onLike(work)} />
         {/^\d+$/.test(String(work.id)) && (
