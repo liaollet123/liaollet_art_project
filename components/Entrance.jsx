@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import Loader from "./Loader";
+import { Stamp } from "./attic/ui";
 
-// 다이어리 오른쪽 장에 끼워 둔 서가 작품들. 앞면과 뒷면에 각각 한 장씩
+// 다이어리 오른쪽 장에 끼워 둔 서가 작품들. 앞면과 뒷면에 각각 한 장씩, 여섯 장 모두 다른 작품(중복 없음)
 const LEAVES = [
-  ["/attic/seed/lia.jpg", "/attic/seed/let2.jpg"],
-  ["/attic/seed/ol.jpg", "/attic/seed/lia2.jpg"],
-  ["/attic/seed/let.jpg", "/attic/seed/ol2.jpg"],
+  ["/attic/seed/lia1.jpg", "/attic/seed/let2.jpg"],
+  ["/attic/seed/ol1.jpg", "/attic/seed/lia2.jpg"],
+  ["/attic/seed/let1.jpg", "/attic/seed/ol2.jpg"],
 ];
 
 /** 티켓 종이 위에 글자를 얹는다. 위치는 원본 티켓 비율에 맞춰 고정 (디자인 결정 3번). 서가의 티켓 건네기도 같은 티켓을 쓴다 */
@@ -18,7 +19,9 @@ export function Ticket({ children, side, stamp }) {
       <div className="lv-tk-ink">
         <div className="lv-tk-body">{children}</div>
         <div className="lv-tk-cell">
-          <span className="lv-tk-no">{side}</span>
+          <span className="lv-tk-no" style={{ "--n": Math.max(6, String(side).length) }}>
+            {side}
+          </span>
         </div>
       </div>
       {stamp}
@@ -29,24 +32,25 @@ export function Ticket({ children, side, stamp }) {
 /**
  * 1장 — 입장
  *   idle   : 다락방 배경, 고리를 축으로 장이 넘어가는 다이어리
- *   ticket : 창작 에디션 티켓 발급 → 들어가기를 누르면 도장 → 동의서로
- *   find   : 받았던 티켓 번호로 작품 다시 펼치기
+ *   ticket : 창작 에디션 서명 티켓(번호 칸에는 오늘 날짜) + "오늘 다락방을 찾아준 당신을 뭐라고 부르면 좋을까요?" 서명란
+ *            이름(= 아이디, 작품의 서명)을 적고 들어가기를 누르면 서버가 확인 → 도장 → 동의서로
+ *   find   : 서명(아이디)으로 그동안 남긴 작품 다시 펼치기
  */
-export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf, onSendLink }) {
+export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, onEnter, onFind, onOpenShelf, onSendLink }) {
   const [stage, setStage] = useState("idle");
   const [stamped, setStamped] = useState(false);
-  const [copied, setCopied] = useState("");
   const [code, setCode] = useState("");
   const [found, setFound] = useState(null);
   const [error, setError] = useState("");
   const [finding, setFinding] = useState(false);
   const [issuing, setIssuing] = useState(false);
   const [issueErr, setIssueErr] = useState("");
-  // 한 티켓으로 여러 장을 남겼을 수 있다. 찾은 작품들 중 지금 펼친 것
+  // 한 서명으로 여러 장을 남겼을 수 있다. 찾은 작품들 중 지금 펼친 것
   const [hits, setHits] = useState([]);
   const [linkMsg, setLinkMsg] = useState("");
+  const [signErr, setSignErr] = useState("");
+  const [checking, setChecking] = useState(false);
   const leafRef = useRef(null);
-  const codeRef = useRef(null);
 
   // 맨 위 장이 고리를 축으로 넘어가 왼쪽 장에 내려앉고, 다음 장이 덮으면 맨 아래로 돌아간다
   useEffect(() => {
@@ -58,7 +62,8 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
     let last = null;
     let turn = 0;
     const timers = [];
-    const id = setInterval(() => {
+    // 멈춰 있는 그림으로 보이지 않게, 화면이 뜨고 곧바로 첫 장을 넘긴다
+    const flip = () => {
       const top = order.shift();
       top.style.zIndex = String(100 + turn++);
       top.classList.add("is-flip");
@@ -73,10 +78,13 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
             last.style.transition = "";
           }
           last = top;
-        }, 2800)
+        }, 1500)
       );
-    }, 5200);
+    };
+    const first = setTimeout(flip, 1100);
+    const id = setInterval(flip, 3200);
     return () => {
+      clearTimeout(first);
       clearInterval(id);
       timers.forEach(clearTimeout);
     };
@@ -99,25 +107,27 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
     else setStage("ticket");
   };
 
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(ticket.no);
-      setCopied("고유번호를 복사했어요.");
-    } catch {
-      setCopied("복사할 수 없는 환경이에요. 번호를 적어 두세요.");
-    }
+  // 이름을 확인받고 나서야 도장을 찍는다. 다른 폰이 쓰는 이름이거나 오늘 세 번을 다 쓴 이름이면 여기서 알려 준다
+  const enter = async (e) => {
+    e.preventDefault();
+    if (stamped || checking || sign.trim().length < 2) return;
+    setChecking(true);
+    const err = await onCheckSign(sign.trim());
+    setChecking(false);
+    if (err) setSignErr(err);
+    else setStamped(true);
   };
 
-  // 서버에서 그 티켓으로 남긴 작품을 찾는다. 다른 폰에서 만든 작품도 열린다
+  // 서버에서 그 서명(아이디)으로 남긴 작품을 찾는다. 다른 폰에서 열어도 보인다
   const find = async () => {
-    if (code.length < 6) return setError("티켓 번호는 여섯 자리예요.");
+    if (!code.trim()) return setError("작품에 남긴 서명을 적어 주세요.");
     setFinding(true);
     const list = await onFind(code);
     setFinding(false);
     if (list.length) {
       setHits(list);
       setFound(list[0]);
-    } else setError("그 번호로 열리는 기록이 없어요. 티켓의 숫자를 다시 확인해 주세요.");
+    } else setError("그 서명으로 남긴 기록이 없어요. 작품 아래 from. 뒤의 이름을 다시 확인해 주세요.");
   };
 
   return (
@@ -131,10 +141,11 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
           <h1 className="lv-ent-title">감정의 다락방</h1>
           <p className="lv-kick">THE ATTIC OF FEELINGS</p>
           <div className="lv-diary">
-            <img className="lv-diary-img" src="/attic/diary-cut.png" alt="손에 든 빈티지 다이어리" />
+            <img className="lv-diary-img" src="/attic/diary.png" alt="손에 든 빈티지 다이어리" />
             <div className="lv-leaf" ref={leafRef} aria-hidden="true">
               {LEAVES.map(([front, back]) => (
                 <div className="lv-pg" key={front}>
+                  {/* 장마다 다이어리의 손글씨는 그대로 두고 사진 자리에만 서가 작품을 끼운다 */}
                   <div className="lv-pg-f">
                     <img src={front} alt="" />
                   </div>
@@ -144,14 +155,14 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
                 </div>
               ))}
             </div>
-            <img className="lv-diary-rings" src="/attic/diary-cut.png" alt="" aria-hidden="true" />
+            <img className="lv-diary-rings" src="/attic/diary.png" alt="" aria-hidden="true" />
           </div>
           <p className="lv-invite">오늘의 마음을 한 장 적어 보세요</p>
           {issuing ? (
             <Loader text="티켓을 찍는 중" dark size={44} />
           ) : (
             <button className="lv-ent-cta" onClick={issue}>
-              창작 에디션 티켓 받기
+              창작 에디션 서명 티켓 받기
             </button>
           )}
           {issueErr && (
@@ -160,17 +171,17 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
             </p>
           )}
           <button className="lv-ent-link" onClick={() => setStage("find")}>
-            이미 받은 번호가 있나요?
+            이미 남긴 기록이 있나요?
           </button>
         </div>
       )}
 
-      {/* 한 사람(폰)에 하루 한 장. 오늘 이미 남겼으면 새로 만들지 않고 그 작품과 링크를 건넨다 */}
+      {/* 한 사람에 하루 기회 세 번. 다 썼으면 새로 만들지 않고 오늘 마지막 작품과 링크를 건넨다 */}
       {stage === "ticket" && ticket?.done && (
         <div className="lv-ent-inner lv-rise">
           <p className="lv-brand">LIAOLLET</p>
-          <p className="lv-ent-title">오늘의 한 장</p>
-          <p className="lv-slip">오늘은 이미 다락방에 한 장을 남겼어요. 내일 다시 들러 주세요.</p>
+          <p className="lv-ent-title">오늘의 기회를 모두 썼어요</p>
+          <p className="lv-slip">다락방에는 한 사람이 하루에 {ticket.limit}장까지 남길 수 있어요. 내일 다시 들러 주세요. 오늘 마지막으로 남긴 한 장이에요.</p>
           {ticket.work && (
           <div className="lv-paper lv-today-work">
             <img className="lv-reveal-img" src={ticket.work.image} alt={`${ticket.work.title || ticket.work.emotion}, ${ticket.work.artist}의 시선으로 엮은 콜라주`} />
@@ -195,13 +206,12 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
       {stage === "ticket" && ticket && !ticket.done && (
         <div className="lv-ent-inner lv-rise">
           <p className="lv-brand">LIAOLLET</p>
+          {/* 번호 칸에는 오늘 날짜. 작품을 엮으면 그 뒤에 순번이 붙어 작품 번호가 된다 */}
           <Ticket
-            side={ticket.no}
+            side={ticket.day}
             stamp={
               <span className={`lv-stamp${stamped ? " is-on" : ""}`} aria-hidden="true">
-                <b>LIAOLLET</b>
-                <span>ADMITTED</span>
-                <i>{ticket.date}</i>
+                <Stamp id="stamp-admit" word="ADMITTED" date={ticket.date} />
               </span>
             }
           >
@@ -213,20 +223,50 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
             </p>
             <p className="lv-tk-iss">LIAOLLET CREATIVE EDITION</p>
           </Ticket>
-          <p className="lv-slip">
-            {ticket.date} · 오늘 {ticket.seq}번째 창작자
-          </p>
-          <div className="lv-code">
-            <span className="lv-code-lab">고유번호</span>
-            <span className="lv-code-no">{ticket.no}</span>
-            <button onClick={copy}>COPY</button>
-          </div>
-          <p className="lv-slip-dim" aria-live="polite">
-            {copied || "이 번호로 언제든 작품을 다시 펼칠 수 있어요."}
-          </p>
-          <button className="lv-ent-cta is-solid" onClick={() => setStamped(true)} disabled={stamped}>
-            {stamped ? "확인되었습니다" : "다락방으로 들어가기"}
-          </button>
+          {/* 하루 세 장이라는 안내는 여기서 하지 않는다. 다 돌리지 않을 사람이 많아, 결과 장 맨 끝에서 한 번만 알려 준다.
+              날짜는 티켓 번호 칸에 이미 있어 따로 적지 않는다 */}
+          <form className="lv-who" onSubmit={enter}>
+            {/* 친근한 질문 하나, 계약서 서명란 같은 줄 하나, 줄 밑 작은 글씨 한 줄. 이름이 아이디라는 설명은 길게 하지 않는다 */}
+            <p className="lv-who-q">
+              오늘 다락방을 찾아준 당신을
+              <br />
+              뭐라고 부르면 좋을까요?
+            </p>
+            <label className="lv-signline">
+              <span className="lv-signline-x" aria-hidden="true">
+                X
+              </span>
+              <input
+                id="lv-sign"
+                className="pen"
+                value={sign}
+                disabled={stamped}
+                // 아이디라 띄어쓰기는 받지 않는다. 한글 조합 중에 글자를 지우면 입력이 깨지므로 다른 글자는 서버가 거른다
+                onChange={(e) => {
+                  setSign(e.target.value.replace(/\s/g, "").slice(0, 10));
+                  setSignErr("");
+                }}
+                maxLength={10}
+                placeholder="여기에 서명해 주세요"
+                autoComplete="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                aria-label="서명"
+              />
+            </label>
+            <p className={`lv-who-hint${signErr ? " is-err" : ""}`} aria-live="polite">
+              {signErr || (
+                <>
+                  실명 대신 당신을 나타내 줄 서명을 적어 주세요
+                  <br />
+                  (한글·영문·숫자 2~10자)
+                </>
+              )}
+            </p>
+            <button type="submit" className="lv-ent-cta is-solid" disabled={stamped || checking || sign.trim().length < 2}>
+              {stamped ? "확인되었습니다" : checking ? "이름을 확인하는 중…" : "다락방으로 들어가기"}
+            </button>
+          </form>
         </div>
       )}
 
@@ -236,35 +276,32 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
             ← 처음으로
           </button>
           <p className="lv-brand">LIAOLLET</p>
-          <Ticket side={code || "· · · · · ·"}>
+          <Ticket side="· · · · · ·">
             <p className="lv-tk-admit">ADMIT AGAIN</p>
             <div className="lv-tk-field">
-              <p className="lv-tk-lab">YOUR TICKET NO.</p>
-              <p className="lv-tk-show">{(code + "______").slice(0, 6)}</p>
+              <p className="lv-tk-lab">YOUR SIGNATURE</p>
+              <p className="lv-tk-sign pen">{code || "\u00a0"}</p>
             </div>
             <p className="lv-tk-iss">LIAOLLET CREATIVE EDITION</p>
           </Ticket>
-          <p className="lv-slip">받았던 티켓의 여섯 자리를 적어 주세요</p>
-          <label className="lv-slots" onClick={() => codeRef.current?.focus()}>
+          <p className="lv-slip">작품에 남긴 서명을 적어 주세요</p>
+          <label className="lv-findsign">
+            <span className="pen">from.</span>
             <input
-              ref={codeRef}
               value={code}
               onChange={(e) => {
-                setCode(e.target.value.replace(/[^0-9]/g, "").slice(0, 6));
+                setCode(e.target.value.replace(/\s/g, "").slice(0, 10));
                 setError("");
               }}
               onKeyDown={(e) => e.key === "Enter" && find()}
-              inputMode="numeric"
-              maxLength={6}
+              maxLength={10}
               autoComplete="off"
-              aria-label="티켓 번호 여섯 자리"
+              autoCapitalize="off"
+              spellCheck={false}
+              aria-label="서명"
+              className="pen"
               autoFocus
             />
-            {Array.from({ length: 6 }, (_, i) => (
-              <span key={i} className={i === code.length ? "is-cur" : ""}>
-                {code[i] || ""}
-              </span>
-            ))}
           </label>
           <p className="lv-found" aria-live="polite">
             {error}
@@ -282,7 +319,7 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
       {stage === "find" && found && (
         <div className="lv-reveal lv-rise">
           <button className="lv-back" onClick={() => setFound(null)}>
-            ← 다른 번호 찾기
+            ← 다른 서명 찾기
           </button>
           <div className="lv-paper">
             <img className="lv-reveal-img" src={found.image} alt={`${found.title || found.emotion}, ${found.artist}의 시선으로 엮은 콜라주`} />
@@ -291,13 +328,17 @@ export default function Entrance({ ticket, onIssue, onEnter, onFind, onOpenShelf
             </p>
             <p className="lv-reveal-title">{found.title || found.emotion}</p>
             {hits.length > 1 && (
-              <div className="lv-hits" role="tablist" aria-label="이 티켓으로 남긴 작품">
-                {hits.map((h) => (
-                  <button key={h.id} role="tab" aria-selected={h.id === found.id} className={h.id === found.id ? "is-on" : ""} onClick={() => setFound(h)}>
-                    No. {h.key}
-                  </button>
-                ))}
-              </div>
+              <>
+                <p className="lv-hits-lab">from. {found.sign} · 남긴 기록 {hits.length}장</p>
+                <div className="lv-hits" role="tablist" aria-label="이 서명으로 남긴 작품">
+                  {hits.map((h) => (
+                    <button key={h.id} role="tab" aria-selected={h.id === found.id} className={h.id === found.id ? "is-on" : ""} onClick={() => setFound(h)}>
+                      <img src={h.image} alt="" />
+                      <span>No. {h.key}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
             <p className="lv-reveal-q pen">{found.answer}</p>
             <button className="lv-btn lv-btn-full" onClick={() => onOpenShelf(found)}>

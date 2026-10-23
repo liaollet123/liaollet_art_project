@@ -1,15 +1,15 @@
-import { Actions, Check, Paper, today } from "./ui";
+import { Actions, Check, Paper, Stamp, today } from "./ui";
 
-// 동의서는 실제로 일어나는 일과 같아야 한다. 글과 사진 썸네일이 AI 서비스로 전송된다는 것까지 적는다
+// 동의서는 짧게. 작은 글씨는 안내 한 줄씩만 둔다(운영자 요청으로 AI 관련 안내는 넣지 않는다)
 const AGREEMENTS = [
   {
     b: "업로드한 사진과 글은 이 작품을 만드는 데에만 쓰입니다.",
-    s: "이야기와 작품 라벨을 쓰기 위해 글과 작게 줄인 사진이 AI 서비스(Google)로 전송되며, AI 학습에는 쓰이지 않습니다.",
+    s: "작품을 엮는 재료로만 쓰여요.",
   },
-  { b: "사진 속 인물이 작품에 반영될 수 있습니다.", s: "타인의 동의 없는 사진은 올리지 말아 주세요." },
+  { b: "사진 속 인물이 작품에 반영될 수 있습니다.", s: "다른 사람의 사진은 동의를 받고 올려 주세요." },
   {
     b: "완성된 작품이 익명으로 '취향의 서가'에 전시되고 SNS에 활용되는 것에 동의합니다.",
-    s: "다른 관람객에게 상처가 될 수 있는 내용은 공개되지 않을 수 있습니다.",
+    s: "LIAOLLET 향후 전시와 SNS에 작품과 글이 소개될 수 있어요.",
   },
 ];
 
@@ -43,9 +43,7 @@ export default function Consent({ agree, setAgree, onBack, onNext }) {
           모두 동의
         </button>
         <span className={`lv-seal${all ? " is-on" : ""}`} aria-hidden="true">
-          <b>LIAOLLET</b>
-          <span>AGREED</span>
-          <i>{today()}</i>
+          <Stamp id="seal-agree" word="AGREED" date={today()} />
         </span>
       </div>
       <Actions>

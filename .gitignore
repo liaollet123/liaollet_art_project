@@ -7,3 +7,5 @@ out
 .data
 
 .vercel
+.idea
+.claude/launch.json

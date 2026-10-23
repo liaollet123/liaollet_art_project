@@ -42,7 +42,8 @@ components/
 lib/
   attic.js             아티스트(LIA/OL/LET) 정보, 해시태그 추천
   artworks.js          작품 데이터
-public/attic/          무드보드 사진 m1–m8
+public/attic/          입장 배경, 다이어리, 티켓, 서가 샘플(seed/)
+public/artists/        시선별 소개 사진(lia, ol, let)
 ```
 
 ## 참고

@@ -821,7 +821,7 @@ a {
 /* 아티스트 이름과 부제를 두 줄로 — 부제가 길어도 모양이 무너지지 않는다 */
 
 /* =========================================================================
-   1장 — 다락방의 다이어리, 그리고 창작 에디션 티켓
+   1장 — 다락방의 다이어리, 그리고 창작 에디션 서명 티켓
    모션은 페이드와 아주 느린 움직임만. 튀는 움직임은 쓰지 않는다.
    ========================================================================= */
 
@@ -1067,18 +1067,24 @@ a {
 .lv-kick { margin-top: 6px; font-family: var(--font-type); font-size: 0.68rem; letter-spacing: 0.3em; color: #b8a27e; }
 .lv-diary { position: relative; margin-top: 18px; width: 320px; max-width: 100%; }
 /* 손 사진 아래가 수평으로 잘리던 것을 배경 어둠에 녹인다 */
-.lv-diary-img { display: block; width: 100%; -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 98%); mask-image: linear-gradient(180deg, #000 72%, transparent 98%); }
+.lv-diary-img { display: block; width: 100%; -webkit-mask-image: linear-gradient(180deg, #000 86%, transparent 100%); mask-image: linear-gradient(180deg, #000 86%, transparent 100%); }
 /* 오른쪽 장에 서가 작품이 끼워져 있고, 고리를 축으로 한 장씩 넘어간다 */
+/* 처음 시안의 다이어리(diary.png 720x715). 오른쪽 장 자리에 서가 작품이 끼워져 고리를 축으로 넘어간다 */
 .lv-leaf { position: absolute; left: 52.6%; top: 4.4%; width: 43.2%; height: 62.4%; perspective: 1200px; }
-.lv-pg { position: absolute; inset: 0; transform-origin: left center; transform-style: preserve-3d; transition: transform 2.6s cubic-bezier(0.45, 0.05, 0.3, 1); }
-.lv-pg-f, .lv-pg-b { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.lv-pg-f { background: #efe5d2; padding: 9% 9% 10% 13%; box-shadow: inset 7px 0 10px -7px rgb(0 0 0 / 0.45); }
-.lv-pg-b { background: #ece2cf; padding: 9% 13% 10% 9%; transform: rotateY(180deg); box-shadow: inset -7px 0 10px -7px rgb(0 0 0 / 0.4); }
-.lv-pg img { display: block; width: 100%; height: 100%; object-fit: cover; box-shadow: 0 2px 5px rgb(0 0 0 / 0.25); }
-.lv-pg-f::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(0 0 0 / 0.28), transparent 70%); opacity: 0; transition: opacity 1.3s ease; }
+/* 넘김: 너무 느리면 넘어가는 줄 모르고 지나친다. 1.4초에 걸쳐 넘기고 3.2초마다 다음 장 */
+.lv-pg { position: absolute; inset: 0; transform-origin: left center; transform-style: preserve-3d; transition: transform 1.4s cubic-bezier(0.55, 0.06, 0.25, 1); }
+/* 장의 앞면은 다이어리 오른쪽 장, 뒷면(넘어가 왼쪽에 내려앉는 면)은 왼쪽 장을 diary.png 에서 그대로 오려 쓴다.
+   그래서 손글씨는 원래 다이어리 그대로이고, 사진 자리(오른쪽 장의 인물 사진, 왼쪽 장의 그림)에만 서가 작품이 바뀌어 들어간다.
+   위치 값은 diary.png(720x715)와 장 상자(.lv-leaf: x 379~690, y 31~477)에 맞춘 비율 */
+.lv-pg-f, .lv-pg-b { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: url(/attic/diary.png) no-repeat; background-size: 231.5% 160.3%; }
+.lv-pg-f { background-position: 92.67% 11.52%; box-shadow: inset 6px 0 9px -7px rgb(0 0 0 / 0.4); }
+.lv-pg-b { background-position: 16.6% 11.52%; transform: rotateY(180deg); box-shadow: inset -6px 0 9px -7px rgb(0 0 0 / 0.35); }
+.lv-pg img { position: absolute; display: block; object-fit: cover; box-shadow: 0 1px 4px rgb(0 0 0 / 0.3); }
+.lv-pg-f img { left: 27.7%; top: 37.9%; width: 65.3%; height: 60.1%; }
+.lv-pg-b img { left: 10.3%; top: 1.6%; width: 85.5%; height: 52.4%; }
+.lv-pg-f::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(0 0 0 / 0.28), transparent 70%); opacity: 0; transition: opacity 0.8s ease; }
 .lv-pg.is-flip { transform: rotateY(-180deg); }
 .lv-pg.is-flip .lv-pg-f::after { opacity: 1; }
-/* 종이가 고리에 걸려 도는 것처럼 고리 부분만 오려 맨 위에 다시 얹는다 */
 .lv-diary-rings { position: absolute; inset: 0; width: 100%; clip-path: inset(10.4% 43.6% 41.6% 48.2%); pointer-events: none; }
 .lv-invite { margin-top: 26px; font-family: var(--font-pen); font-size: 1.6rem; color: #f0dfbd; }
 .lv-ent-cta { margin-top: 14px; width: 100%; max-width: 280px; min-height: 52px; border: 0; background: rgb(20 14 10 / 0.25); color: var(--lv-cream); box-shadow: inset 0 0 0 1px rgb(227 204 159 / 0.7); font-size: 1.05rem; cursor: pointer; transition: background 0.6s var(--lv-ease); }
@@ -1097,15 +1103,14 @@ a {
 .lv-tk-head { margin: auto 0; font-family: var(--font-type); font-size: 8.4cqw; line-height: 1.26; letter-spacing: 0.04em; }
 .lv-tk-iss { font-family: var(--font-type); font-size: 2.1cqw; letter-spacing: 0.2em; color: #4a3020; }
 .lv-tk-cell { width: 15%; border-left: 0.42cqw solid rgb(46 28 18 / 0.88); display: flex; align-items: center; justify-content: center; }
-.lv-tk-no { writing-mode: vertical-rl; font-family: var(--font-type); font-size: 6.4cqw; letter-spacing: 0.2em; }
+.lv-tk-no { writing-mode: vertical-rl; font-family: var(--font-type); font-size: calc(38.4cqw / var(--n, 6)); letter-spacing: 0.2em; }
 .lv-tk-field { margin: auto 0; }
 .lv-tk-lab { font-family: var(--font-type); font-size: 4.2cqw; letter-spacing: 0.06em; }
-.lv-tk-show { font-family: var(--font-type); font-size: 10cqw; letter-spacing: 0.24em; }
+.lv-tk-show { font-family: var(--font-type); font-size: min(10cqw, calc(60cqw / var(--n, 6))); letter-spacing: 0.24em; white-space: nowrap; }
 /* 도장: 제목을 덮지 않게 오른쪽 위 빈 종이 자리에. 눌리는 힘이 있어야 해서 1.35초 */
-.lv-stamp { position: absolute; right: 19%; top: 12%; width: 23cqw; height: 23cqw; border-radius: 50%; border: 0.6cqw double rgb(147 40 52 / 0.78); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5cqw; color: rgb(147 40 52 / 0.82); font-family: var(--font-type); mix-blend-mode: multiply; opacity: 0; transform: scale(1.9) rotate(-18deg); pointer-events: none; }
-.lv-stamp b { font-weight: 400; font-size: 3.6cqw; letter-spacing: 0.1em; }
-.lv-stamp span { font-size: 2.8cqw; letter-spacing: 0.1em; }
-.lv-stamp i { font-style: normal; font-size: 2.1cqw; }
+/* 빈티지 고무도장(attic/ui.jsx Stamp). 바랜 적갈색 잉크가 종이결에 스며들게 곱하기로 얹는다 */
+.lv-stamp { position: absolute; right: 18.5%; top: 9%; width: 24cqw; height: 24cqw; color: rgb(140 38 44 / 0.82); mix-blend-mode: multiply; opacity: 0; transform: scale(1.9) rotate(-18deg); pointer-events: none; }
+.lv-stamp-svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .lv-stamp.is-on, .lv-seal.is-on { animation: lv-press 1.35s cubic-bezier(0.22, 0.7, 0.2, 1) forwards; }
 @keyframes lv-press { 0% { opacity: 0; transform: scale(1.9) rotate(-18deg); } 60% { opacity: 1; transform: scale(0.98) rotate(-12deg); } 100% { opacity: 1; transform: scale(1) rotate(-12deg); } }
 .lv-slip { margin-top: 22px; color: var(--lv-cream); }
@@ -1116,9 +1121,9 @@ a {
 .lv-code-no { font-weight: 700; font-size: 1.5rem; letter-spacing: 0.28em; color: #f6ecd9; }
 .lv-code button { border: 0; background: none; padding: 4px 0 2px; font-size: 0.72rem; letter-spacing: 0.3em; color: var(--lv-gold); border-bottom: 1px solid rgb(227 204 159 / 0.6); cursor: pointer; }
 /* 번호 찾기: 아래 여섯 칸 줄에 적으면 위 티켓에 찍힌다 */
-.lv-slots { position: relative; margin-top: 12px; display: flex; gap: 10px; justify-content: center; cursor: text; }
+.lv-slots { position: relative; margin-top: 12px; display: flex; gap: 6px; justify-content: center; cursor: text; }
 .lv-slots input { position: absolute; inset: 0; width: 100%; opacity: 0; border: 0; font-size: 16px; }
-.lv-slots span { width: 30px; height: 42px; display: grid; place-items: end center; padding-bottom: 4px; border-bottom: 1.5px solid rgb(227 204 159 / 0.7); font-weight: 700; font-size: 1.5rem; color: #f6ecd9; }
+.lv-slots span { width: 26px; height: 42px; display: grid; place-items: end center; padding-bottom: 4px; border-bottom: 1.5px solid rgb(227 204 159 / 0.7); font-weight: 700; font-size: 1.5rem; color: #f6ecd9; }
 .lv-slots span.is-cur { border-bottom-color: #f6ecd9; }
 .lv-found { margin-top: 14px; min-height: 1.4em; font-size: 0.92rem; color: var(--lv-cream); }
 .lv-reveal { position: relative; width: 100%; max-width: 480px; padding-top: 40px; }
@@ -1138,10 +1143,7 @@ a {
 .lv-agree b { display: block; font-size: 1rem; line-height: 1.55; }
 .lv-agree small { display: block; margin-top: 2px; font-size: 0.85rem; line-height: 1.6; color: var(--lv-soft); }
 .lv-seal-row { margin-top: 24px; display: flex; align-items: center; gap: 16px; min-height: 96px; }
-.lv-seal { width: 92px; height: 92px; flex: 0 0 auto; border-radius: 50%; border: 3px double rgb(147 40 52 / 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgb(147 40 52 / 0.85); font-family: var(--font-type); mix-blend-mode: multiply; opacity: 0; transform: scale(1.9) rotate(-16deg); }
-.lv-seal b { font-weight: 400; font-size: 0.68rem; letter-spacing: 0.12em; }
-.lv-seal span { font-size: 0.86rem; letter-spacing: 0.12em; }
-.lv-seal i { font-style: normal; font-size: 0.55rem; }
+.lv-seal { width: 104px; height: 104px; flex: 0 0 auto; color: rgb(140 38 44 / 0.82); mix-blend-mode: multiply; opacity: 0; transform: scale(1.9) rotate(-16deg); }
 
 /* ---------- 3 오늘의 마음 (칸 + 잉크 번짐) ---------- */
 .lv-emos { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -1152,6 +1154,12 @@ a {
 .lv-emo.is-on { color: var(--lv-paper); transition: color 1.2s ease 0.5s; }
 .lv-emo.is-on .lv-ink { animation: lv-ink 2.8s cubic-bezier(0.25, 0.6, 0.35, 1) forwards; }
 @keyframes lv-ink { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0.6; } 12% { transform: translate(-50%, -50%) scale(0.08); opacity: 0.95; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: url(#lv-ink-bleed) blur(0); } }
+/* 3장: 고른 마음의 한 줄이 줄 공책 위에 펜으로 적히듯 왼쪽부터 드러난다 */
+.lv-handline { margin-top: 18px; min-height: 2.6em; padding: 6px 2px 4px; border-bottom: 1px solid rgb(110 80 50 / 0.35); font-size: 1.55rem; line-height: 1.3; color: var(--lv-ink); word-break: keep-all; }
+.lv-handline-ink { display: inline-block; clip-path: inset(0 100% 0 0); animation: lv-write 1.8s cubic-bezier(0.45, 0.1, 0.35, 1) 0.15s forwards; }
+.lv-handline-hint { color: rgb(95 76 60 / 0.55); font-size: 1.25rem; }
+@keyframes lv-write { to { clip-path: inset(0 0 0 0); } }
+@media (prefers-reduced-motion: reduce) { .lv-handline-ink { animation: none; clip-path: none; } }
 .lv-write { margin-top: 16px; display: grid; gap: 6px; }
 .lv-write label { font-size: 0.9rem; color: var(--lv-soft); }
 .lv-write textarea { width: 100%; height: 72px; border: 0; resize: none; box-shadow: inset 0 0 0 1px var(--lv-soft); background: rgb(255 255 255 / 0.35); padding: 10px 14px; font-size: 1.3rem; line-height: 1.35; color: var(--lv-ink); }
@@ -1164,7 +1172,9 @@ a {
 .lv-card-q { display: block; margin-top: 10px; font-size: 1.65rem; line-height: 1.25; }
 .lv-card-name { display: block; margin-top: 6px; font-size: 1.15rem; color: var(--c); }
 .lv-card-p { display: block; margin-top: 4px; font-size: 0.88rem; line-height: 1.6; color: var(--lv-soft); }
-.lv-card.is-on { box-shadow: inset 0 0 0 2px var(--c); }
+/* 카드 안의 바로가기: 누르면 곧장 그 시선의 상세로 */
+.lv-card-go { display: inline-block; margin-top: 10px; padding-bottom: 2px; border-bottom: 1px solid var(--c); font-size: 0.9rem; color: var(--c); }
+.lv-card:hover, .lv-card:focus-visible { box-shadow: inset 0 0 0 2px var(--c); }
 
 /* ---------- 5 시선 상세 (아티스트 색) ---------- */
 .lv-det { max-width: 560px; min-height: 100vh; margin: 0 auto; padding: 22px 20px 36px; color: var(--lv-ink); transition: background 0.8s var(--lv-ease); }
@@ -1245,7 +1255,7 @@ a {
 .lv-stub-row { margin-top: 16px; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; align-items: center; }
 .lv-stub { container-type: inline-size; position: relative; aspect-ratio: 962 / 549; transform: rotate(-2deg); filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.3)); }
 .lv-stub img { position: absolute; inset: 0; width: 100%; height: 100%; }
-.lv-stub span { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-type); font-size: 13cqw; letter-spacing: 0.12em; color: #2e1c12; }
+.lv-stub span { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-type); font-size: calc(78cqw / var(--n, 6)); letter-spacing: 0.12em; color: #2e1c12; }
 .lv-stub-row p { font-size: 0.85rem; line-height: 1.6; color: var(--lv-soft); }
 /* 옛 다이어리 앞장의 장서표처럼, 이 한 장을 남긴 사람을 손글씨로 적는다 */
 .lv-plate { position: relative; margin: 22px 6px 4px; padding: 16px 18px 12px; text-align: center; background: #f6ecd6; box-shadow: inset 0 0 0 1px rgb(90 60 35 / 0.55), inset 0 0 0 5px #f6ecd6, inset 0 0 0 6px rgb(90 60 35 / 0.35), 0 6px 14px rgb(60 35 15 / 0.18); transform: rotate(-1deg); }
@@ -1365,18 +1375,9 @@ a {
 .adm-list small { font-size: 0.72rem; color: #8a7a66; }
 
 /* 결과 화면의 주인공: 다락방이 보내는 편지 한 장(엮인 과정 + 작품 라벨을 합친 것) */
-.lv-letter { position: relative; margin-top: 20px; padding: 22px 20px 18px; background: #fffaf2 repeating-linear-gradient(transparent 0 31px, rgb(120 90 60 / 0.08) 31px 32px); box-shadow: 0 6px 16px rgb(60 35 15 / 0.12), inset 0 0 0 1px rgb(110 80 50 / 0.18); }
-.lv-letter::before { content: ""; position: absolute; top: -9px; left: 50%; width: 64px; height: 18px; margin-left: -32px; background: rgba(240, 215, 150, 0.7); transform: rotate(-2deg); }
-.lv-letter h3 { margin: 6px 0 0; font-size: 1.35rem; font-weight: 800; line-height: 1.35; color: var(--lv-ink); word-break: keep-all; }
-.lv-lt-open, .lv-lt-body { margin-top: 12px; font-size: 0.92rem; line-height: 1.85; color: var(--lv-ink); word-break: keep-all; }
-/* 아티스트의 편지는 문단이 있다. 모델이 넣은 줄바꿈을 그대로 보여 준다 */
-.lv-lt-body { white-space: pre-line; }
-.lv-lt-open b { font-weight: 700; }
-.lv-lt-quote { margin: 14px 0 0; padding: 4px 0 4px 12px; border-left: 2px solid var(--lv-soft); font-size: 1.3rem; line-height: 1.45; color: var(--lv-ink); word-break: keep-all; white-space: pre-line; }
-.lv-lt-foot { margin-top: 16px; padding-top: 12px; border-top: 1px dashed rgb(110 80 50 / 0.35); }
-.lv-lt-foot .lv-labels { margin-top: 0; }
-.lv-lt-sign { margin-top: 10px; text-align: right; font-family: var(--font-type); font-size: 0.66rem; letter-spacing: 0.06em; color: var(--lv-soft); line-height: 1.6; }
-.lv-lt-sign .pen { font-size: 1.15rem; letter-spacing: 0; color: var(--lv-ink); }
+/* 편지 끝의 서명은 고른 시선의 색으로 */
+/* 작품 바로 아래 서명 한 줄: 이름표처럼 짧게 */
+.lv-res-actions + .lv-stub-row { margin-top: 26px; padding-top: 18px; border-top: 1px solid rgb(110 80 50 / 0.25); }
 
 /* 오늘 이미 남긴 한 장 (1장, 하루 한 장 제한) */
 .lv-today-work { margin-top: 18px; text-align: left; }
@@ -1414,5 +1415,92 @@ a {
 .adm button.is-danger:hover { background: #8a1f1f; color: #fff; }
 
 /* 시선 상세 갤러리: 넣어 둔 사진을 가로로 넘겨 본다 */
-.lv-det-gallery { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; }
-.lv-det-gallery img { flex: 0 0 62%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; scroll-snap-align: start; }
+/* 대표 사진 아래 소스 사진 세 칸 */
+.lv-det-gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.lv-det-gallery img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 4px; }
+
+/* 운영자 화면 숫자 세 칸: 누적 작품 번호는 작품 번호의 뒷자리(누적 순번)와 같다 */
+.adm-stats { margin: 16px 0 8px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.adm-stats div { padding: 10px 12px; border: 1px solid rgb(110 80 50 / 0.3); border-radius: 4px; }
+.adm-stats dt { font-size: 0.78rem; color: #7a5a3e; }
+.adm-stats dd { margin: 2px 0 0; font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* 7장 스크랩북 한 장: 흰 여백 → 크라프트지 → 찢긴 크림 띠 → 테이프로 붙인 수채 종이(콜라주)와 편지지.
+   질감은 참고 이미지에서 떠 온 실제 종이·테이프 결이라, 도형으로 그린 것보다 부드럽고 손맛이 난다 */
+.lv-scrap { margin-top: 18px; padding: 12px; background: #f8f6f1; box-shadow: 0 8px 22px rgb(50 30 15 / 0.16); }
+.lv-board { position: relative; padding: 15% 7% 9%; background: #cdb59a url(/attic/kraft.jpg) center top / 100% auto repeat-y; }
+.lv-strip { position: absolute; left: 0; top: 0; display: block; width: 100%; height: auto; }
+.lv-tape { position: absolute; z-index: 3; display: block; height: auto; pointer-events: none; }
+/* 콜라주를 담은 수채 종이: 가장자리를 손으로 뜯은 듯(clip-path), 그림자는 바깥 틀(filter)에 */
+.lv-art { position: relative; margin: 0 auto; width: 90%; transform: rotate(-0.5deg); filter: drop-shadow(0 1px 1px rgb(60 40 20 / 0.2)) drop-shadow(0 8px 12px rgb(60 40 20 / 0.14)); }
+.lv-art-paper { padding: 3.4%; background: #fbf8f1 url(/attic/cream.jpg) center / 100% auto; clip-path: polygon(0.0% 0.74%, 3.8% 0.86%, 7.7% 0.57%, 11.5% 0.56%, 15.4% 0.43%, 19.2% 1.10%, 23.1% 0.32%, 26.9% 0.16%, 30.8% 0.29%, 34.6% 0.29%, 38.5% 0.36%, 42.3% 0.29%, 46.2% 0.12%, 50.0% 0.36%, 53.8% 0.34%, 57.7% 0.63%, 61.5% 0.22%, 65.4% 0.08%, 69.2% 0.22%, 73.1% 0.60%, 76.9% 0.43%, 80.8% 0.81%, 84.6% 0.88%, 88.5% 0.46%, 92.3% 0.11%, 96.2% 0.80%, 100.0% 0.83%, 99.7% 3.85%, 99.5% 7.69%, 99.8% 11.54%, 99.3% 15.38%, 99.4% 19.23%, 99.4% 23.08%, 99.3% 26.92%, 99.8% 30.77%, 99.6% 34.62%, 99.4% 38.46%, 99.4% 42.31%, 99.7% 46.15%, 99.9% 50.00%, 99.5% 53.85%, 99.9% 57.69%, 99.5% 61.54%, 100.0% 65.38%, 99.7% 69.23%, 99.6% 73.08%, 99.9% 76.92%, 99.6% 80.77%, 99.6% 84.62%, 99.7% 88.46%, 99.3% 92.31%, 99.3% 96.15%, 99.3% 100.00%, 96.2% 99.73%, 92.3% 99.97%, 88.5% 99.59%, 84.6% 99.87%, 80.8% 99.22%, 76.9% 99.71%, 73.1% 99.86%, 69.2% 99.69%, 65.4% 99.56%, 61.5% 99.19%, 57.7% 99.49%, 53.8% 99.67%, 50.0% 99.25%, 46.2% 99.95%, 42.3% 99.77%, 38.5% 99.24%, 34.6% 99.17%, 30.8% 99.89%, 26.9% 99.93%, 23.1% 99.44%, 19.2% 99.28%, 15.4% 99.98%, 11.5% 99.52%, 7.7% 99.70%, 3.8% 99.91%, 0.0% 99.81%, 0.2% 96.15%, 0.4% 92.31%, 0.1% 88.46%, 0.5% 84.62%, 0.7% 80.77%, 0.5% 76.92%, 0.1% 73.08%, 0.5% 69.23%, 0.5% 65.38%, 0.0% 61.54%, 0.3% 57.69%, 0.5% 53.85%, 0.7% 50.00%, 0.7% 46.15%, 0.4% 42.31%, 0.5% 38.46%, 0.7% 34.62%, 0.2% 30.77%, 0.4% 26.92%, 0.0% 23.08%, 0.6% 19.23%, 0.5% 15.38%, 0.2% 11.54%, 0.2% 7.69%, 0.4% 3.85%); }
+.lv-art-paper .lv-result { display: block; margin: 0; width: 100%; box-shadow: none; }
+.lv-tape.is-art { width: 44%; left: 30%; top: -3%; transform: rotate(-12deg); }
+/* 편지지: 같은 결의 크림지. 위 가장자리만 뜯겼고, 오른쪽 위를 테이프로 */
+.lv-sheet { position: relative; margin: 30px 1% 0; transform: rotate(0.6deg); color: #241a12; filter: drop-shadow(0 1px 1px rgb(60 40 20 / 0.18)) drop-shadow(0 6px 10px rgb(60 40 20 / 0.12)); }
+.lv-sheet-paper { position: relative; padding: 46px 8% 40px; background: #f5efe2 url(/attic/cream.jpg) center top / 100% auto repeat-y; clip-path: polygon(0.0% 1.20%, 3.3% 0.22%, 6.7% 0.52%, 10.0% 0.82%, 13.3% 0.42%, 16.7% 1.42%, 20.0% 1.16%, 23.3% 1.53%, 26.7% 1.03%, 30.0% 1.09%, 33.3% 0.46%, 36.7% 0.81%, 40.0% 0.69%, 43.3% 0.77%, 46.7% 0.10%, 50.0% 1.36%, 53.3% 0.25%, 56.7% 0.73%, 60.0% 1.49%, 63.3% 0.82%, 66.7% 1.39%, 70.0% 0.42%, 73.3% 0.75%, 76.7% 0.61%, 80.0% 0.52%, 83.3% 0.59%, 86.7% 0.71%, 90.0% 1.35%, 93.3% 1.55%, 96.7% 0.15%, 100.0% 1.07%, 100.0% 100.00%, 0.0% 100.00%); }
+.lv-tape.is-sheet { width: 36%; right: 6%; top: -16px; transform: rotate(9deg) scaleX(-1); }
+.lv-sheet .lv-dp-date { margin-bottom: 14px; }
+.lv-sheet .lv-dp-stamp { left: 7%; bottom: 18px; }
+/* 편지: 줄 없이, 앱 전체에서 쓰는 펜 손글씨로. 크고 진하게, 줄 사이를 넉넉히 두어 잘 읽히게. 날짜·To.·본문·from. 모두 같은 잉크색 */
+.lv-dp-letter { margin-top: 30px; padding: 0 2%; }
+.lv-dp-to { margin: 0; font-family: var(--font-pen); font-size: 1.75rem; line-height: 1.3; color: #241a12; }
+.lv-dp-body { margin-top: 12px; font-family: var(--font-pen); font-size: 1.6rem; line-height: 1.5; color: #241a12; word-break: keep-all; }
+.lv-dp-body p { margin: 0; }
+.lv-dp-body p + p { margin-top: 8px; }
+.lv-dp-from { margin: 20px 4% 0 0; text-align: right; font-family: var(--font-pen); font-size: 1.75rem; line-height: 1.2; color: #241a12; }
+/* 편지 끝 왼쪽 아래, 그 시선의 소인을 흐리게 */
+.lv-dp-stamp { position: absolute; left: 7%; bottom: 18px; width: 84px; opacity: 0.45; transform: rotate(-14deg); pointer-events: none; }
+.lv-dp-stamp .lv-stamp-svg { width: 100%; height: auto; }
+
+/* 결과 화면 맨 끝: 입장 때 받은 티켓 그대로, 도장은 이미 찍힌 상태 */
+.lv-res-ticket { margin-top: 26px; padding-top: 18px; border-top: 1px solid rgb(110 80 50 / 0.25); }
+.lv-res-ticket .lv-ticket { margin-top: 0; filter: drop-shadow(0 8px 14px rgb(60 35 15 / 0.25)); }
+.lv-res-ticket > p { margin-top: 14px; font-size: 0.85rem; line-height: 1.6; color: var(--lv-soft); word-break: keep-all; }
+.lv-stamp.is-done { opacity: 1; transform: rotate(-12deg); animation: none; }
+
+/* 1장 "이미 남긴 기록이 있나요?": 숫자 칸 대신 서명 한 줄. 티켓에는 적는 이름이 손글씨로 따라 적힌다 */
+.lv-tk-sign { min-height: 1.2em; font-size: 11cqw; line-height: 1.2; color: #2a2420; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lv-findsign { margin: 12px auto 0; width: min(280px, 100%); display: flex; align-items: baseline; gap: 10px; padding-bottom: 4px; border-bottom: 1.5px solid #e9d6b0; cursor: text; }
+.lv-findsign span { flex: none; font-size: 1.5rem; color: #eadbbd; }
+.lv-findsign input { flex: 1; min-width: 0; padding: 0; border: 0; background: transparent; font-size: 2rem; line-height: 1.2; color: #f6ecd9; outline: none; }
+.lv-findsign input:focus-visible { outline: none; box-shadow: none; }
+.lv-findsign:focus-within { border-bottom-color: #fff6e6; }
+/* 한 서명으로 남긴 작품들: 작은 그림과 번호 */
+.lv-hits-lab { margin-top: 14px; font-family: var(--font-type); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--lv-soft); }
+.lv-hits { margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+.lv-hits button { display: grid; gap: 4px; padding: 4px; border: 1px solid rgb(60 40 25 / 0.25); background: transparent; font-family: var(--font-type); font-size: 0.6rem; letter-spacing: 0.02em; color: var(--lv-ink); cursor: pointer; }
+.lv-hits button img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+.lv-hits button.is-on { border-color: var(--lv-ink); box-shadow: 0 0 0 1px var(--lv-ink); background: transparent; color: var(--lv-ink); }
+
+/* 1장 티켓 아래 "오늘의 창작자님은 누구신가요?": 이름이 곧 아이디이자 작품의 서명이다 */
+.lv-who { margin-top: 26px; display: grid; justify-items: center; text-align: center; }
+.lv-who-q { margin: 0; font-size: 1.3rem; font-weight: 700; line-height: 1.4; color: #fbf3e4; word-break: keep-all; }
+.lv-who-sub { margin: 8px 0 0; max-width: 300px; font-size: 0.85rem; line-height: 1.6; color: #eadbbd; word-break: keep-all; }
+/* 서명란: 왼쪽 끝 작은 X 표시와 한 줄 밑줄, 그 위에 손글씨로 서명한다 */
+.lv-signline { margin: 20px auto 0; width: min(290px, 100%); display: flex; align-items: flex-end; gap: 10px; padding-bottom: 4px; border-bottom: 1.5px solid #e9d6b0; cursor: text; }
+.lv-signline:focus-within { border-bottom-color: #fff6e6; }
+.lv-signline-x { flex: none; padding-bottom: 6px; font-family: var(--font-type); font-size: 0.95rem; color: #cdb995; }
+.lv-signline input { flex: 1; min-width: 0; padding: 0; border: 0; background: transparent; font-size: 2.2rem; line-height: 1.2; color: #f6ecd9; outline: none; }
+.lv-signline input:focus-visible { outline: none; box-shadow: none; }
+.lv-signline input::placeholder { font-size: 1.25rem; color: rgb(234 219 189 / 0.45); }
+.lv-signline input:disabled { opacity: 1; -webkit-text-fill-color: #f6ecd9; }
+.lv-findsign input::placeholder { font-size: 1.3rem; color: rgb(234 219 189 / 0.45); }
+.lv-findsign input:disabled { opacity: 1; -webkit-text-fill-color: #f6ecd9; }
+.lv-who-hint { margin: 6px auto 0; width: min(290px, 100%); text-align: left; min-height: 1.5em; font-size: 0.75rem; line-height: 1.5; color: #cdb995; word-break: keep-all; }
+.lv-who-hint.is-err { font-size: 0.88rem; font-weight: 600; color: #ffd9b0; }
+.lv-who .lv-ent-cta { margin-top: 14px; }
+
+/* 결과 장 끝, 하루 기회 안내 한 줄. 앞 문장보다 조금 진하게 */
+.lv-res-ticket > p.lv-res-more { margin-top: 6px; color: var(--lv-ink); }
+
+/* 결과 장 맨 밑, 결과물 링크 공유 */
+.lv-res-share { margin-top: 22px; padding-top: 18px; border-top: 1px solid rgb(110 80 50 / 0.25); }
+
+/* 다시 엮기를 누르면 뜨는 안내: 기회를 한 번 더 쓴다는 것과 남은 횟수 */
+.lv-reweave { margin-top: 12px; padding: 14px 16px; background: #fffaf2; border: 1px solid rgb(110 80 50 / 0.3); }
+.lv-reweave p { margin: 0; font-size: 0.9rem; line-height: 1.65; color: var(--lv-ink); word-break: keep-all; }
+.lv-reweave-btns { margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
+.lv-reweave-btns .lv-btn { min-height: 40px; padding: 0 16px; font-size: 0.9rem; }
+/* 편지 머리의 날짜 */
+.lv-dp-date { margin: 0 0 14px; text-align: right; font-family: var(--font-pen); font-size: 1.3rem; line-height: 1; color: #241a12; }

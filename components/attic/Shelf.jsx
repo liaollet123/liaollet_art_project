@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Ticket } from "../Entrance";
 import { Like, ORDER, Paper } from "./ui";
 
 function Card({ e, liked, onOpen, onLike, showName = true }) {
@@ -23,7 +22,7 @@ function Card({ e, liked, onOpen, onLike, showName = true }) {
 }
 
 /** 8장 — 취향의 서가. 방금 꽂은 기록이 맨 위, 같은 마음, 세 시선으로 거르는 모두의 기록 */
-export default function Shelf({ shelf, loading, justShelved, liked, onOpen, onLike, onInvite, invite, onShareMine, shareMsg, onRestart }) {
+export default function Shelf({ shelf, loading, justShelved, liked, onOpen, onLike, onRestart }) {
   const [filter, setFilter] = useState("ALL");
   const mine = justShelved && shelf.find((x) => x.id === justShelved.id) ? shelf.find((x) => x.id === justShelved.id) : justShelved;
   const same = mine?.emotion ? shelf.filter((x) => x.id !== mine.id && x.emotion === mine.emotion).slice(0, 2) : [];
@@ -47,14 +46,12 @@ export default function Shelf({ shelf, loading, justShelved, liked, onOpen, onLi
             ) : (
               <div className="lv-w-acts">
                 <Like on={!!liked[mine.id]} count={mine.likes || 0} onClick={() => onLike(mine)} />
-                <button className="lv-like" onClick={() => onShareMine(mine)}>
-                  링크 보내기
+                {/* 링크 보내기는 작품 상세 안에서, 티켓 건네기와 함께 */}
+                <button className="lv-like" onClick={() => onOpen(mine)}>
+                  작품 펼치기
                 </button>
               </div>
             )}
-            <p className="lv-toast" aria-live="polite">
-              {shareMsg}
-            </p>
           </div>
         </div>
       )}
@@ -94,26 +91,6 @@ export default function Shelf({ shelf, loading, justShelved, liked, onOpen, onLi
         </div>
       )}
 
-      <div className="lv-inv">
-        <p className="lv-inv-kick">INVITATION</p>
-        <p className="lv-inv-line">생각나는 사람에게 티켓 한 장을 건네 보세요</p>
-        <Ticket side="INVITE">
-          <p className="lv-tk-admit">ADMIT ONE</p>
-          <p className="lv-tk-head">
-            TICKET TO
-            <br />
-            YOUR FEELING
-          </p>
-          <p className="lv-tk-iss">LIAOLLET CREATIVE EDITION</p>
-        </Ticket>
-        <button className="lv-btn lv-btn-full lv-inv-btn" onClick={onInvite}>
-          링크 복사
-        </button>
-        {invite?.failed && <input className="lv-inv-url" value={invite.url} readOnly onFocus={(e) => e.target.select()} aria-label="초대 링크" />}
-        <p className="lv-toast" aria-live="polite">
-          {invite?.msg}
-        </p>
-      </div>
       <button className="lv-quiet" onClick={onRestart}>
         처음으로
       </button>

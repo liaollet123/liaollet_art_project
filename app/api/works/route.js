@@ -1,19 +1,25 @@
 import { ARTISTS } from "@/lib/attic";
-import { countWorks, insertWork, listWorks, toWork, worksByTicket } from "@/lib/server/db";
+import { countWorks, insertWork, listWorks, normSign, toWork, worksBySign, worksByTicket } from "@/lib/server/db";
 import { uploadImage } from "@/lib/server/cloud";
-import { LIMITS, body, guard, json } from "@/lib/server/http";
+import { LIMITS, body, guardTicket, json } from "@/lib/server/http";
 import { hasBlocked, scrubPII } from "@/lib/server/moderate";
 
 /**
  * GET  /api/works            → { works }  서가의 작품 (최근 60장)
- * GET  /api/works?ticket=NO  → { works }  그 티켓으로 남긴 작품
- * POST /api/works  { ticket, artist, source[], collage, story, tags[], signature, publishable }
+ * GET  /api/works?ticket=NO  → { works }  그 작품 번호의 작품
+ * GET  /api/works?sign=아이디 → { works }  그 아이디(서명)로 남긴 작품들, 최근 것부터
+ * POST /api/works  { ticket, artist, source[], collage, story, tags[], publishable }
+ *   ticket 은 6장에서 엮을 때 받은 작품 번호. 서명(1장에서 적은 이름)은 그 번호에 묶인 아이디를 서버가 쓴다(브라우저가 보낸 이름은 믿지 않는다)
  *   → { work }  표 한 줄로 저장한다. 사진과 콜라주는 Cloudinary에 올리고 주소만 남긴다.
  *   거르기에 걸리면 저장하지 않고 { hidden: true, work } 만 돌려준다(서가에는 오르지 않는다)
  */
 export async function GET(req) {
-  const no = new URL(req.url).searchParams.get("ticket");
-  if (no) return json({ works: /^\d{6,8}$/.test(no) ? await worksByTicket(no) : [] });
+  const q = new URL(req.url).searchParams;
+  const no = q.get("ticket");
+  if (no) return json({ works: /^\d{6,12}$/.test(no) ? await worksByTicket(no) : [] });
+  // 검색은 대소문자를 가리지 않는 "같음"이라 글자를 제한한다. 한 글자 시드 서명("윤")도 찾을 수 있게 1자부터
+  const sign = normSign(q.get("sign"));
+  if (q.has("sign")) return json({ works: /^[가-힣a-zA-Z0-9]{1,10}$/.test(sign) ? await worksBySign(sign) : [] });
   return json({ works: await listWorks({ limit: 60 }) });
 }
 
@@ -21,8 +27,8 @@ const JPEG = /^data:image\/jpeg;base64,/;
 
 export async function POST(req) {
   const b = await body(req);
-  const blocked = await guard(req, b?.ticket);
-  if (blocked) return blocked;
+  const { res, info } = await guardTicket(req, b?.ticket);
+  if (res) return res;
   if (!ARTISTS[b.artist]) return json({ error: "시선이 필요합니다" }, 400);
 
   // 티켓 하나에 작품 한 장
@@ -35,7 +41,7 @@ export async function POST(req) {
   if (source.some((s) => !JPEG.test(s) || s.length > 500_000)) return json({ error: "사진이 올바르지 않아요" }, 400);
 
   const story = scrubPII(String(b.story || "").slice(0, 400));
-  const signature = scrubPII(String(b.signature || "").slice(0, 10));
+  const signature = info.signature;
   const tags = (Array.isArray(b.tags) ? b.tags : []).slice(0, 12).map((t) => String(t).slice(0, 12));
 
   // 그래프의 판정(publishable)은 브라우저를 거쳐 오므로 막는 쪽으로만 믿는다. 낱말 검사는 서버에서 다시 한다

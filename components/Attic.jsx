@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { suggestTags } from "@/lib/attic";
-import { fallbackCompose, fallbackRead, firstLine, tidySpacing } from "@/lib/fallback";
+import { fallbackCompose, fallbackRead, firstLine, lineAfterTitle, tidySpacing } from "@/lib/fallback";
 import { loadImage, renderCollage, shrinkPhoto, thumb, titleFrom } from "@/lib/collage";
-import { analyze, compose, findByTicket, findWork, issueTicket, loadLiked, loadShelf, saveWork, toggleLike } from "@/lib/store";
+import { analyze, claimSign, compose, findBySign, findByTicket, findWork, issueTicket, loadLiked, loadShelf, loadSign, rememberSign, saveWork, toggleLike } from "@/lib/store";
 import { copyText } from "@/lib/share";
 import Entrance from "./Entrance";
 import Answer from "./attic/Answer";
@@ -16,7 +16,7 @@ import Shelf from "./attic/Shelf";
 import WorkModal from "./attic/WorkModal";
 
 // 사진을 올리지 않았을 때 대신 엮는 다락방의 종이
-const DEFAULT_PHOTO = "/attic/m8.jpg";
+const DEFAULT_PHOTO = "/attic/default.jpg";
 
 // 한 장에 엮는 사진은 세 장까지. 콜라주가 붐비지 않고, 관객도 고르는 데 오래 머물지 않는다
 const MAX_PHOTOS = 3;
@@ -39,7 +39,7 @@ async function sendLink(url) {
 
 /**
  * 8장짜리 다이어리의 상태 머신.
- *   1 입장 · 2 동의 · 3 마음 · 4 시선 고르기 · 5 시선 상세 · 6 답하기 · 7 결과 · 8 서가
+ *   1 입장(티켓 + 오늘의 창작자 이름) · 2 동의 · 3 마음 · 4 시선 고르기 · 5 시선 상세 · 6 답하기 · 7 결과 · 8 서가
  * 각 장의 화면은 components/attic/ 에 있고, 여기서는 장을 넘기고 서버와 이야기하는 일만 한다.
  */
 export default function Attic() {
@@ -88,6 +88,8 @@ export default function Attic() {
   // 이 폰에서 공감을 누른 작품 목록. 같은 사람이 같은 작품을 여러 번 올리지 않게
   useEffect(() => {
     setLiked(loadLiked());
+    // 이 폰에서 전에 쓴 이름을 1장에 미리 적어 둔다(아이디라 같은 이름을 다시 쓰게)
+    setSign(loadSign());
   }, []);
 
   // 공유 링크(?work=102201)로 들어왔으면 서가를 펼치고 그 작품을 연다
@@ -129,12 +131,23 @@ export default function Attic() {
   // 1장 — 티켓
   // ---------------------------------------------------------------------------
 
-  // 한 사람(기기)에게 하루 한 장. 오늘 이미 남겼다면 서버가 그 작품을 함께 돌려준다
+  // 입장 티켓의 번호 칸에는 오늘 날짜만 적힌다(작품 번호는 엮을 때 그 뒤에 순번을 붙인다). 서버는 오늘 쓴 기회 수를 알려 주고(화면에는 결과 장 끝에서만 보인다),
+  // 하루 세 번을 다 썼으면 마지막 작품을 함께 돌려준다
   const onIssue = async () => {
     const t = await issueTicket();
     if (t.error) return t.error;
     setTicket(t);
     if (t.work) setSaved(t.work);
+    return null;
+  };
+
+  // 티켓을 받으면 "오늘의 창작자님은 누구신가요?"에 이름(= 아이디)을 적는다. 들어가기 전에 서버가 확인한다
+  // (다른 폰이 쓰는 이름인지, 이 이름으로 오늘 세 번을 다 썼는지). 문제가 있으면 그 문구를, 없으면 null
+  const onCheckSign = async (name) => {
+    const c = await claimSign(name, true);
+    if (c.error) return c.status === 0 ? "와이파이를 확인하고 다시 눌러 주세요." : c.error;
+    setSign(c.signature);
+    rememberSign(c.signature);
     return null;
   };
 
@@ -161,9 +174,8 @@ export default function Attic() {
     const ctrl = new AbortController();
     readAbort.current = ctrl;
     setReadBusy(true);
-    // 올린 사진은 최대 세 장이다. 한 장이라도 빠지면 그 사진이 이야기에 없어서, 셋 다 작은 썸네일로 보낸다
     const thumbs = await Promise.all(photos.slice(0, 3).map((p) => thumb(p).catch(() => null)));
-    const r = await analyze({ ticket: ticket?.no, emotion: chosen, artist, photos: thumbs.filter(Boolean) }, ctrl.signal);
+    const r = await analyze({ emotion: chosen, artist, photos: thumbs.filter(Boolean) }, ctrl.signal);
     if (ctrl.signal.aborted) return;
     const next = r.story ? r : fallbackRead({ emotion: chosen, artist, count: photos.length });
     setReading(next);
@@ -191,10 +203,9 @@ export default function Attic() {
     setNotice("");
     setBusy(true);
     try {
-      // 장면을 읽고(그리고 이미지 모델이 켜져 있으면 시선의 화풍으로 다시 그리게) 올린 사진 모두를 작은 썸네일로 함께 보낸다
+      // 장면을 읽고(그리고 이미지 모델이 켜져 있으면 시선의 화풍으로 다시 그리게) 작은 썸네일 세 장(올린 사진 모두)을 함께 보낸다
       const images = (await Promise.all(photos.slice(0, 3).map((p) => thumb(p, 512).catch(() => null)))).filter(Boolean);
       const input = {
-        ticket: ticket?.no,
         emotion: chosen,
         artist,
         answer,
@@ -211,24 +222,38 @@ export default function Attic() {
       // 맞춤법만 바로잡은 글을 칸에도 돌려놓아, 무엇이 새겨지는지 관객이 보게 한다
       const fixed = (lab.fixed || "").trim() || tidySpacing(answer);
       if (fixed && fixed !== answer.trim()) setAnswer(fixed);
-      const img = await renderCollage({
+      // 제목 아래 글귀가 제목과 같은 말로 시작하면 두 번 읽히니, 제목 다음 말을 새긴다
+      const stem = (s) => String(s || "").replace(/[\s….,]/g, "");
+      let line = lab.line || firstLine(fixed);
+      if (!line || stem(line).startsWith(stem(lab.title)) || stem(lab.title).startsWith(stem(line).slice(0, 6))) line = lineAfterTitle(fixed, lab.title);
+      const args = {
         photos: photos.length ? photos : [DEFAULT_PHOTO],
         artist,
         emotion: chosen,
         title: lab.title,
         // 띠에는 두 줄까지만 들어간다. 글 전체 대신 마음이 머문 한 줄을 새긴다
-        line: lab.line || firstLine(fixed),
+        line,
         // 관객이 고른 태그가 있으면 그것을, 없으면 모든 것을 종합한 주요 낱말을 새긴다. 감정은 서명 줄에 이미 적히니 뺀다
         tags: (picked.length ? picked : lab.keywords || []).filter((t) => t !== ownTag).slice(0, 3),
-        entryKey: ticket?.no || "------",
         // IMAGE_PROVIDER 가 켜져 있으면 시선의 화풍으로 새로 그린 이미지가 온다. 없으면 사진을 시선대로 엮는다
         art: lab.image?.url,
-      });
+      };
+      renderArgs.current = args;
+      // 작품 번호는 여기서 매긴다: 오늘 날짜 + 누적 순번. 엮기 직전이라 입장만 하고 돌아간 사람 때문에 번호가 비지 않는다.
+      // 서가에 꽂지 않고 다시 엮으면 서버가 같은 번호를 다시 준다
+      const c = await claimSign(sign);
+      if (c.error) {
+        setNotice(c.status === 0 ? "와이파이를 확인하고 다시 눌러 주세요." : c.error);
+        return;
+      }
+      setTicket((t) => ({ ...t, no: c.no, seq: c.seq, date: c.date, used: c.used, limit: c.limit }));
+      const img = await renderCollage({ ...args, entryKey: c.no, sign: c.signature });
       setLabel(lab);
       setResult(img);
       setSaved(null);
       setToast("");
-      if (step !== 7) go(7);
+      setShareMsg("");
+      go(7);
     } finally {
       setBusy(false);
     }
@@ -237,6 +262,8 @@ export default function Attic() {
   // ---------------------------------------------------------------------------
   // 7장 — 서가에 꽂기와 공유
   // ---------------------------------------------------------------------------
+
+  const renderArgs = useRef(null);
 
   /** 서버에 한 번만 저장한다. 버튼을 여러 번 눌러도 같은 작품이 두 장 꽂히지 않게 */
   const savingRef = useRef(null);
@@ -260,7 +287,6 @@ export default function Attic() {
         story: answer.trim(),
         // 시선과 오늘의 마음 태그는 화면에서 늘 켜져 있으니 저장에도 넣는다. 서가의 감정 이름도 이 태그에서 읽는다
         tags: Array.from(new Set([...tags.slice(0, 2), ...picked])),
-        signature: sign.trim(),
         publishable: label?.publishable,
       });
       setSaving(false);
@@ -293,7 +319,7 @@ export default function Attic() {
   const shareLink = async () => {
     const w = await ensureSaved();
     if (!w) return;
-    setToast(await sendLink(shareUrl(w)));
+    setShareMsg(await sendLink(shareUrl(w)));
   };
 
   const shareMine = async (w = saved) => {
@@ -346,7 +372,7 @@ export default function Attic() {
     setPicked([]);
     setResult("");
     setLabel(null);
-    setSign("");
+    // 이름은 지우지 않는다. 같은 사람이 다시 들어오면 1장에 이미 적혀 있다
     setSaved(null);
     setNotice("");
     setToast("");
@@ -364,8 +390,11 @@ export default function Attic() {
         <Entrance
           ticket={ticket}
           onIssue={onIssue}
+          sign={sign}
+          setSign={setSign}
+          onCheckSign={onCheckSign}
           onEnter={() => go(2)}
-          onFind={findByTicket}
+          onFind={findBySign}
           onSendLink={(w) => sendLink(shareUrl(w))}
           onOpenShelf={(hit) => {
             setOpen(hit);
@@ -419,11 +448,11 @@ export default function Attic() {
           reading={reading}
           answer={answer}
           sign={sign}
-          setSign={setSign}
           saved={saved}
           saving={saving}
           toast={toast}
           onShelve={toShelf}
+          shareMsg={shareMsg}
           onShare={shareLink}
           onReweave={() => go(6)}
         />
@@ -437,10 +466,6 @@ export default function Attic() {
           loading={shelfLoading}
           justShelved={saved}
           onOpen={setOpen}
-          onInvite={sendInvite}
-          invite={invite}
-          onShareMine={shareMine}
-          shareMsg={shareMsg}
           onRestart={restart}
         />
       )}

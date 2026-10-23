@@ -46,6 +46,22 @@ export default function Admin() {
       {msg && <p className="adm-msg">{msg}</p>}
       {data && (
         <>
+          {data.stats && (
+            <dl className="adm-stats">
+              <div>
+                <dt>누적 작품 번호</dt>
+                <dd>{data.stats.total}번</dd>
+              </div>
+              <div>
+                <dt>오늘 서명</dt>
+                <dd>{data.stats.today}장</dd>
+              </div>
+              <div>
+                <dt>서가에 꽂힌 작품</dt>
+                <dd>{data.stats.works}장</dd>
+              </div>
+            </dl>
+          )}
           <h2>작품 {data.works.length}</h2>
           <ul className="adm-list">
             {data.works.map((w) => (

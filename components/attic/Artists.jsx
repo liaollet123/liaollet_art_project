@@ -5,34 +5,33 @@ import { Actions, ORDER, Paper } from "./ui";
 /** 내가 넣은 사진이 있으면 그것을 대표로, 없으면 기본 사진 */
 const cover = (k) => ARTIST_PHOTOS[k][0] || ARTISTS[k].img;
 
-/** 4장 — 누구의 시선으로. 카드마다 그 사람을 상징하는 이미지, 질문이 주인공 */
-export function Artists({ chosen, artist, setArtist, onBack, onNext }) {
+/**
+ * 4장 — 누구의 시선으로. 카드마다 그 사람을 상징하는 이미지, 질문이 주인공.
+ * 카드를 누르면 그 자리에서 바로 그 시선의 상세(5장)로 넘어간다. 아래까지 내려가 버튼을 찾지 않아도 되게
+ */
+export function Artists({ chosen, setArtist, onBack, onNext }) {
+  const open = (k) => {
+    setArtist(k);
+    onNext(k);
+  };
   return (
     <Paper no={4} className="lv-rise">
       <p className="lv-hint">{chosen}, 그 마음에 대해 세 사람이 다르게 묻습니다</p>
       <h2 className="lv-ttl">누구의 시선으로 볼까요</h2>
       <div className="lv-cards">
         {ORDER.map((k) => (
-          <button
-            key={k}
-            className={`lv-card${artist === k ? " is-on" : ""}`}
-            style={{ "--c": `var(--lv-${k.toLowerCase()})` }}
-            onClick={() => setArtist(k)}
-            aria-pressed={artist === k}
-          >
+          <button key={k} className="lv-card" style={{ "--c": `var(--lv-${k.toLowerCase()})` }} onClick={() => open(k)}>
             <img src={cover(k)} alt={ARTISTS[k].alt} />
             <span className="lv-card-q pen">“{ARTISTS[k].question}”</span>
             <b className="lv-card-name">{k}</b>
             <span className="lv-card-p">{ARTISTS[k].person}</span>
+            <span className="lv-card-go">{k}의 시선으로 보기 →</span>
           </button>
         ))}
       </div>
       <Actions>
         <button className="lv-btn is-ghost" onClick={onBack}>
           ← 이전
-        </button>
-        <button className="lv-btn" onClick={onNext}>
-          이 시선으로 보기 →
         </button>
       </Actions>
     </Paper>
@@ -49,9 +48,10 @@ export function ArtistDetail({ artist, onBack, onNext }) {
         <b>{artist}의 시선</b>
       </div>
       <img className="lv-det-img" src={cover(artist)} alt={a.alt} />
+      {/* 대표 사진 아래, 이 시선의 느낌을 보여 주는 소스 사진 세 칸 */}
       {ARTIST_PHOTOS[artist].length > 1 && (
         <div className="lv-det-gallery">
-          {ARTIST_PHOTOS[artist].slice(1).map((u) => (
+          {ARTIST_PHOTOS[artist].slice(1, 4).map((u) => (
             <img key={u} src={u} alt="" loading="lazy" />
           ))}
         </div>

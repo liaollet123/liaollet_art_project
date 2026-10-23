@@ -3,7 +3,7 @@ import { composeGraph } from "@/lib/server/graphs";
 import { body, guard, json } from "@/lib/server/http";
 
 /**
- * POST /api/compose  { ticket, emotion, artist, answer, hints, photos, images: [썸네일 data URL, 최대 3장] }
+ * POST /api/compose  { emotion, artist, answer, hints, photos, images: [썸네일 data URL, 최대 3장] }
  *   → { fixed, line, title, keywords, relation, note, scene, motifs, publishable,
  *       image: { prompt, negative, url? }, source }
  *   image.url 은 IMAGE_PROVIDER 가 켜져 있고 생성에 성공했을 때만 온다
@@ -17,7 +17,7 @@ export async function POST(req) {
   const emotion = String(b?.emotion || "").trim().slice(0, 24);
   if (!artist || !emotion) return json({ error: "감정과 시선이 필요합니다" }, 400);
 
-  const blocked = await guard(req, b.ticket, "compose");
+  const blocked = await guard(req, "compose");
   if (blocked) return blocked;
 
   const input = {

@@ -14,13 +14,15 @@ export default function Emotions({ emotion, setEmotion, mine, setMine, chosen, o
       y: ev.clientY ? `${ev.clientY - r.top}px` : "50%",
     });
     setEmotion(key);
+    // 직접 쓰기 칸은 없앴다. 예전에 적어 둔 말이 남아 고른 마음을 덮지 않게 비운다
+    setMine("");
   };
 
   return (
     <Paper no={3} className="lv-rise">
       <h2 className="lv-ttl">오늘의 마음</h2>
       <p className="lv-pensub pen">지금, 어떤 마음인가요?</p>
-      <p className="lv-body">하나만 골라 주세요. 딱 맞는 말이 없다면 아래에 직접 적어도 됩니다.</p>
+      <p className="lv-body">가장 가까운 마음 하나를 골라 주세요.</p>
       <div className="lv-emos" role="radiogroup" aria-label="오늘의 마음">
         {EMOTIONS.map((e) => (
           <button
@@ -42,18 +44,16 @@ export default function Emotions({ emotion, setEmotion, mine, setMine, chosen, o
           <feDisplacementMap in="SourceGraphic" scale="26" xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </svg>
-      <div className="lv-write">
-        <label htmlFor="lv-mine">직접 쓰기</label>
-        <textarea
-          id="lv-mine"
-          className="pen"
-          rows={2}
-          maxLength={24}
-          value={mine}
-          onChange={(e) => setMine(e.target.value)}
-          placeholder={emotion ? emotionLine(emotion) : "오늘의 마음을 내 말로 적어도 좋아요"}
-        />
-      </div>
+      {/* 고른 마음에 어울리는 한 줄이 손으로 적어 내려가듯 나타난다. 마음을 바꾸면 새로 적힌다 */}
+      <p className="lv-handline pen" aria-live="polite">
+        {emotion ? (
+          <span key={emotion} className="lv-handline-ink">
+            {emotionLine(emotion)}
+          </span>
+        ) : (
+          <span className="lv-handline-hint">마음을 고르면 여기에 한 줄이 적혀요</span>
+        )}
+      </p>
       <Actions>
         <button className="lv-btn is-ghost" onClick={onBack}>
           ← 이전

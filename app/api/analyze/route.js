@@ -3,7 +3,7 @@ import { readGraph } from "@/lib/server/graphs";
 import { body, guard, json } from "@/lib/server/http";
 
 /**
- * POST /api/analyze  { ticket, emotion, artist, photos: [작은 jpeg data URL, 최대 3장] }
+ * POST /api/analyze  { emotion, artist, photos: [작은 jpeg data URL, 최대 3장] }
  *   → { story, photoTags, source: "llm" | "fallback" }
  *
  * 6장의 "다 올렸어요" 꼬리표를 눌렀을 때만 부른다. LangGraph의 readGraph가
@@ -15,10 +15,10 @@ export async function POST(req) {
   const emotion = String(b?.emotion || "").trim().slice(0, 24);
   if (!artist || !emotion) return json({ error: "감정과 시선이 필요합니다" }, 400);
 
-  const blocked = await guard(req, b.ticket, "analyze");
+  const blocked = await guard(req, "analyze");
   if (blocked) return blocked;
 
-  // 비용을 지키려고 화면에서 줄인 썸네일만, 올릴 수 있는 사진 수(세 장)까지 받는다. 큰 원본이 오면 버린다
+  // 비용을 지키려고 화면에서 줄인 썸네일 세 장까지만 받는다(올린 사진 모두). 큰 원본이 오면 버린다
   const photos = (Array.isArray(b.photos) ? b.photos : []).filter((u) => typeof u === "string" && u.length < 200_000).slice(0, 3);
   const { out, source } = await readGraph.invoke({ input: { emotion, artist, photos } });
   return json({ ...out, source });
