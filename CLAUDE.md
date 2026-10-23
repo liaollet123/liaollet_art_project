@@ -50,7 +50,7 @@ composeGraph  START → llm ─┬→ tidy ─────┐
 ```
 - `models.js` 모델 호출. Gemini만 쓴다. LangChain `ChatGoogleGenerativeAI.withStructuredOutput(zod)`
 - `prompts.js` LangChain `PromptTemplate` + zod 스키마(`ReadSchema`, `ComposeSchema`). 말투·지시는 여기서 고친다. `VOICE`(지켜야 할 것)에 "관람객의 상태 단정 및 부정적 라벨링 금지"가 있다
-- `lib/writers.js` 세 시선의 작가 `WRITERS` — 핵심 정서·자아·성격·시선·말투(tone)·역할. 운영자가 준 문장 그대로(말투는 성격에서 옮겨 적음). 편지 프롬프트의 [Role]·[Writing Guidelines]와 오늘의 이야기 끝 한 줄이 쓴다. 키가 없을 때도 `view()`로 그 한 줄을 붙인다
+- `lib/writers.js` 세 시선의 작가 `WRITERS` — 핵심 정서·자아·성격·시선·말투(tone)·역할. 운영자가 준 문서에서 왔고, 성격의 영어 괄호는 뺐다(결과에 영어가 섞이지 않게). 말투는 쓰는 방식·자주 쓰는 낱말·피할 것. 편지 프롬프트의 [Role]·[Writing Guidelines]와 오늘의 이야기 끝 한 줄이 쓴다. 키가 없을 때도 `view()`로 그 한 줄을 붙인다
 - `graphs.js` 노드: `proof`는 맞춤법 교정이 원문과 85% 미만으로 같으면 원문을 쓴다, `moderate`는 낱말 검사 + LLM 판정으로 서가 공개 여부
 - `imagegen.js` `IMAGE_PROVIDER=gemini`면 시선의 화풍으로 이미지를 새로 그린다(기본 off, 실패하면 캔버스 콜라주)
 - 비용 장치: 기기당 하루 이야기 4x3회·엮기 4x3회, 번호 하나에 저장 1장, IP 10분 600회(전시장 와이파이는 모두 같은 IP), 타임아웃, 사진은 512px 썸네일 세 장까지(올린 사진 모두)
