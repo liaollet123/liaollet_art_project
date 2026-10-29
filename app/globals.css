@@ -1480,7 +1480,6 @@ a {
 .lv-signcap { display: block; margin: 20px auto 0; width: min(290px, 100%); text-align: left; font-family: var(--font-type); font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: #cdb995; }
 .lv-signline { margin: 4px auto 0; width: min(290px, 100%); display: flex; align-items: flex-end; gap: 10px; padding-bottom: 4px; border-bottom: 1.5px solid #e9d6b0; cursor: text; }
 .lv-signline:focus-within { border-bottom-color: #fff6e6; }
-.lv-signline-x { flex: none; padding-bottom: 6px; font-family: var(--font-type); font-size: 0.95rem; color: #cdb995; }
 .lv-signline input { flex: 1; min-width: 0; padding: 0; border: 0; background: transparent; font-size: 2.2rem; line-height: 1.2; color: #f6ecd9; outline: none; }
 .lv-signline input:focus-visible { outline: none; box-shadow: none; }
 .lv-signline input::placeholder { font-size: 1.25rem; color: rgb(234 219 189 / 0.45); }

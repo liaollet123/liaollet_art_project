@@ -1,4 +1,4 @@
-import { devToday, issueTicket, normSign, seoulDay, signOwner, signToday, SIGN_RE } from "@/lib/server/db";
+import { devToday, issueTicket, normSign, seoulDay, signOwner, SIGN_RE } from "@/lib/server/db";
 import { readDevice } from "@/lib/server/device";
 import { LIMITS, body, ipLimit, json } from "@/lib/server/http";
 import { hasBlocked } from "@/lib/server/moderate";
@@ -13,7 +13,7 @@ import { hasBlocked } from "@/lib/server/moderate";
  *
  * 서명은 아이디다. 이 아이디로 남긴 작품을 1장의 "이미 남긴 기록이 있나요?"에서 찾는다.
  *   - 아이디는 처음 쓴 폰의 것. 다른 폰에서 같은 아이디를 쓰면 막는다(남의 이름으로 작품이 섞이지 않게)
- *   - 하루 세 번은 아이디와 폰 양쪽으로 센다. 아이디를 바꿔 가며 같은 폰에서 더 만들 수 없게
+ *   - 하루 세 번은 TodayCookies(오늘 날짜 + 기기 쿠키)로 센다. 아이디를 바꿔 가며 같은 폰에서 더 만들 수 없게
  *   - 여기서 작품 번호(YYMMDD + 누적 순번)를 매긴다. 엮을 때마다 새 번호다(다시 엮기도 기회 한 번)
  */
 export async function POST(req) {
@@ -29,9 +29,10 @@ export async function POST(req) {
   const owner = await signOwner(signature);
   if (owner && owner !== dev) return json({ error: "이미 다른 분이 쓰고 있는 이름이에요. 다른 이름을 적어 주세요", code: "taken" }, 409);
 
-  // 엮기 한 번 = 기회 한 번 = 작품 번호 하나. 다시 엮기도 새 작품이라 한 번으로 센다(아이디와 폰 양쪽으로)
+  // 엮기 한 번 = 기회 한 번 = 작품 번호 하나. 다시 엮기도 새 작품이라 한 번으로 센다.
+  // 세는 기준은 TodayCookies(오늘 날짜 + 기기 쿠키). 같은 값이 limit(3)개 이상이면 오늘은 더 만들 수 없다
   const limit = LIMITS.worksPerDay;
-  const used = Math.max((await devToday(dev)).length, await signToday(signature));
+  const used = (await devToday(dev)).length;
   if (used >= limit) return json({ error: `오늘은 기회를 모두 썼어요. 한 사람이 하루에 ${limit}장까지 남길 수 있어요`, code: "limit", used, limit }, 429);
   if (b?.check) return json({ ok: true, signature, used, limit });
 
