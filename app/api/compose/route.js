@@ -24,6 +24,8 @@ export async function POST(req) {
     emotion,
     artist,
     answer: String(b.answer || "").trim().slice(0, 400),
+    // 6장에서 다락방이 적어 준 이야기(reading.story). 편지에서 관객이 쓴 말과 비중을 나눌 때 쓴다
+    story: String(b.story || "").trim().slice(0, 400),
     hints: (Array.isArray(b.hints) ? b.hints : []).map((t) => String(t).slice(0, 12)).slice(0, 6),
     photos: Math.max(0, Math.min(3, Number(b.photos) || 0)),
     // 장면을 읽고 이미지를 다시 그릴 때 참고하는 썸네일. 크기를 넘는 것은 버린다

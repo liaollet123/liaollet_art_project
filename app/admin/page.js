@@ -13,9 +13,12 @@ export default function Admin() {
   const [msg, setMsg] = useState("");
   const [sel, setSel] = useState(() => new Set());
   const [busy, setBusy] = useState(false);
+  // 기간 검색(한국 날짜, 종료일 포함). 비워 두면 최근 작품 전체
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
 
-  const call = async (method, body) => {
-    const r = await fetch("/api/admin", {
+  const call = async (method, body, query = "") => {
+    const r = await fetch(`/api/admin${query}`, {
       method,
       headers: { "x-admin-token": token, ...(body ? { "content-type": "application/json" } : {}) },
       body: body ? JSON.stringify(body) : undefined,
@@ -23,13 +26,28 @@ export default function Admin() {
     return r.ok ? r.json() : null;
   };
 
-  const load = async () => {
-    const d = await call("GET");
+  // 지운 뒤 다시 불러올 때도 보고 있던 기간을 그대로 쓴다
+  const load = async (range = { from, to }) => {
+    const p = new URLSearchParams();
+    if (range.from) p.set("from", range.from);
+    if (range.to) p.set("to", range.to);
+    const d = await call("GET", null, p.toString() ? `?${p}` : "");
     if (!d) return setMsg("토큰이 맞지 않거나 ADMIN_TOKEN 이 설정되지 않았어요.");
     setData(d);
     // 다시 불러온 목록에 없는 작품은 선택에서 뺀다
     setSel((s) => new Set([...s].filter((id) => d.works.some((w) => w.id === id))));
     return d;
+  };
+
+  const search = async (e) => {
+    e.preventDefault();
+    if (from && to && from > to) return setMsg("시작일이 종료일보다 늦어요.");
+    if (await load()) setMsg("");
+  };
+  const showAll = async () => {
+    setFrom("");
+    setTo("");
+    if (await load({ from: "", to: "" })) setMsg("");
   };
 
   const toggle = (id) =>
@@ -89,9 +107,34 @@ export default function Admin() {
               </div>
             </dl>
           )}
+          <form className="adm-search" onSubmit={search}>
+            <label>
+              시작일
+              <input type="date" value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} />
+            </label>
+            <span aria-hidden="true">~</span>
+            <label>
+              종료일
+              <input type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} />
+            </label>
+            <button type="submit">검색</button>
+            {(data.range?.from || data.range?.to) && (
+              <button type="button" onClick={showAll}>
+                전체 보기
+              </button>
+            )}
+          </form>
           {/* 목록 위 한 줄: 왼쪽에 개수와 전체 선택, 오른쪽 위에 선택 삭제 */}
           <div className="adm-bar">
-            <h2>작품 {data.works.length}</h2>
+            <h2>
+              작품 {data.works.length}
+              {(data.range?.from || data.range?.to) && (
+                <small className="adm-range">
+                  {" "}
+                  ({data.range.from || "처음"} ~ {data.range.to || "오늘"})
+                </small>
+              )}
+            </h2>
             <label className="adm-all">
               <input type="checkbox" checked={all} onChange={toggleAll} disabled={!data.works.length} />
               전체 선택
@@ -101,9 +144,11 @@ export default function Admin() {
             </button>
           </div>
           <ul className="adm-list">
-            {data.works.map((w) => (
+            {data.works.map((w, i) => (
               // 줄 어디를 눌러도 선택된다. 체크박스 자체를 누를 때는 줄의 클릭과 겹쳐 두 번 바뀌지 않게 막는다
               <li key={w.id} className={sel.has(w.id) ? "is-picked" : ""} onClick={() => toggle(w.id)}>
+                {/* 지금 보이는 목록 안의 순번(최근 것부터 1). 여러 장을 같이 볼 때 "몇 번째"로 부르기 쉽게 */}
+                <span className="adm-no">{i + 1}</span>
                 <input
                   type="checkbox"
                   checked={sel.has(w.id)}
@@ -114,7 +159,7 @@ export default function Admin() {
                 <img src={w.image} alt="" />
                 <div>
                   <b>
-                    No. {w.key} · {w.artist} · {w.sign || "서명 없음"} · 공감 {w.likes}
+                    No. {w.key} · {w.date} · {w.artist} · {w.sign || "서명 없음"} · 공감 {w.likes}
                     {w.seed && <span className="adm-seed"> · 시드</span>}
                   </b>
                   <p>{w.answer}</p>

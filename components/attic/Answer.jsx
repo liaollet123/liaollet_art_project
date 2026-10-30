@@ -46,6 +46,8 @@ export default function Answer({
         <b>1</b>오늘의 마음 <em>{chosen}</em>
       </p>
       <p className="lv-step-ask pen">{photoAsk(chosen)}</p>
+      {/* 몇 장까지인지 미리 알려 둔다. 네 장째를 고르고 나서야 막히면 어느 사진이 빠졌는지 헷갈린다 */}
+      <p className="lv-step-limit">사진은 최대 {maxPhotos}장까지 올릴 수 있어요. 올린 사진은 모두 다락방이 함께 읽어요.</p>
       <div className="lv-polas">
         {photos.map((p, i) => (
           <button key={i} className="lv-pola" onClick={() => onRemovePhoto(i)} title="사진 빼기" aria-label={`${i + 1}번째 사진 빼기`}>

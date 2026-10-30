@@ -1225,6 +1225,7 @@ a {
 /* 앞에서 고른 마음은 굵기만 살짝 달리해 조용히 짚는다. 다른 글보다 튀지 않게 */
 .lv-step-h em { font-style: normal; font-size: 0.9rem; font-weight: 700; color: var(--lv-ink); }
 .lv-step-ask { margin-top: 4px; font-size: 1.3rem; line-height: 1.35; color: var(--lv-ink); word-break: keep-all; }
+.lv-step-limit { margin-top: 6px; font-size: 0.78rem; line-height: 1.5; color: var(--lv-ink); opacity: 0.6; word-break: keep-all; }
 /* 다락방에게 이야기를 청하는 버튼. 누를 때만 LLM을 부른다 */
 /* 완료 꼬리표: 크라프트지 짐표처럼. 펀치 구멍, 바늘땀 테두리, 타자기 글자, 살짝 기울어 붙어 있다.
    모든 움직임은 아주 느리고 차분하게. 다 읽으면 꼬리표가 조용히 옅어질 뿐 도장 같은 효과는 없다 */
@@ -1366,7 +1367,7 @@ a {
 .adm button { padding: 6px 12px; border: 1px solid #2b1d12; background: #fff; cursor: pointer; white-space: nowrap; }
 .adm-msg { margin-top: 10px; color: #8a3f2a; }
 .adm-list { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-.adm-list li { display: grid; grid-template-columns: 20px 60px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px; background: #fff; border: 1px solid #e3d8c6; cursor: pointer; }
+.adm-list li { display: grid; grid-template-columns: 26px 20px 60px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px; background: #fff; border: 1px solid #e3d8c6; cursor: pointer; }
 .adm-list li.is-picked { border-color: #8a1f1f; background: #fdf3f1; }
 .adm-list input[type="checkbox"], .adm-all input { width: 18px; height: 18px; accent-color: #8a1f1f; cursor: pointer; }
 /* 목록 위 한 줄. 지우기는 오른쪽 위에 하나만 두어, 체크한 작품을 한 번에 내린다 */
@@ -1376,6 +1377,11 @@ a {
 .adm-del { margin-left: auto; }
 .adm button:disabled { opacity: 0.4; cursor: default; }
 .adm-seed { color: #8a7a66; font-weight: 400; }
+.adm-no { text-align: right; font-size: 0.85rem; color: #8a7a66; font-variant-numeric: tabular-nums; }
+.adm-search { margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.adm-search label { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+.adm-search input[type="date"] { padding: 5px 6px; border: 1px solid #b9a88f; background: #fff; font: inherit; }
+.adm-range { font-size: 0.8rem; font-weight: 400; color: #8a7a66; }
 .adm-note { margin-top: 14px; font-size: 0.75rem; color: #8a7a66; }
 .adm-list.is-notes li { grid-template-columns: minmax(0, 1fr) auto; }
 .adm-list li.is-hidden { opacity: 0.45; }

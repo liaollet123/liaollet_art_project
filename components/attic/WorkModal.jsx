@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { storyAfterTitle } from "@/lib/fallback";
 import { copyText } from "@/lib/share";
 import { Ticket } from "../Entrance";
+import Scrapbook from "./Scrapbook";
 import { Like } from "./ui";
 
 /**
@@ -13,6 +14,7 @@ export default function WorkModal({ work, liked, onLike, onClose }) {
   const [sent, setSent] = useState(null);
   const body = useRef(null);
   const closeBtn = useRef(null);
+  const letter = Array.isArray(work.letter) ? work.letter : [];
 
   useEffect(() => {
     const before = document.activeElement;
@@ -50,11 +52,23 @@ export default function WorkModal({ work, liked, onLike, onClose }) {
         <button className="lv-modal-close" ref={closeBtn} onClick={onClose}>
           닫기
         </button>
-        <img src={work.image} alt={work.title || work.emotion} />
+        {/* 결과 장(7장)·1장 "내 작품 펼치기"와 같은 스크랩북 한 장. 서가에서 본 작품도 만든 사람이 받은 모습 그대로 보이게 */}
+        <Scrapbook
+          artist={work.artist}
+          image={work.image}
+          title={work.title || work.emotion}
+          emotion={work.emotion}
+          to={work.sign || "오늘의 창작자"}
+          letter={letter}
+          when={work.created_at}
+          stampId="stamp-shelf"
+          stampDate={work.date}
+        />
         <p className="lv-meta">
           {work.date} · {work.artist}의 시선{work.key ? ` · No. ${work.key}` : ""}
         </p>
-        {storyAfterTitle(work.answer, work.title) && <p className="lv-reveal-q pen">{storyAfterTitle(work.answer, work.title)}</p>}
+        {/* 편지가 없는 작품(시드, 편지 칸이 생기기 전 작품)은 빈 종이 대신 오늘의 이야기를 보여 준다 */}
+        {!letter.length && storyAfterTitle(work.answer, work.title) && <p className="lv-reveal-q pen">{storyAfterTitle(work.answer, work.title)}</p>}
         <Like on={!!liked[work.id]} count={work.likes || 0} onClick={() => onLike(work)} />
         {/^\d+$/.test(String(work.id)) && (
           <div className="lv-inv">

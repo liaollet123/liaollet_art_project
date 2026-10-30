@@ -220,6 +220,8 @@ export default function Attic() {
         emotion: chosen,
         artist,
         answer,
+        // 다락방이 적어 준 이야기 원문. 서버가 answer 와 견주어 관객이 스스로 쓴 말(audienceText)을 가려 편지의 비중을 정한다
+        story: reading?.story || "",
         hints: [...picked, ...(reading?.photoTags || [])],
         photos: photos.length,
         images,
