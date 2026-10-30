@@ -124,7 +124,7 @@ export default function Admin() {
               </button>
             )}
           </form>
-          {/* 목록 위 한 줄: 왼쪽에 개수와 전체 선택, 오른쪽 위에 선택 삭제 */}
+          {/* 목록 위 한 줄: 왼쪽에 개수, 오른쪽에 전체 선택과 선택 삭제 */}
           <div className="adm-bar">
             <h2>
               작품 {data.works.length}
@@ -149,13 +149,6 @@ export default function Admin() {
               <li key={w.id} className={sel.has(w.id) ? "is-picked" : ""} onClick={() => toggle(w.id)}>
                 {/* 지금 보이는 목록 안의 순번(최근 것부터 1). 여러 장을 같이 볼 때 "몇 번째"로 부르기 쉽게 */}
                 <span className="adm-no">{i + 1}</span>
-                <input
-                  type="checkbox"
-                  checked={sel.has(w.id)}
-                  onClick={(e) => e.stopPropagation()}
-                  onChange={() => toggle(w.id)}
-                  aria-label={`No. ${w.key} 선택`}
-                />
                 <img src={w.image} alt="" />
                 <div>
                   <b>
@@ -165,6 +158,14 @@ export default function Admin() {
                   <p>{w.answer}</p>
                   <small>{(w.tags || []).join(" ")}</small>
                 </div>
+                {/* 체크는 맨 오른쪽. 오른쪽 위 "선택 삭제" 버튼과 같은 세로줄에 있어야 고르고 지우는 손이 한쪽에 머문다 */}
+                <input
+                  type="checkbox"
+                  checked={sel.has(w.id)}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={() => toggle(w.id)}
+                  aria-label={`No. ${w.key} 선택`}
+                />
               </li>
             ))}
           </ul>

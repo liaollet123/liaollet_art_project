@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { suggestTags } from "@/lib/attic";
 import { fallbackCompose, fallbackRead, firstLine, lineAfterTitle, tidySpacing } from "@/lib/fallback";
 import { loadImage, renderCollage, shrinkPhoto, thumb, titleFrom } from "@/lib/collage";
-import { analyze, claimSign, compose, findBySign, findByTicket, findWork, issueTicket, loadLiked, loadShelf, loadSign, rememberSign, saveWork, toggleLike } from "@/lib/store";
+import { analyze, claimSign, compose, findBySign, findByTicket, findWork, issueTicket, loadLiked, loadShelf, loadSign, rememberSign, removeMyWork, saveWork, toggleLike } from "@/lib/store";
 import { copyText } from "@/lib/share";
 import Entrance from "./Entrance";
 import Answer from "./attic/Answer";
@@ -410,6 +410,7 @@ export default function Attic() {
           onCheckSign={onCheckSign}
           onEnter={() => go(2)}
           onFind={findBySign}
+          onRemove={removeMyWork}
           onSendLink={(w) => sendLink(shareUrl(w))}
           onOpenShelf={(hit) => {
             setOpen(hit);

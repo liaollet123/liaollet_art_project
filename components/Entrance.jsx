@@ -37,7 +37,7 @@ export function Ticket({ children, side, stamp }) {
  *            이름(= 아이디, 작품의 서명)을 적고 들어가기를 누르면 서버가 확인 → 도장 → 동의서로
  *   find   : 서명(아이디)으로 그동안 남긴 작품 다시 펼치기
  */
-export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, onEnter, onFind, onOpenShelf, onSendLink }) {
+export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, onEnter, onFind, onRemove, onOpenShelf, onSendLink }) {
   const [stage, setStage] = useState("idle");
   const [stamped, setStamped] = useState(false);
   const [code, setCode] = useState("");
@@ -48,6 +48,10 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
   const [issueErr, setIssueErr] = useState("");
   // 한 서명으로 여러 장을 남겼을 수 있다. 찾은 작품들 중 지금 펼친 것
   const [hits, setHits] = useState([]);
+  // 내 작품 지우기: 확인 묻는 중인지, 지우는 중인지, 결과 한 줄
+  const [asking, setAsking] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const [removeMsg, setRemoveMsg] = useState("");
   const [linkMsg, setLinkMsg] = useState("");
   const [signErr, setSignErr] = useState("");
   const [checking, setChecking] = useState(false);
@@ -129,6 +133,31 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
       setHits(list);
       setFound(list[0]);
     } else setError("그 서명으로 남긴 기록이 없어요. 작품 아래 from. 뒤의 이름을 다시 확인해 주세요.");
+  };
+
+  const pick = (h) => {
+    setFound(h);
+    setAsking(false);
+    setRemoveMsg("");
+  };
+
+  const remove = async () => {
+    setRemoving(true);
+    const r = await onRemove(found.key);
+    setRemoving(false);
+    setAsking(false);
+    if (r.error) return setRemoveMsg(r.error);
+    const rest = hits.filter((h) => h.id !== found.id);
+    setHits(rest);
+    if (rest.length) {
+      setFound(rest[0]);
+      setRemoveMsg(`No. ${found.key} 작품을 지웠어요.`);
+    } else {
+      // 남은 작품이 없으면 서명 찾기 화면으로 돌아가 그 자리에서 알린다
+      setFound(null);
+      setRemoveMsg("");
+      setError(`No. ${found.key} 작품을 지웠어요. 이 서명으로 남은 작품이 없어요.`);
+    }
   };
 
   return (
@@ -319,7 +348,7 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
 
       {stage === "find" && found && (
         <div className="lv-reveal lv-rise">
-          <button className="lv-back" onClick={() => setFound(null)}>
+          <button className="lv-back" onClick={() => pick(null)}>
             ← 다른 서명 찾기
           </button>
           <div className="lv-paper lv-found-work">
@@ -344,7 +373,7 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
                 <p className="lv-hits-lab">from. {found.sign} · 남긴 기록 {hits.length}장</p>
                 <div className="lv-hits" role="tablist" aria-label="이 서명으로 남긴 작품">
                   {hits.map((h) => (
-                    <button key={h.id} role="tab" aria-selected={h.id === found.id} className={h.id === found.id ? "is-on" : ""} onClick={() => setFound(h)}>
+                    <button key={h.id} role="tab" aria-selected={h.id === found.id} className={h.id === found.id ? "is-on" : ""} onClick={() => pick(h)}>
                       <img src={h.image} alt="" />
                       <span>No. {h.key}</span>
                     </button>
@@ -357,6 +386,28 @@ export default function Entrance({ ticket, onIssue, sign, setSign, onCheckSign, 
             <button className="lv-btn lv-btn-full" onClick={() => onOpenShelf(found)}>
               취향의 서가에서 보기
             </button>
+            {/* 이 폰에서 만든 작품만 지울 수 있다. 되돌릴 수 없어서 한 번 더 묻는다 */}
+            {found.mine &&
+              (asking ? (
+                <div className="lv-remove-ask" role="alertdialog" aria-label="작품 지우기 확인">
+                  <p>No. {found.key} 작품을 지우면 서가에서도 사라지고 되돌릴 수 없어요. 오늘 쓴 기회도 돌아오지 않아요.</p>
+                  <div>
+                    <button className="lv-btn is-ghost" onClick={() => setAsking(false)} disabled={removing}>
+                      그대로 두기
+                    </button>
+                    <button className="lv-btn is-danger" onClick={remove} disabled={removing}>
+                      {removing ? "지우는 중…" : "지우기"}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button className="lv-remove" onClick={() => setAsking(true)}>
+                  이 작품 지우기
+                </button>
+              ))}
+            <p className="lv-remove-msg" aria-live="polite">
+              {removeMsg}
+            </p>
           </div>
         </div>
       )}

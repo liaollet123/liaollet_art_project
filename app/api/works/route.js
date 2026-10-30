@@ -1,5 +1,6 @@
 import { ARTISTS } from "@/lib/attic";
-import { countWorks, insertWork, listWorks, normSign, toWork, worksBySign, worksByTicket } from "@/lib/server/db";
+import { countWorks, insertWork, listWorks, normSign, ownedTickets, toWork, worksBySign, worksByTicket } from "@/lib/server/db";
+import { readDevice } from "@/lib/server/device";
 import { uploadImage } from "@/lib/server/cloud";
 import { LIMITS, body, guardTicket, json } from "@/lib/server/http";
 import { hasBlocked, scrubPII } from "@/lib/server/moderate";
@@ -7,7 +8,7 @@ import { hasBlocked, scrubPII } from "@/lib/server/moderate";
 /**
  * GET  /api/works            → { works }  서가의 작품 (최근 60장)
  * GET  /api/works?ticket=NO  → { works }  그 작품 번호의 작품
- * GET  /api/works?sign=아이디 → { works }  그 아이디(서명)로 남긴 작품들, 최근 것부터
+ * GET  /api/works?sign=아이디 → { works }  그 아이디(서명)로 남긴 작품들, 최근 것부터. 이 폰이 만든 작품에는 mine: true
  * POST /api/works  { ticket, artist, source[], collage, story, tags[], letter[], publishable }
  *   ticket 은 6장에서 엮을 때 받은 작품 번호. 서명(1장에서 적은 이름)은 그 번호에 묶인 아이디를 서버가 쓴다(브라우저가 보낸 이름은 믿지 않는다)
  *   → { work }  표 한 줄로 저장한다. 사진과 콜라주는 Cloudinary에 올리고 주소만 남긴다.
@@ -19,7 +20,12 @@ export async function GET(req) {
   if (no) return json({ works: /^\d{6,12}$/.test(no) ? await worksByTicket(no) : [] });
   // 검색은 대소문자를 가리지 않는 "같음"이라 글자를 제한한다. 한 글자 시드 서명("윤")도 찾을 수 있게 1자부터
   const sign = normSign(q.get("sign"));
-  if (q.has("sign")) return json({ works: /^[가-힣a-zA-Z0-9]{1,10}$/.test(sign) ? await worksBySign(sign) : [] });
+  if (q.has("sign")) {
+    const works = /^[가-힣a-zA-Z0-9]{1,10}$/.test(sign) ? await worksBySign(sign) : [];
+    // 이 폰이 받은 번호의 작품에만 mine 을 붙인다. 화면은 그 작품에만 지우기 버튼을 보인다(실제로 지울 수 있는지는 DELETE 가 다시 확인한다)
+    const own = await ownedTickets(readDevice(req), works.map((w) => w.key));
+    return json({ works: works.map((w) => ({ ...w, mine: own.has(w.key) })) });
+  }
   return json({ works: await listWorks({ limit: 60 }) });
 }
 

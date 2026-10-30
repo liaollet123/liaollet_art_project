@@ -1367,14 +1367,15 @@ a {
 .adm button { padding: 6px 12px; border: 1px solid #2b1d12; background: #fff; cursor: pointer; white-space: nowrap; }
 .adm-msg { margin-top: 10px; color: #8a3f2a; }
 .adm-list { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-.adm-list li { display: grid; grid-template-columns: 26px 20px 60px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px; background: #fff; border: 1px solid #e3d8c6; cursor: pointer; }
+.adm-list li { display: grid; grid-template-columns: 26px 60px minmax(0, 1fr) 20px; gap: 12px; align-items: center; padding: 8px; background: #fff; border: 1px solid #e3d8c6; cursor: pointer; }
 .adm-list li.is-picked { border-color: #8a1f1f; background: #fdf3f1; }
 .adm-list input[type="checkbox"], .adm-all input { width: 18px; height: 18px; accent-color: #8a1f1f; cursor: pointer; }
 /* 목록 위 한 줄. 지우기는 오른쪽 위에 하나만 두어, 체크한 작품을 한 번에 내린다 */
 .adm-bar { margin-top: 28px; display: flex; align-items: center; gap: 14px; }
 .adm-bar h2 { margin: 0; }
 .adm-all { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; cursor: pointer; }
-.adm-del { margin-left: auto; }
+/* 전체 선택도 줄마다 체크가 있는 오른쪽으로 모은다 */
+.adm-all { margin-left: auto; }
 .adm button:disabled { opacity: 0.4; cursor: default; }
 .adm-seed { color: #8a7a66; font-weight: 400; }
 .adm-no { text-align: right; font-size: 0.85rem; color: #8a7a66; font-variant-numeric: tabular-nums; }
@@ -1482,6 +1483,13 @@ a {
 .lv-findsign input:focus-visible { outline: none; box-shadow: none; }
 .lv-findsign:focus-within { border-bottom-color: #fff6e6; }
 /* 한 서명으로 남긴 작품들: 작은 그림과 번호 */
+/* 내 작품 지우기. 작품을 보러 온 자리라 눈에 띄지 않는 글자 단추로 두고, 누르면 그 자리에서 한 번 더 묻는다 */
+.lv-remove { display: block; margin: 16px auto 0; padding: 6px 10px; border: 0; background: none; font-size: 0.82rem; color: var(--lv-soft); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.lv-remove-ask { margin-top: 16px; padding: 14px; border: 1px solid rgb(138 31 31 / 0.35); background: rgb(138 31 31 / 0.04); }
+.lv-remove-ask p { margin: 0; font-size: 0.85rem; line-height: 1.55; color: var(--lv-ink); word-break: keep-all; }
+.lv-remove-ask div { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lv-btn.is-danger { background: #8a1f1f; color: #fff; }
+.lv-remove-msg { margin-top: 10px; min-height: 1.2em; font-size: 0.85rem; text-align: center; color: var(--lv-ink); }
 .lv-hits-lab { margin-top: 14px; font-family: var(--font-type); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--lv-soft); }
 .lv-hits { margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
 .lv-hits button { display: grid; gap: 4px; padding: 4px; border: 1px solid rgb(60 40 25 / 0.25); background: transparent; font-family: var(--font-type); font-size: 0.6rem; letter-spacing: 0.02em; color: var(--lv-ink); cursor: pointer; }
